@@ -43,6 +43,6 @@ on how to target different products -->
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <projectConfigurable instance="ru.crazyproger.plugins.webtoper.config.ProjectConfigConfigurable"/>
     </extensions>
 </idea-plugin>
