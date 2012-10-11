@@ -1,10 +1,12 @@
 package ru.crazyproger.plugins.webtoper.config;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.config.ui.ProjectSettingsPanel;
 
 import javax.swing.*;
 
@@ -15,9 +17,13 @@ public class ProjectConfigConfigurable
         implements SearchableConfigurable {
 
     private final Project project;
+    private final ProjectConfig configuration;
+    private ProjectSettingsPanel settingsPanel;
+
 
     public ProjectConfigConfigurable(final Project project) {
         this.project = project;
+        this.configuration = ServiceManager.getService(this.project, ProjectConfig.class);
     }
 
     @NotNull
@@ -44,23 +50,29 @@ public class ProjectConfigConfigurable
 
     @Override
     public JComponent createComponent() {
-        return null;
+        if (settingsPanel == null) {
+            settingsPanel = new ProjectSettingsPanel();
+        }
+        return settingsPanel.getRootPanel();
     }
 
     @Override
     public boolean isModified() {
-        return false;
+        return settingsPanel.isModified(configuration);
     }
 
     @Override
     public void apply() throws ConfigurationException {
+        settingsPanel.getData(configuration);
     }
 
     @Override
     public void reset() {
+        settingsPanel.setData(configuration);
     }
 
     @Override
     public void disposeUIResources() {
+        settingsPanel = null;
     }
 }
