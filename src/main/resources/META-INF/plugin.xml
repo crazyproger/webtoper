@@ -48,5 +48,7 @@ on how to target different products -->
         <projectService serviceImplementation="ru.crazyproger.plugins.webtoper.config.ProjectConfig"/>
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
+        <completion.contributor language="XML"
+                                implementationClass="ru.crazyproger.plugins.webtoper.nls.NlsCompletionContributor"/>
     </extensions>
 </idea-plugin>
