@@ -60,7 +60,7 @@ public class ProjectConfig
     public Element getState() {
         Element configurationsElement = new Element(ROOT_ENTRY);
         for (String entry : folders) {
-            Element element = new Element("fold er");
+            Element element = new Element("folder");
             element.setAttribute("folder", macroManager.collapsePath(entry));
             configurationsElement.addContent(element);
         }
