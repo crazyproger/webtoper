@@ -14,6 +14,6 @@ public class PropertiesToNlsSubstitutor extends LanguageSubstitutor {
     @Nullable
     @Override
     public Language getLanguage(@NotNull VirtualFile file, @NotNull Project project) {
-        return null;
+        return NlsLanguage.INSTANCE;
     }
 }

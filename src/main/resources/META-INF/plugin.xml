@@ -46,7 +46,7 @@ on how to target different products -->
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable instance="ru.crazyproger.plugins.webtoper.config.ProjectConfigConfigurable"/>
         <projectService serviceImplementation="ru.crazyproger.plugins.webtoper.config.ProjectConfig"/>
-        <lang.substitutor language="Propertes"
+        <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
     </extensions>
 </idea-plugin>
