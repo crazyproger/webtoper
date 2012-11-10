@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
+ * todo remove this class?
+ *
  * @author crazyproger
  */
 public class NlsFileType extends LanguageFileType {
