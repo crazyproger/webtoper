@@ -15,6 +15,8 @@ import java.util.Collection;
 
 /**
  * Simple test that check configuration of NLS folders and {@link NlsUtils#getNlsScope(com.intellij.openapi.project.Project)} method.
+ * <p/>
+ * Test needs to be run with -Didea.home.path=[path_to_module_dir]
  *
  * @author crazyproger
  */
