@@ -29,7 +29,7 @@ public class NlsUtils {
                 if (scope == null) {
                     scope = folderScope;
                 } else {
-                    scope.union(folderScope);
+                    scope = scope.union(folderScope);
                 }
             }
         }
