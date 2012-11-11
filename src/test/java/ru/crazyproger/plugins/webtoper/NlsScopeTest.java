@@ -23,7 +23,7 @@ import java.util.Collection;
 public class NlsScopeTest extends TestSourceBasedTestCase {
     //    @Override
     protected String getBasePath() {
-        return "/src/test/";
+        return "/src/test/testData";
     }
 
     @Override
@@ -35,14 +35,17 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
         return PathManager.getHomePath();
     }
 
-    //
-    public void testResources() throws Throwable {
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
         ProjectConfig config = ServiceManager.getService(getProject(), ProjectConfig.class);
         String moduleRootPath = ModuleRootManager.getInstance(getModule()).getContentRoots()[0].getPath();
         config.setFoldersAsString(moduleRootPath + "/layer1;" +
                 moduleRootPath + "/layer2;" +
                 moduleRootPath + "/layer3");
+    }
 
+    public void testNlsFilesScope() throws Throwable {
         GlobalSearchScope nlsScope = NlsUtils.getNlsScope(getProject());
         assertNotNull(nlsScope);
         Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
