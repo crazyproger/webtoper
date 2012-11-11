@@ -1,7 +1,10 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
+import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -34,5 +37,24 @@ public class NlsUtils {
             }
         }
         return scope;
+    }
+
+    public static String getNlsName(@NotNull VirtualFile file, @NotNull Project project) {
+        ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
+        List<String> folders = config.getFolders();
+        String result = null;
+        for (String folder : folders) {
+            VirtualFile nlsFolder = VfsUtil.findFileByIoFile(new File(folder), true);
+            if (nlsFolder != null) {
+                VirtualFile ancestor = VfsUtil.getCommonAncestor(nlsFolder, file);
+                if (ancestor != null) {
+                    String relativePath = FileUtil.getRelativePath(nlsFolder.getPath(), file.getPath(), File.separatorChar);
+                    assert relativePath != null : "relative path must be";
+                    String dottedPath = relativePath.replaceAll("/", ".");
+                    return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
+                }
+            }
+        }
+        return result;
     }
 }

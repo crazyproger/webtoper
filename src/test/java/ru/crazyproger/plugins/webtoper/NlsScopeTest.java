@@ -52,4 +52,13 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
         assertNotNull(files);
         assertEquals(3, files.size());
     }
+
+    public void testNlsFullName() throws Throwable {
+        GlobalSearchScope nlsScope = NlsUtils.getNlsScope(getProject());
+        Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
+        VirtualFile file = files.iterator().next();
+        String fullName = NlsUtils.getNlsName(file, getProject());
+        assertEquals("ru.crazyproger.l1.document.Document", fullName);
+    }
+
 }
