@@ -34,7 +34,6 @@ import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.nls.NlsBundle;
 
 import java.awt.*;
 import java.io.*;
@@ -170,7 +169,7 @@ public class ErrorSubmitter extends ErrorReportSubmitter {
 
     @Override
     public String getReportActionText() {
-        return NlsBundle.message("nls.report.action.text");
+        return WebtoperBundle.message("webtoper.report.action.text");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package ru.crazyproger.plugins.webtoper.nls;
+package ru.crazyproger.plugins.webtoper;
 
 import com.intellij.CommonBundle;
 import org.jetbrains.annotations.NonNls;
@@ -8,14 +8,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
-// todo remove this class?
-public class NlsBundle {
+public class WebtoperBundle {
     private static Reference<ResourceBundle> ourBundle;
 
     @NonNls
-    protected static final String PATH_TO_BUNDLE = "messages.NlsBundle";
+    protected static final String PATH_TO_BUNDLE = "messages.WebtoperBundle";
 
-    private NlsBundle() {
+    private WebtoperBundle() {
     }
 
     public static String message(@PropertyKey(resourceBundle = PATH_TO_BUNDLE) String key, Object... params) {

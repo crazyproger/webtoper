@@ -5,6 +5,7 @@ import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 
 import javax.swing.*;
 
@@ -27,7 +28,7 @@ public class NlsFileType extends LanguageFileType {
 
     @NotNull
     public String getDescription() {
-        return NlsBundle.message("nls.files.file.type.description");
+        return WebtoperBundle.message("webtoper.nls.files.file.type.description");
     }
 
     @NotNull
