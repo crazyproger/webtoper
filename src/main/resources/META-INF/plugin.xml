@@ -50,5 +50,7 @@ on how to target different products -->
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
         <completion.contributor language="XML"
                                 implementationClass="ru.crazyproger.plugins.webtoper.nls.NlsCompletionContributor"/>
+
+        <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>
 </idea-plugin>
