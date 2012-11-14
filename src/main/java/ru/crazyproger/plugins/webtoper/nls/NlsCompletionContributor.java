@@ -21,7 +21,7 @@ import java.util.Collection;
  * @author crazyproger
  */
 public class NlsCompletionContributor extends CompletionContributor {
-    public static final String TAG_NAME = "nlsid";
+    public static final String TAG_NAME = "nlsbundle";
 
     public NlsCompletionContributor() {
         extend(CompletionType.BASIC, PlatformPatterns.psiElement(XmlTokenType.XML_DATA_CHARACTERS), new CompletionProvider<CompletionParameters>() {
