@@ -1,9 +1,10 @@
-package ru.crazyproger.plugins.webtoper;
+package ru.crazyproger.plugins.webtoper.nls;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
 import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
 
 /**

@@ -1,4 +1,4 @@
-package ru.crazyproger.plugins.webtoper;
+package ru.crazyproger.plugins.webtoper.nls;
 
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.components.ServiceManager;
@@ -7,8 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.TestSourceBasedTestCase;
+import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
 import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
-import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
 import java.util.Collection;
 
