@@ -50,6 +50,8 @@ on how to target different products -->
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
         <completion.contributor language="XML"
                                 implementationClass="ru.crazyproger.plugins.webtoper.nls.NlsCompletionContributor"/>
+        <psi.referenceContributor language="XML"
+                                  implementation="ru.crazyproger.plugins.webtoper.nls.XmlNlsReferenceContributor"/>
 
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>
