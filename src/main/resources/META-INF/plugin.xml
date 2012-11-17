@@ -53,6 +53,9 @@ on how to target different products -->
         <psi.referenceContributor language="XML"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.XmlNlsReferenceContributor"/>
 
+        <lang.parserDefinition language="Nls"
+                               implementationClass="ru.crazyproger.plugins.webtoper.nls.NlsParserDefinition"/>
+
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>
 </idea-plugin>
