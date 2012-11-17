@@ -1,7 +1,6 @@
 package ru.crazyproger.plugins.webtoper;
 
 import com.intellij.lang.properties.PropertiesFileType;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -16,23 +15,18 @@ import java.util.Collection;
 /**
  * Simple test that check configuration of NLS folders and {@link NlsUtils#getNlsScope(com.intellij.openapi.project.Project)} method.
  * <p/>
- * Test needs to be run with -Didea.home.path=[path_to_module_dir]
  *
  * @author crazyproger
  */
 public class NlsScopeTest extends TestSourceBasedTestCase {
-    //    @Override
-    protected String getBasePath() {
-        return "/src/test/testData";
-    }
 
     @Override
     protected String getTestPath() {
-        return getBasePath();
+        return WebtoperTestHelper.TEST_DATA_PATH;
     }
 
     protected String getTestDataPath() {
-        return PathManager.getHomePath();
+        return WebtoperTestHelper.getRootPath();
     }
 
     @Override
