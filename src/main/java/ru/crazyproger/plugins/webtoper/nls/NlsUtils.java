@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @author crazyproger
@@ -23,17 +22,13 @@ public class NlsUtils {
     @Nullable
     public static GlobalSearchScope getNlsScope(@NotNull Project project) {
         ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
-        List<String> folders = config.getFolders();
         GlobalSearchScope scope = null;
-        for (String folder : folders) {
-            VirtualFile virtualFile = VfsUtil.findFileByIoFile(new File(folder), true);
-            if (virtualFile != null) {
-                GlobalSearchScope folderScope = GlobalSearchScopes.directoryScope(project, virtualFile, true);
-                if (scope == null) {
-                    scope = folderScope;
-                } else {
-                    scope = scope.union(folderScope);
-                }
+        for (VirtualFile folder : config.getNlsRoots()) {
+            GlobalSearchScope folderScope = GlobalSearchScopes.directoryScope(project, folder, true);
+            if (scope == null) {
+                scope = folderScope;
+            } else {
+                scope = scope.union(folderScope);
             }
         }
         return scope;
@@ -41,20 +36,17 @@ public class NlsUtils {
 
     public static String getNlsName(@NotNull VirtualFile file, @NotNull Project project) {
         ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
-        List<String> folders = config.getFolders();
-        String result = null;
-        for (String folder : folders) {
-            VirtualFile nlsFolder = VfsUtil.findFileByIoFile(new File(folder), true);
-            if (nlsFolder != null) {
-                VirtualFile ancestor = VfsUtil.getCommonAncestor(nlsFolder, file);
+        for (VirtualFile folder : config.getNlsRoots()) {
+            if (folder != null) {
+                VirtualFile ancestor = VfsUtil.getCommonAncestor(folder, file);
                 if (ancestor != null) {
-                    String relativePath = FileUtil.getRelativePath(nlsFolder.getPath(), file.getPath(), File.separatorChar);
+                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), File.separatorChar);
                     assert relativePath != null : "relative path must be";
                     String dottedPath = relativePath.replaceAll("/", ".");
                     return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
                 }
             }
         }
-        return result;
+        return null;
     }
 }
