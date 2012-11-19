@@ -1,4 +1,4 @@
-package ru.crazyproger.plugins.webtoper.nls;
+package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.project.Project;
@@ -11,6 +11,7 @@ import com.intellij.psi.xml.XmlText;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
 import java.util.Collection;
 

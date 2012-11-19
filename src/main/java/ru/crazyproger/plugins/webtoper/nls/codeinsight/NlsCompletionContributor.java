@@ -1,4 +1,4 @@
-package ru.crazyproger.plugins.webtoper.nls;
+package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -14,6 +14,7 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlTokenType;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
 import java.util.Collection;
 

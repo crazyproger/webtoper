@@ -1,4 +1,4 @@
-package ru.crazyproger.plugins.webtoper.nls;
+package ru.crazyproger.plugins.webtoper.nls.psi;
 
 import com.intellij.lang.properties.psi.impl.PropertiesFileImpl;
 import com.intellij.psi.FileViewProvider;

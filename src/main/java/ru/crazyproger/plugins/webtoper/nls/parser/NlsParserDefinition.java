@@ -1,15 +1,12 @@
-package ru.crazyproger.plugins.webtoper.nls;
+package ru.crazyproger.plugins.webtoper.nls.parser;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.PsiParser;
 import com.intellij.lang.properties.parsing.PropertiesParserDefinition;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.IStubFileElementType;
-import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
+import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 /**
  * @author crazyproger
