@@ -38,8 +38,7 @@ public class NlsUtils {
         ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
         for (VirtualFile folder : config.getNlsRoots()) {
             if (folder != null) {
-                VirtualFile ancestor = VfsUtil.getCommonAncestor(folder, file);
-                if (ancestor != null) {
+                if (VfsUtil.isAncestor(folder, file, true)) {
                     String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), File.separatorChar);
                     assert relativePath != null : "relative path must be";
                     String dottedPath = relativePath.replaceAll("/", ".");
