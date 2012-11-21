@@ -5,6 +5,8 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.properties.parsing.Parsing;
 import com.intellij.lang.properties.parsing.PropertiesElementTypes;
+import com.intellij.lang.properties.parsing.PropertiesTokenTypes;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
  * @author crazyproger
  */
 public class NlsParser implements PsiParser {
+    private static final Logger LOG = Logger.getInstance("#" + NlsParser.class.getName());
+
     @NotNull
     public ASTNode parse(IElementType root, PsiBuilder builder) {
         final PsiBuilder.Marker rootMarker = builder.mark();
@@ -29,6 +33,17 @@ public class NlsParser implements PsiParser {
     }
 
     private void parseInclude(PsiBuilder builder) {
-        //To change body of created methods use File | Settings | File Templates.
+        LOG.assertTrue(builder.getTokenType() == NlsTokenTypes.INCLUDE_KEYWORD);
+        builder.advanceLexer();
+        LOG.assertTrue(builder.getTokenType() == PropertiesTokenTypes.KEY_VALUE_SEPARATOR);
+        builder.advanceLexer();
+        final PsiBuilder.Marker includesListMarker = builder.mark();
+        while(builder.getTokenType()==NlsTokenTypes.NLS_NAME){
+            builder.advanceLexer();
+            if (builder.getTokenType() == NlsTokenTypes.NLS_SEPARATOR) {
+                builder.advanceLexer();
+            }
+        }
+        includesListMarker.done(NlsElementTypes.INCLUDES_LIST);
     }
 }
