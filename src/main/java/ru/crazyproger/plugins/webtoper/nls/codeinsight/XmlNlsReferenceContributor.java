@@ -38,7 +38,7 @@ public class XmlNlsReferenceContributor extends PsiReferenceContributor {
                     if (file != null) {
                         String fullName = NlsUtils.getNlsName(virtualFile, project);
                         if (StringUtils.equals(text, fullName)) {
-                            return new PsiReference[]{new PsiReferenceBase.Immediate<PsiElement>(element, file)};
+                            return new PsiReference[]{new PsiReferenceBase.Immediate<PsiElement>(element, false, file)};
                         }
                     }
                 }
