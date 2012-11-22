@@ -9,6 +9,7 @@ import com.intellij.lang.properties.parsing.PropertiesTokenTypes;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 
 /**
  * @author crazyproger
@@ -39,13 +40,28 @@ public class NlsParser implements PsiParser {
         LOG.assertTrue(builder.getTokenType() == PropertiesTokenTypes.KEY_VALUE_SEPARATOR);
         builder.advanceLexer();
         final PsiBuilder.Marker includesListMarker = builder.mark();
-        while (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
-            builder.advanceLexer();
-            if (builder.getTokenType() == NlsTokenTypes.NLS_SEPARATOR) {
+        if (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
+            parseNlsName(builder);
+            while (builder.getTokenType() == NlsTokenTypes.NLS_SEPARATOR) {
                 builder.advanceLexer();
+                if (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
+                    parseNlsName(builder);
+                } else {
+                    builder.advanceLexer();
+                    builder.error(WebtoperBundle.message("nls.name.expected.parsing.error.message"));
+                }
             }
+        } else {
+            builder.advanceLexer();
+            builder.error(WebtoperBundle.message("nls.name.expected.parsing.error.message"));
         }
         includesListMarker.done(NlsElementTypes.INCLUDES_LIST);
         includePropertyMarker.done(NlsElementTypes.INCLUDE_PROPERTY);
+    }
+
+    private void parseNlsName(PsiBuilder builder) {
+        PsiBuilder.Marker nameMark = builder.mark();
+        builder.advanceLexer();
+        nameMark.done(NlsElementTypes.NLS_NAME);
     }
 }
