@@ -1,8 +1,8 @@
 package ru.crazyproger.plugins.webtoper.nls.parser;
 
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludesList;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludesListStub;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludesListImpl;
@@ -13,9 +13,9 @@ import java.io.IOException;
 /**
  * @author crazyproger
  */
-public class NlsIncludesListStubElementType extends IStubElementType<NlsIncludesListStub, NlsIncludesList> {
+public class NlsIncludesListStubElementType extends NlsStubElementType<NlsIncludesListStub, NlsIncludesList> {
     public NlsIncludesListStubElementType() {
-        super("NLS_INCLUDES_LIST", NlsLanguage.INSTANCE);
+        super("NLS_INCLUDES_LIST");
     }
 
     @Override
@@ -29,20 +29,8 @@ public class NlsIncludesListStubElementType extends IStubElementType<NlsIncludes
     }
 
     @Override
-    public String getExternalId() {
-        return "nls.includeslist";
-    }
-
-    @Override
     public NlsIncludesListStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException {
         return new NlsIncludesListStubImpl(parentStub);
     }
 
-    @Override
-    public void serialize(NlsIncludesListStub stub, StubOutputStream dataStream) throws IOException {
-    }
-
-    @Override
-    public void indexStub(NlsIncludesListStub stub, IndexSink sink) {
-    }
 }

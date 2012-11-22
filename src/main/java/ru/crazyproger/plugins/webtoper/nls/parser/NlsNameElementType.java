@@ -1,8 +1,8 @@
 package ru.crazyproger.plugins.webtoper.nls.parser;
 
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsName;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsNameStub;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
@@ -13,9 +13,9 @@ import java.io.IOException;
 /**
  * @author crazyproger
  */
-public class NlsNameElementType extends IStubElementType<NlsNameStub, NlsName> {
+public class NlsNameElementType extends NlsStubElementType<NlsNameStub, NlsName> {
     public NlsNameElementType() {
-        super("NLS_NAME", NlsLanguage.INSTANCE);
+        super("NLS_NAME");
     }
 
     @Override
@@ -29,20 +29,7 @@ public class NlsNameElementType extends IStubElementType<NlsNameStub, NlsName> {
     }
 
     @Override
-    public String getExternalId() {
-        return "nls.name";
-    }
-
-    @Override
     public NlsNameStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException {
         return new NlsNameStubImpl(parentStub);
-    }
-
-    @Override
-    public void serialize(NlsNameStub stub, StubOutputStream dataStream) throws IOException {
-    }
-
-    @Override
-    public void indexStub(NlsNameStub stub, IndexSink sink) {
     }
 }

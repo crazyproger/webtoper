@@ -1,8 +1,8 @@
 package ru.crazyproger.plugins.webtoper.nls.parser;
 
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludeProperty;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludePropertyStub;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludePropertyImpl;
@@ -13,14 +13,9 @@ import java.io.IOException;
 /**
  * @author crazyproger
  */
-public class NlsIncludePropertyStubElementType extends IStubElementType<NlsIncludePropertyStub, NlsIncludeProperty> {
+public class NlsIncludePropertyStubElementType extends NlsStubElementType<NlsIncludePropertyStub, NlsIncludeProperty> {
     public NlsIncludePropertyStubElementType() {
-        super("NLS_INCLUDE_PROPERTY", NlsLanguage.INSTANCE);
-    }
-
-    @Override
-    public String getExternalId() {
-        return "nls.includeproperty";
+        super("NLS_INCLUDE_PROPERTY");
     }
 
     @Override
@@ -36,13 +31,5 @@ public class NlsIncludePropertyStubElementType extends IStubElementType<NlsInclu
     @Override
     public NlsIncludePropertyStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException {
         return new NlsIncludePropertyStubImpl(parentStub);
-    }
-
-    @Override
-    public void serialize(NlsIncludePropertyStub stub, StubOutputStream dataStream) throws IOException {
-    }
-
-    @Override
-    public void indexStub(NlsIncludePropertyStub stub, IndexSink sink) {
     }
 }
