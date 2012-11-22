@@ -49,7 +49,9 @@ on how to target different products -->
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
         <completion.contributor language="XML"
-                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsCompletionContributor"/>
+                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsXmlCompletionContributor"/>
+        <completion.contributor language="Nls" order="first"
+                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesCompletionContributor"/>
         <psi.referenceContributor language="XML"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlNlsReferenceContributor"/>
 

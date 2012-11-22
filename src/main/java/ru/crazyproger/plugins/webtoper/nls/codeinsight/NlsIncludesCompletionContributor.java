@@ -5,34 +5,29 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.psi.xml.XmlTokenType;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
+import ru.crazyproger.plugins.webtoper.nls.parser.NlsTokenTypes;
 
 import java.util.Collection;
+
+import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 /**
  * @author crazyproger
  */
-public class NlsCompletionContributor extends CompletionContributor {
-    public static final String TAG_NAME = "nlsbundle";
-
-    public NlsCompletionContributor() {
-        extend(CompletionType.BASIC, PlatformPatterns.psiElement(XmlTokenType.XML_DATA_CHARACTERS), new CompletionProvider<CompletionParameters>() {
+public class NlsIncludesCompletionContributor extends CompletionContributor {
+    public NlsIncludesCompletionContributor() {
+        extend(CompletionType.BASIC, psiElement(NlsTokenTypes.NLS_NAME), new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                 Project project = parameters.getPosition().getContainingFile().getProject();
-                XmlTag xmlTag = PsiTreeUtil.getParentOfType(parameters.getPosition(), XmlTag.class);
-                if (xmlTag == null || !TAG_NAME.equals(xmlTag.getName())) return;
-
+                PsiFile originalFile = parameters.getOriginalFile();
                 GlobalSearchScope nlsScope = NlsUtils.getNlsScope(project);
                 if (nlsScope == null) {
                     return;
@@ -41,7 +36,8 @@ public class NlsCompletionContributor extends CompletionContributor {
                 Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
                 for (VirtualFile virtualFile : files) {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                    if (file != null) {
+                    // todo add filter of already added Nls'es
+                    if (file != null && !file.equals(originalFile)) {
                         String fullName = NlsUtils.getNlsName(virtualFile, project);
                         LookupElementBuilder element = LookupElementBuilder.create(file, fullName).withIcon(file.getIcon(0));
                         result.addElement(element);

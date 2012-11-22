@@ -22,7 +22,7 @@ import java.util.Collection;
 public class XmlNlsReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
-        registrar.registerReferenceProvider(XmlPatterns.xmlTag().withName(NlsCompletionContributor.TAG_NAME), new PsiReferenceProvider() {
+        registrar.registerReferenceProvider(XmlPatterns.xmlTag().withName(NlsXmlCompletionContributor.TAG_NAME), new PsiReferenceProvider() {
             @NotNull
             @Override
             public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
