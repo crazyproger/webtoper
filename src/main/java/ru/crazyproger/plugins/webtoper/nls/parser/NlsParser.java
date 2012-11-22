@@ -34,16 +34,18 @@ public class NlsParser implements PsiParser {
 
     private void parseInclude(PsiBuilder builder) {
         LOG.assertTrue(builder.getTokenType() == NlsTokenTypes.INCLUDE_KEYWORD);
+        final PsiBuilder.Marker includePropertyMarker = builder.mark();
         builder.advanceLexer();
         LOG.assertTrue(builder.getTokenType() == PropertiesTokenTypes.KEY_VALUE_SEPARATOR);
         builder.advanceLexer();
         final PsiBuilder.Marker includesListMarker = builder.mark();
-        while(builder.getTokenType()==NlsTokenTypes.NLS_NAME){
+        while (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
             builder.advanceLexer();
             if (builder.getTokenType() == NlsTokenTypes.NLS_SEPARATOR) {
                 builder.advanceLexer();
             }
         }
         includesListMarker.done(NlsElementTypes.INCLUDES_LIST);
+        includePropertyMarker.done(NlsElementTypes.INCLUDE_PROPERTY);
     }
 }
