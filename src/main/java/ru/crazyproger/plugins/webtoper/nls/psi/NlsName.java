@@ -5,5 +5,5 @@ import com.intellij.psi.StubBasedPsiElement;
 /**
  * @author crazyproger
  */
-public interface NlsIncludeProperty extends StubBasedPsiElement<NlsIncludePropertyStub> {
+public interface NlsName extends StubBasedPsiElement<NlsNameStub> {
 }

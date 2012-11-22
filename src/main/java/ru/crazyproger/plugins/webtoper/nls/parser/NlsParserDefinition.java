@@ -16,6 +16,7 @@ import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludePropertyImpl;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludesListImpl;
+import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
 /**
  * @author crazyproger
@@ -53,6 +54,8 @@ public class NlsParserDefinition extends PropertiesParserDefinition {
             return new NlsIncludesListImpl(node);
         } else if (type == NlsElementTypes.INCLUDE_PROPERTY) {
             return new NlsIncludePropertyImpl(node);
+        } else if (type == NlsElementTypes.NLS_NAME) {
+            return new NlsNameImpl(node);
         }
         return super.createElement(node);
     }

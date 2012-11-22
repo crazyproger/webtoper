@@ -1,7 +1,6 @@
 package ru.crazyproger.plugins.webtoper.nls.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.IStubElementType;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludesList;
