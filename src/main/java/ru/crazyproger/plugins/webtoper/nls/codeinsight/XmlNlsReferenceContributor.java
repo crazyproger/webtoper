@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.XmlPatterns;
 import com.intellij.psi.*;
 import com.intellij.psi.search.FileTypeIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlText;
 import com.intellij.util.ProcessingContext;
@@ -32,7 +33,11 @@ public class XmlNlsReferenceContributor extends PsiReferenceContributor {
                 }
                 String text = StringUtils.trim(childOfType.getText());
 
-                Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, NlsUtils.getNlsScope(project));
+                GlobalSearchScope nlsScope = NlsUtils.getNlsScope(project);
+                if (nlsScope == null) {
+                    return PsiReference.EMPTY_ARRAY;
+                }
+                Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
                 for (VirtualFile virtualFile : files) {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
                     if (file != null) {

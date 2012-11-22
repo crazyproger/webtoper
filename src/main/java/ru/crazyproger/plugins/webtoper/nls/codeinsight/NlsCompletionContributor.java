@@ -9,6 +9,7 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlTokenType;
@@ -32,8 +33,12 @@ public class NlsCompletionContributor extends CompletionContributor {
                 XmlTag xmlTag = PsiTreeUtil.getParentOfType(parameters.getPosition(), XmlTag.class);
                 if (xmlTag == null || !TAG_NAME.equals(xmlTag.getName())) return;
 
+                GlobalSearchScope nlsScope = NlsUtils.getNlsScope(project);
+                if (nlsScope == null) {
+                    return;
+                }
                 // todo check indexes - maybe searching by language index is better or faster(may need create own index)
-                Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, NlsUtils.getNlsScope(project));
+                Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
                 for (VirtualFile virtualFile : files) {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
                     if (file != null) {
