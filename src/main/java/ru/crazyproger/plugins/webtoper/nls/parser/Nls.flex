@@ -20,7 +20,7 @@ VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
 END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
 KEY_SEPARATOR=[\ \t]*[:=][\ \t]* | [\ \t]+
 KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\"{CRLF} | "\\".
-NLS_NAME=[^\n\r\f\ \\]
+NLS_NAME=[^\n\r\f\ \\,]
 NLS_SEPARATOR=[\ \t]*[,][\ \t]*
 
 %state IN_VALUE
