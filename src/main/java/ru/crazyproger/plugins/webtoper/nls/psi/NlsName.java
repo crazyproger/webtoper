@@ -6,4 +6,5 @@ import com.intellij.psi.StubBasedPsiElement;
  * @author crazyproger
  */
 public interface NlsName extends StubBasedPsiElement<NlsNameStub> {
+    NlsName[] EMPTY_ARRAY = new NlsName[0];
 }
