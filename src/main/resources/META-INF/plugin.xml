@@ -22,7 +22,7 @@
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="122.519" until-build="122.9999"/>
+    <idea-version since-build="122.519" until-build="123.9999"/>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 on how to target different products -->
@@ -55,7 +55,7 @@ on how to target different products -->
         <psi.referenceContributor language="XML"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlNlsReferenceContributor"/>
         <psi.referenceContributor
-                                  implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
+                implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
 
         <lang.parserDefinition language="Nls"
                                implementationClass="ru.crazyproger.plugins.webtoper.nls.parser.NlsParserDefinition"/>
