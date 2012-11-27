@@ -12,7 +12,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
-import ru.crazyproger.plugins.webtoper.nls.parser.NlsTokenTypes;
+import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
 import java.util.Collection;
 
@@ -23,7 +23,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
  */
 public class NlsIncludesCompletionContributor extends CompletionContributor {
     public NlsIncludesCompletionContributor() {
-        extend(CompletionType.BASIC, psiElement(NlsTokenTypes.NLS_NAME), new CompletionProvider<CompletionParameters>() {
+        extend(CompletionType.BASIC, psiElement(NlsNameImpl.class), new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                 Project project = parameters.getPosition().getContainingFile().getProject();

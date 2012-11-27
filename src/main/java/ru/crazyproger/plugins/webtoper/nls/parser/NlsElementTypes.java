@@ -9,5 +9,4 @@ import com.intellij.psi.stubs.IStubElementType;
 public interface NlsElementTypes extends PropertiesElementTypes {
     IStubElementType INCLUDES_LIST = new NlsIncludesListStubElementType();
     IStubElementType INCLUDE_PROPERTY = new NlsIncludePropertyStubElementType();
-    IStubElementType NLS_NAME = new NlsNameElementType();
 }

@@ -7,7 +7,5 @@ import com.intellij.psi.StubBasedPsiElement;
  */
 public interface NlsIncludeProperty extends StubBasedPsiElement<NlsIncludePropertyStub> {
 
-    NlsName[] getIncludedNames();
-
     NlsFileImpl getNlsFile();
 }

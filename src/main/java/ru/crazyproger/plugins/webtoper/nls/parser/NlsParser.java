@@ -37,31 +37,35 @@ public class NlsParser implements PsiParser {
         LOG.assertTrue(builder.getTokenType() == NlsTokenTypes.INCLUDE_KEYWORD);
         final PsiBuilder.Marker includePropertyMarker = builder.mark();
         builder.advanceLexer();
-        LOG.assertTrue(builder.getTokenType() == PropertiesTokenTypes.KEY_VALUE_SEPARATOR);
-        builder.advanceLexer();
-        final PsiBuilder.Marker includesListMarker = builder.mark();
-        if (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
-            parseNlsName(builder);
-            while (builder.getTokenType() == NlsTokenTypes.NLS_SEPARATOR) {
-                builder.advanceLexer();
-                if (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
-                    parseNlsName(builder);
-                } else {
-                    builder.advanceLexer();
-                    builder.error(WebtoperBundle.message("nls.name.expected.parsing.error.message"));
-                }
-            }
+        if (builder.getTokenType() != PropertiesTokenTypes.KEY_VALUE_SEPARATOR) {
+            error(builder, "nls.separator.expected.parsing.error.message");
         } else {
             builder.advanceLexer();
-            builder.error(WebtoperBundle.message("nls.name.expected.parsing.error.message"));
+            final PsiBuilder.Marker includesListMarker = builder.mark();
+            if (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
+                parseNlsName(builder);
+                while (builder.getTokenType() == NlsTokenTypes.NLS_SEPARATOR) {
+                    builder.advanceLexer();
+                    if (builder.getTokenType() == NlsTokenTypes.NLS_NAME) {
+                        parseNlsName(builder);
+                    } else {
+                        error(builder, "nls.name.expected.parsing.error.message");
+                    }
+                }
+            } else {
+                error(builder, "nls.name.expected.parsing.error.message");
+            }
+            includesListMarker.done(NlsElementTypes.INCLUDES_LIST);
         }
-        includesListMarker.done(NlsElementTypes.INCLUDES_LIST);
         includePropertyMarker.done(NlsElementTypes.INCLUDE_PROPERTY);
     }
 
-    private void parseNlsName(PsiBuilder builder) {
-        PsiBuilder.Marker nameMark = builder.mark();
+    private void error(PsiBuilder builder, String errorKey) {
         builder.advanceLexer();
-        nameMark.done(NlsElementTypes.NLS_NAME);
+        builder.error(WebtoperBundle.message(errorKey));
+    }
+
+    private void parseNlsName(PsiBuilder builder) {
+        builder.advanceLexer();
     }
 }

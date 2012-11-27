@@ -6,7 +6,6 @@ import ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludeProperty;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludePropertyStub;
-import ru.crazyproger.plugins.webtoper.nls.psi.NlsName;
 
 /**
  * @author crazyproger
@@ -19,11 +18,6 @@ public class NlsIncludePropertyImpl extends NlsStubElementImpl<NlsIncludePropert
 
     public NlsIncludePropertyImpl(@NotNull ASTNode node) {
         super(node);
-    }
-
-    @Override
-    public NlsName[] getIncludedNames() {
-        return NlsName.EMPTY_ARRAY; // todo
     }
 
     @Override

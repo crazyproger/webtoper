@@ -1,20 +1,33 @@
 package ru.crazyproger.plugins.webtoper.nls.psi.impl;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.IElementType;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes;
-import ru.crazyproger.plugins.webtoper.nls.psi.NlsName;
-import ru.crazyproger.plugins.webtoper.nls.psi.NlsNameStub;
 
 /**
  * @author crazyproger
  */
-public class NlsNameImpl extends NlsStubElementImpl<NlsNameStub> implements NlsName {
-    public NlsNameImpl(@NotNull NlsNameStub stub) {
-        super(stub, NlsElementTypes.NLS_NAME);
+public class NlsNameImpl extends LeafPsiElement {
+    public NlsNameImpl(IElementType type, CharSequence text) {
+        super(type, text);
     }
 
-    public NlsNameImpl(@NotNull ASTNode node) {
-        super(node);
+    @NotNull
+    @Override
+    public PsiReference[] getReferences() {
+        return ReferenceProvidersRegistry.getReferencesFromProviders(this);
+    }
+
+    public PsiReference getReference() {
+        PsiReference[] references = getReferences();
+        return references.length == 0 ? null : references[0];
+    }
+
+    @NonNls
+    public String toString() {
+        return "Nls name: " + getText();
     }
 }

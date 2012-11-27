@@ -10,12 +10,13 @@ import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
+import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.Collection;
 
 /**
-* @author crazyproger
-*/
+ * @author crazyproger
+ */
 public class WholeElementTextRefProvider extends PsiReferenceProvider {
     @NotNull
     @Override
@@ -33,7 +34,7 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
             if (file != null) {
                 String fullName = NlsUtils.getNlsName(virtualFile, project);
                 if (StringUtils.equals(text, fullName)) {
-                    return new PsiReference[]{new PsiReferenceBase.Immediate<PsiElement>(element, false, file)};
+                    return new PsiReference[]{new NlsReference(element, (NlsFileImpl) file)};
                 }
             }
         }
