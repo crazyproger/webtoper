@@ -1,20 +1,13 @@
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
-import com.intellij.lang.properties.PropertiesFileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.patterns.XmlPatterns;
-import com.intellij.psi.*;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.xml.XmlText;
-import com.intellij.util.ProcessingContext;
-import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
+import com.intellij.patterns.PsiElementPattern;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReferenceContributor;
+import com.intellij.psi.PsiReferenceRegistrar;
+import com.intellij.psi.xml.XmlTokenType;
 
-import java.util.Collection;
+import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 /**
  * @author crazyproger
@@ -22,33 +15,7 @@ import java.util.Collection;
 public class XmlNlsReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
-        registrar.registerReferenceProvider(XmlPatterns.xmlTag().withName(NlsXmlCompletionContributor.TAG_NAME), new PsiReferenceProvider() {
-            @NotNull
-            @Override
-            public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
-                Project project = element.getContainingFile().getProject();
-                XmlText childOfType = PsiTreeUtil.getChildOfType(element, XmlText.class);
-                if (childOfType == null) {
-                    return PsiReference.EMPTY_ARRAY;
-                }
-                String text = StringUtils.trim(childOfType.getText());
-
-                GlobalSearchScope nlsScope = NlsUtils.getNlsScope(project);
-                if (nlsScope == null) {
-                    return PsiReference.EMPTY_ARRAY;
-                }
-                Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
-                for (VirtualFile virtualFile : files) {
-                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                    if (file != null) {
-                        String fullName = NlsUtils.getNlsName(virtualFile, project);
-                        if (StringUtils.equals(text, fullName)) {
-                            return new PsiReference[]{new PsiReferenceBase.Immediate<PsiElement>(element, false, file)};
-                        }
-                    }
-                }
-                return PsiReference.EMPTY_ARRAY;
-            }
-        });
+        PsiElementPattern.Capture<PsiElement> xmlPattern = psiElement(XmlTokenType.XML_DATA_CHARACTERS).withSuperParent(2, xmlTag().withName(NlsXmlCompletionContributor.TAG_NAME));
+        registrar.registerReferenceProvider(xmlPattern, new WholeElementTextRefProvider());
     }
 }

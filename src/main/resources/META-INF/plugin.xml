@@ -54,6 +54,8 @@ on how to target different products -->
                                 implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesCompletionContributor"/>
         <psi.referenceContributor language="XML"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlNlsReferenceContributor"/>
+        <psi.referenceContributor
+                                  implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
 
         <lang.parserDefinition language="Nls"
                                implementationClass="ru.crazyproger.plugins.webtoper.nls.parser.NlsParserDefinition"/>
