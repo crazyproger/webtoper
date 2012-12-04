@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
 
-import java.io.File;
-
 /**
  * @author crazyproger
  */
@@ -39,7 +37,7 @@ public class NlsUtils {
         for (VirtualFile folder : config.getNlsRoots()) {
             if (folder != null) {
                 if (VfsUtil.isAncestor(folder, file, true)) {
-                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), File.separatorChar);
+                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), '/');
                     assert relativePath != null : "relative path must be";
                     String dottedPath = relativePath.replaceAll("/", ".");
                     return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
