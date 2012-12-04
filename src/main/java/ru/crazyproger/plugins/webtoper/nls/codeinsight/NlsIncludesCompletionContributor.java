@@ -32,7 +32,6 @@ public class NlsIncludesCompletionContributor extends CompletionContributor {
                 if (nlsScope == null) {
                     return;
                 }
-                // todo check indexes - maybe searching by language index is better or faster(may need create own index)
                 Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
                 for (VirtualFile virtualFile : files) {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
