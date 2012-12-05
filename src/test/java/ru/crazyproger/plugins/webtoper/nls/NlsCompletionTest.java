@@ -12,6 +12,8 @@ import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
  */
 public class NlsCompletionTest extends LightCodeInsightFixtureTestCase {
 
+    private String testName;
+
     protected String getTestDataPath() {
         return WebtoperTestHelper.getTestDataPath() + "/completion";
     }
@@ -22,11 +24,20 @@ public class NlsCompletionTest extends LightCodeInsightFixtureTestCase {
         myFixture.testCompletionVariants(testName + ".xml", testName + ".Document", testName + ".Document2");
     }
 
+    /**
+     * Check that already included files did not appear in completion
+     */
+    public void testProperty() throws Throwable {
+        myFixture.configureByFiles(testName + "/Case.properties", testName + "/Included.properties", testName + "/Variant.properties");
+        myFixture.testCompletionVariants(testName + "/Case.properties", testName + ".Variant");
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         Project project = myFixture.getProject();
         ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
         config.setNlsRoots(ModuleRootManager.getInstance(myModule).getContentRoots());
+        testName = getTestName(true);
     }
 }
