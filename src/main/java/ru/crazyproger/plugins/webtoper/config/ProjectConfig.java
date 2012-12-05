@@ -16,18 +16,30 @@
 
 package ru.crazyproger.plugins.webtoper.config;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdom.Element;
+import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+
+import static com.google.common.collect.Lists.transform;
+import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 
 /**
  * User: crazyproger
@@ -49,15 +61,6 @@ public class ProjectConfig
     public ProjectConfig(Project project) {
         this.project = project;
         macroManager = PathMacroManager.getInstance(this.project);
-    }
-
-    public List<String> getFolders() {
-        return folders;
-    }
-
-    public void setFolders(List<String> folders) {
-        this.folders = folders;
-        updateNlsRoots();
     }
 
     @Override
@@ -95,9 +98,26 @@ public class ProjectConfig
 
     public void setFoldersAsString(final String foldersAsString) {
         String[] split = foldersAsString.split(";");
-        folders.clear();
-        Collections.addAll(folders, split);
-        updateNlsRoots();
+        List<String> paths = transform(Arrays.asList(split), new Function<String, String>() {
+            @Override
+            public String apply(@Nullable String s) {
+                if (s != null) {
+                    s = s.trim();
+                }
+                return s;
+            }
+        });
+        Iterable<String> filtered = Iterables.filter(paths, new Predicate<String>() {
+            @Override
+            public boolean apply(@Nullable String s) {
+                return isNotEmpty(s);
+            }
+        });
+        folders = Lists.newArrayList(filtered);
+        HashSet<VirtualFile> oldNlsRoots = Sets.newHashSet(nlsRoots);
+        List<VirtualFile> newNlsRoots = updateNlsRoots();
+        Sets.SetView<VirtualFile> roots = Sets.symmetricDifference(oldNlsRoots, new HashSet<VirtualFile>(newNlsRoots));
+        Utils.reparseFilesInRoots(project, roots, PropertiesFileType.DEFAULT_EXTENSION);
     }
 
     public VirtualFile[] getNlsRoots() {
@@ -111,7 +131,7 @@ public class ProjectConfig
         this.nlsRoots = nlsRoots;
     }
 
-    private void updateNlsRoots() {
+    private List<VirtualFile> updateNlsRoots() {
         List<VirtualFile> list = new ArrayList<VirtualFile>();
         for (String folder : folders) {
             VirtualFile virtualFile = VfsUtil.findFileByIoFile(new File(folder), true);
@@ -120,5 +140,6 @@ public class ProjectConfig
             }
         }
         nlsRoots = list.toArray(new VirtualFile[list.size()]);
+        return list;
     }
 }

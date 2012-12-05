@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>ru.crazyproger.plugins.webtoper</id>
     <name>Webtoper</name>
-    <version>0.1</version>
+    <version>0.2</version>
     <vendor email="vladimir.rudev@gmail.com">Vladimir Rudev</vendor>
 
     <description><![CDATA[
@@ -16,13 +16,16 @@
         ]]></description>
 
     <change-notes><![CDATA[
-        Add change notes here.<br>
-        <small>most HTML tags may be used</small>
+        <ul>
+            <li>0.2: stabilization</li>
+        </ul>
+        <!--Add change notes here.<br>-->
+        <!--<small>most HTML tags may be used</small>-->
         ]]>
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="122.519" until-build="123.9999"/>
+    <idea-version since-build="123.72" until-build="123.9999"/>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 on how to target different products -->
@@ -56,6 +59,7 @@ on how to target different products -->
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlNlsReferenceContributor"/>
         <psi.referenceContributor language="Nls"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
+        <stubElementTypeHolder class="ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes"/>
 
         <lang.elementManipulator forClass="ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl"
                                  implementationClass="ru.crazyproger.plugins.webtoper.nls.NlsNameManipulator"/>

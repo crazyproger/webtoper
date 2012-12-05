@@ -46,4 +46,14 @@ public class NlsUtils {
         }
         return null;
     }
+
+    @Nullable
+    public static String[] nlsNameToPathChunks(@NotNull String nlsName) {
+        if (StringUtil.isEmpty(nlsName)) {
+            return null;
+        }
+        String[] chunks = nlsName.split("\\.");
+        chunks[chunks.length - 1] += PropertiesFileType.DOT_DEFAULT_EXTENSION;
+        return chunks;
+    }
 }

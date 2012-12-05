@@ -1,18 +1,19 @@
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
-import com.intellij.lang.properties.PropertiesFileType;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author crazyproger
@@ -22,22 +23,25 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
     @Override
     public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
         Project project = element.getContainingFile().getProject();
+        ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
+        VirtualFile[] nlsRoots = config.getNlsRoots();
+        if (nlsRoots.length == 0) return PsiReference.EMPTY_ARRAY;
+
         String text = StringUtils.trim(element.getText());
 
-        GlobalSearchScope nlsScope = NlsUtils.getNlsScope(project);
-        if (nlsScope == null) {
-            return PsiReference.EMPTY_ARRAY;
-        }
-        Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
-        for (VirtualFile virtualFile : files) {
-            PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            if (file != null) {
-                String fullName = NlsUtils.getNlsName(virtualFile, project);
-                if (StringUtils.equals(text, fullName)) {
-                    return new PsiReference[]{new NlsReference(element, (NlsFileImpl) file)};
-                }
+        String[] pathChunks = NlsUtils.nlsNameToPathChunks(text);
+        if (pathChunks == null) return PsiReference.EMPTY_ARRAY;
+        Set<PsiReference> references = new HashSet<PsiReference>();
+        for (VirtualFile nlsRoot : nlsRoots) {
+            VirtualFile relativeFile = VfsUtil.findRelativeFile(nlsRoot, pathChunks);
+            if (relativeFile != null && !relativeFile.isDirectory()) {
+                PsiFile file = PsiManager.getInstance(project).findFile(relativeFile);
+                references.add(new NlsReference(element, (NlsFileImpl) file));
             }
         }
-        return PsiReference.EMPTY_ARRAY;
+        if (references.isEmpty()) {
+            return PsiReference.EMPTY_ARRAY;
+        }
+        return references.toArray(new PsiReference[references.size()]);
     }
 }
