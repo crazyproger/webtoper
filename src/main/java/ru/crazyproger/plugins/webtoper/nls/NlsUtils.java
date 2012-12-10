@@ -1,5 +1,7 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import com.intellij.facet.FacetManager;
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.module.Module;
@@ -73,8 +75,9 @@ public class NlsUtils {
             Collection<WebtoperFacet> facets = facetManager.getFacetsByType(WebtoperFacet.ID);
             for (WebtoperFacet facet : facets) {
                 WebtoperFacetConfiguration configuration = facet.getConfiguration();
-                if (configuration.getNlsRoot() != null) {
-                    nlsRoots.add(configuration.getNlsRoot());
+                if (!configuration.getNlsRoots().isEmpty()) {
+                    Collection<VirtualFile> filtered = Collections2.filter(configuration.getNlsRoots(), Predicates.notNull());
+                    nlsRoots.addAll(filtered);
                 }
             }
         }
