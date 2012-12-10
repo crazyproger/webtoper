@@ -48,8 +48,6 @@ on how to target different products -->
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable instance="ru.crazyproger.plugins.webtoper.config.ProjectConfigConfigurable"/>
-        <projectService serviceImplementation="ru.crazyproger.plugins.webtoper.config.ProjectConfig"/>
         <facetType implementation="ru.crazyproger.plugins.webtoper.config.WebtoperFacetType"/>
 
         <!--nls-->
