@@ -38,6 +38,7 @@ public class NlsUtils {
         return scope;
     }
 
+    @Nullable
     public static String getNlsName(@NotNull VirtualFile file, @NotNull Project project) {
         for (VirtualFile folder : getAllNlsRoots(project)) {
             if (folder != null) {
