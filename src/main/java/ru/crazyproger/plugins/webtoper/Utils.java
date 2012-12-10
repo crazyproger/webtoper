@@ -35,16 +35,26 @@ public class Utils {
     public static void reparseFilesInRoots(Project project, Iterable<VirtualFile> roots, String extension) {
         List<VirtualFile> files = new LinkedList<VirtualFile>();
         for (VirtualFile file : roots) {
-            if (file.isDirectory()) {
-                PsiDirectory directory = PsiManager.getInstance(project).findDirectory(file);
-                if (directory != null) {
-                    GlobalSearchScope scope = GlobalSearchScopes.directoryScope(directory, true);
-                    files.addAll(FilenameIndex.getAllFilesByExt(project, extension, scope));
-                }
-            } else {
-                files.add(file);
-            }
+            collectFiles(project, extension, files, file);
         }
+        FileContentUtil.reparseFiles(project, files, true);
+    }
+
+    private static void collectFiles(Project project, String extension, List<VirtualFile> files, VirtualFile root) {
+        if (root.isDirectory()) {
+            PsiDirectory directory = PsiManager.getInstance(project).findDirectory(root);
+            if (directory != null) {
+                GlobalSearchScope scope = GlobalSearchScopes.directoryScope(directory, true);
+                files.addAll(FilenameIndex.getAllFilesByExt(project, extension, scope));
+            }
+        } else {
+            files.add(root);
+        }
+    }
+
+    public static void reparseFilesInRoot(Project project, VirtualFile nlsRoot, String defaultExtension) {
+        LinkedList<VirtualFile> files = new LinkedList<VirtualFile>();
+        collectFiles(project, defaultExtension, files, nlsRoot);
         FileContentUtil.reparseFiles(project, files, true);
     }
 }

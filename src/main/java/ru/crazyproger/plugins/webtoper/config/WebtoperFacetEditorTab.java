@@ -18,6 +18,7 @@ package ru.crazyproger.plugins.webtoper.config;
 
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
+import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
@@ -30,11 +31,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.Utils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * @author crazyproger
@@ -87,8 +90,17 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
     @Override
     public void apply() throws ConfigurationException {
         if (!isModified()) return;
-        configuration.setNlsRoot(LocalFileSystem.getInstance().findFileByIoFile(new File(pNlsRoot.getText())));
+        VirtualFile nlsRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(pNlsRoot.getText()));
+        VirtualFile oldRoot = configuration.getNlsRoot();
+        configuration.setNlsRoot(nlsRoot);
         configuration.setParentLayer((String) cbParentLayer.getSelectedItem());
+        if (nlsRoot != null) {
+            if (oldRoot != null) {
+                Utils.reparseFilesInRoots(context.getProject(), Arrays.asList(oldRoot, nlsRoot), PropertiesFileType.DEFAULT_EXTENSION);
+            } else {
+                Utils.reparseFilesInRoot(context.getProject(), nlsRoot, PropertiesFileType.DEFAULT_EXTENSION);
+            }
+        }
     }
 
     @Override
