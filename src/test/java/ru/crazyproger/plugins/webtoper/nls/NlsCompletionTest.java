@@ -1,11 +1,15 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
+import com.intellij.facet.FacetManager;
+import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.javaee.web.facet.WebFacet;
+import com.intellij.javaee.web.facet.WebFacetType;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
-import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 /**
  * @author crazyproger
@@ -35,9 +39,19 @@ public class NlsCompletionTest extends LightCodeInsightFixtureTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Project project = myFixture.getProject();
-        ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
-        config.setNlsRoots(ModuleRootManager.getInstance(myModule).getContentRoots());
+        Module module = myFixture.getModule();
+        FacetManager facetManager = FacetManager.getInstance(module);
+        WebFacet container = facetManager.createFacet(WebFacetType.getInstance(), "Web", null);
+        WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
+        facet.getConfiguration().setNlsRoot(ModuleRootManager.getInstance(module).getContentRoots()[0]);
+        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
+        facetModel.addFacet(facet);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                facetModel.commit();
+            }
+        });
         testName = getTestName(true);
     }
 }
