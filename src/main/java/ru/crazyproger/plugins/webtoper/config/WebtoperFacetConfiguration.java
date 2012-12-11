@@ -77,7 +77,9 @@ public class WebtoperFacetConfiguration implements FacetConfiguration {
 
     @java.lang.Override
     public void writeExternal(Element element) throws WriteExternalException {
-        element.setAttribute(PARENT_LAYER_ATTRIBUTE, parentLayer);
+        if (parentLayer != null) {
+            element.setAttribute(PARENT_LAYER_ATTRIBUTE, parentLayer);
+        }
         PathMacroManager macroManager = PathMacroManager.getInstance(getFacet().getModule());
         for (VirtualFile nlsRoot : nlsRoots) {
             Element folder = new Element(NLS_ROOT_TAG);
