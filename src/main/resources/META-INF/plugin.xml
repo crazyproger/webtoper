@@ -50,6 +50,10 @@ on how to target different products -->
     <extensions defaultExtensionNs="com.intellij">
         <facetType implementation="ru.crazyproger.plugins.webtoper.config.WebtoperFacetType"/>
 
+        <!--component-->
+        <psi.referenceContributor language="XML" order="first"
+                                  implementation="ru.crazyproger.plugins.webtoper.component.ComponentReferenceContributor"/>
+
         <!--nls-->
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>

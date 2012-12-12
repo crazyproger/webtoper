@@ -2,10 +2,7 @@ package ru.crazyproger.plugins.webtoper.nls;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
-import com.intellij.facet.FacetManager;
 import com.intellij.lang.properties.PropertiesFileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -15,6 +12,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.Utils;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacetConfiguration;
 
@@ -67,18 +65,13 @@ public class NlsUtils {
 
     @NotNull
     public static List<VirtualFile> getAllNlsRoots(Project project) {
-        ModuleManager moduleManager = ModuleManager.getInstance(project);
-        Module[] modules = moduleManager.getModules();
-        List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>(modules.length);
-        for (Module module : modules) {
-            FacetManager facetManager = FacetManager.getInstance(module);
-            Collection<WebtoperFacet> facets = facetManager.getFacetsByType(WebtoperFacet.ID);
-            for (WebtoperFacet facet : facets) {
-                WebtoperFacetConfiguration configuration = facet.getConfiguration();
-                if (!configuration.getNlsRoots().isEmpty()) {
-                    Collection<VirtualFile> filtered = Collections2.filter(configuration.getNlsRoots(), Predicates.notNull());
-                    nlsRoots.addAll(filtered);
-                }
+        List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
+        List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>(facets.size());
+        for (WebtoperFacet facet : facets) {
+            WebtoperFacetConfiguration configuration = facet.getConfiguration();
+            if (!configuration.getNlsRoots().isEmpty()) {
+                Collection<VirtualFile> filtered = Collections2.filter(configuration.getNlsRoots(), Predicates.notNull());
+                nlsRoots.addAll(filtered);
             }
         }
         return nlsRoots;

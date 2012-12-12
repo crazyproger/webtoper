@@ -16,6 +16,9 @@
 
 package ru.crazyproger.plugins.webtoper;
 
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -24,7 +27,10 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.util.FileContentUtil;
+import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,5 +62,17 @@ public class Utils {
         LinkedList<VirtualFile> files = new LinkedList<VirtualFile>();
         collectFiles(project, defaultExtension, files, nlsRoot);
         FileContentUtil.reparseFiles(project, files, true);
+    }
+
+    @NotNull
+    public static List<WebtoperFacet> getWebtoperFacets(Project project) {
+        ModuleManager moduleManager = ModuleManager.getInstance(project);
+        Module[] modules = moduleManager.getModules();
+        List<WebtoperFacet> facets = new ArrayList<WebtoperFacet>(modules.length);
+        for (Module module : modules) {
+            FacetManager facetManager = FacetManager.getInstance(module);
+            facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
+        }
+        return facets;
     }
 }
