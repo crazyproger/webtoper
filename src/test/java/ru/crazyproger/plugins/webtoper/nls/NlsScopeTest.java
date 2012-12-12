@@ -1,16 +1,23 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
+import com.intellij.facet.FacetManager;
+import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.javaee.web.facet.WebFacet;
+import com.intellij.javaee.web.facet.WebFacetType;
 import com.intellij.lang.properties.PropertiesFileType;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.TestSourceBasedTestCase;
 import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
-import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Simple test that check configuration of NLS folders and {@link NlsUtils#getNlsScope(com.intellij.openapi.project.Project)} method.
@@ -32,11 +39,32 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ProjectConfig config = ServiceManager.getService(getProject(), ProjectConfig.class);
+
         String moduleRootPath = ModuleRootManager.getInstance(getModule()).getContentRoots()[0].getPath();
-        config.setFoldersAsString(moduleRootPath + "/layer1;" +
-                moduleRootPath + "/layer2;" +
-                moduleRootPath + "/layer3");
+        FacetManager facetManager = FacetManager.getInstance(myModule);
+        WebFacet container = facetManager.createFacet(WebFacetType.getInstance(), "Web", null);
+        WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
+        List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>();
+        findAndAdd(moduleRootPath + "/layer1", nlsRoots);
+        findAndAdd(moduleRootPath + "/layer2", nlsRoots);
+        findAndAdd(moduleRootPath + "/layer3", nlsRoots);
+
+        facet.getConfiguration().setNlsRoots(nlsRoots);
+        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
+        facetModel.addFacet(facet);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                facetModel.commit();
+            }
+        });
+    }
+
+    private void findAndAdd(String filePath, List<VirtualFile> nlsRoots) {
+        VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
+        if (file != null) {
+            nlsRoots.add(file);
+        }
     }
 
     public void testNlsFilesScope() throws Throwable {

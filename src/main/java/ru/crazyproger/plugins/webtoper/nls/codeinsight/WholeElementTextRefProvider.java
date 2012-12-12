@@ -1,6 +1,5 @@
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -8,11 +7,11 @@ import com.intellij.psi.*;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.config.ProjectConfig;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,9 +22,8 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
     @Override
     public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
         Project project = element.getContainingFile().getProject();
-        ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
-        VirtualFile[] nlsRoots = config.getNlsRoots();
-        if (nlsRoots.length == 0) return PsiReference.EMPTY_ARRAY;
+        List<VirtualFile> nlsRoots = NlsUtils.getAllNlsRoots(project);
+        if (nlsRoots.isEmpty()) return PsiReference.EMPTY_ARRAY;
 
         String text = StringUtils.trim(element.getText());
 

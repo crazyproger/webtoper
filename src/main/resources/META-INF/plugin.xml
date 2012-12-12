@@ -33,6 +33,7 @@ on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
     -->
     <depends>com.intellij.properties</depends>
+    <depends>com.intellij.javaee</depends>
 
     <application-components>
         <!-- Add your application components here -->
@@ -47,8 +48,7 @@ on how to target different products -->
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable instance="ru.crazyproger.plugins.webtoper.config.ProjectConfigConfigurable"/>
-        <projectService serviceImplementation="ru.crazyproger.plugins.webtoper.config.ProjectConfig"/>
+        <facetType implementation="ru.crazyproger.plugins.webtoper.config.WebtoperFacetType"/>
 
         <!--nls-->
         <lang.substitutor language="Properties"
