@@ -1,26 +1,26 @@
 <idea-plugin version="2">
     <id>ru.crazyproger.plugins.webtoper</id>
     <name>Webtoper</name>
-    <version>0.2</version>
+    <version>0.3</version>
     <vendor email="vladimir.rudev@gmail.com">Vladimir Rudev</vendor>
 
     <description><![CDATA[
         Tool with some help functions for documentum developers.
         Most important is:
         <ul>
-            <!--<li>todo </li>-->
+            <li>Supporting nls(navigation, hierarchy)</li>
+            <li>Component model</li>
         </ul>
 
-        <b>Bug tracker page</b>
-        <a href="https://github.com/crazyproger/webtoper/issues">https://github.com/crazyproger/webtoper/issues</a>
+        <strong>Bug tracker page:</strong>
+        <a href="http://crazyproger.myjetbrains.com/youtrack/dashboard">http://crazyproger.myjetbrains.com/youtrack/dashboard</a>
         ]]></description>
 
     <change-notes><![CDATA[
         <ul>
             <li>0.2: stabilization</li>
+            <li>0.3: improving nls, configuration(<a href="http://crazyproger.myjetbrains.com/youtrack/issues?q=fixed+in%3A+v0.3">report</a>)</li>
         </ul>
-        <!--Add change notes here.<br>-->
-        <!--<small>most HTML tags may be used</small>-->
         ]]>
     </change-notes>
 
@@ -29,10 +29,8 @@
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
     <depends>com.intellij.properties</depends>
+    <depends>com.intellij.javaee</depends>
 
     <application-components>
         <!-- Add your application components here -->
@@ -47,8 +45,13 @@ on how to target different products -->
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable instance="ru.crazyproger.plugins.webtoper.config.ProjectConfigConfigurable"/>
-        <projectService serviceImplementation="ru.crazyproger.plugins.webtoper.config.ProjectConfig"/>
+        <facetType implementation="ru.crazyproger.plugins.webtoper.config.WebtoperFacetType"/>
+
+        <!--component-->
+        <psi.referenceContributor language="XML" order="first"
+                                  implementation="ru.crazyproger.plugins.webtoper.component.ComponentReferenceContributor"/>
+
+        <!--nls-->
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
         <completion.contributor language="XML"
@@ -66,6 +69,9 @@ on how to target different products -->
         <lang.parserDefinition language="Nls"
                                implementationClass="ru.crazyproger.plugins.webtoper.nls.parser.NlsParserDefinition"/>
         <lang.ast.factory language="Nls" implementationClass="ru.crazyproger.plugins.webtoper.nls.psi.NlsASTFactory"/>
+        <annotator language="Nls"
+                   implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsUnresolvedNameAnnotator"/>
+
 
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>

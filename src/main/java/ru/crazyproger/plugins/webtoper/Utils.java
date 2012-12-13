@@ -16,6 +16,9 @@
 
 package ru.crazyproger.plugins.webtoper;
 
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -24,7 +27,10 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.util.FileContentUtil;
+import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,16 +41,38 @@ public class Utils {
     public static void reparseFilesInRoots(Project project, Iterable<VirtualFile> roots, String extension) {
         List<VirtualFile> files = new LinkedList<VirtualFile>();
         for (VirtualFile file : roots) {
-            if (file.isDirectory()) {
-                PsiDirectory directory = PsiManager.getInstance(project).findDirectory(file);
-                if (directory != null) {
-                    GlobalSearchScope scope = GlobalSearchScopes.directoryScope(directory, true);
-                    files.addAll(FilenameIndex.getAllFilesByExt(project, extension, scope));
-                }
-            } else {
-                files.add(file);
-            }
+            collectFiles(project, extension, files, file);
         }
         FileContentUtil.reparseFiles(project, files, true);
+    }
+
+    private static void collectFiles(Project project, String extension, List<VirtualFile> files, VirtualFile root) {
+        if (root.isDirectory()) {
+            PsiDirectory directory = PsiManager.getInstance(project).findDirectory(root);
+            if (directory != null) {
+                GlobalSearchScope scope = GlobalSearchScopes.directoryScope(directory, true);
+                files.addAll(FilenameIndex.getAllFilesByExt(project, extension, scope));
+            }
+        } else {
+            files.add(root);
+        }
+    }
+
+    public static void reparseFilesInRoot(Project project, VirtualFile nlsRoot, String defaultExtension) {
+        LinkedList<VirtualFile> files = new LinkedList<VirtualFile>();
+        collectFiles(project, defaultExtension, files, nlsRoot);
+        FileContentUtil.reparseFiles(project, files, true);
+    }
+
+    @NotNull
+    public static List<WebtoperFacet> getWebtoperFacets(Project project) {
+        ModuleManager moduleManager = ModuleManager.getInstance(project);
+        Module[] modules = moduleManager.getModules();
+        List<WebtoperFacet> facets = new ArrayList<WebtoperFacet>(modules.length);
+        for (Module module : modules) {
+            FacetManager facetManager = FacetManager.getInstance(module);
+            facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
+        }
+        return facets;
     }
 }
