@@ -18,8 +18,6 @@ package ru.crazyproger.plugins.webtoper.component;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.intellij.javaee.web.WebRoot;
-import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.XmlAttributeValuePattern;
@@ -30,11 +28,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.ProcessingContext;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
-import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +42,6 @@ import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 /**
  * @author crazyproger
- *         todo try to find configuration inside artifact file system(maybe it will be faster)
- *         todo searching order - first files must be from closest layers
  *         todo refactoring
  */
 public class ComponentReferenceContributor extends PsiReferenceContributor {
@@ -79,33 +73,6 @@ public class ComponentReferenceContributor extends PsiReferenceContributor {
         return componentTags;
     }
 
-    @Nullable
-    private VirtualFile findConfig(String configPath, List<WebRoot> webRoots) {
-        for (WebRoot webRoot : webRoots) {
-            boolean isStartsWith = StringUtils.startsWith("/" + configPath, webRoot.getRelativePath());
-            if (isStartsWith) {
-                final VirtualFile file = webRoot.getFile();
-                if (file != null) {
-                    final VirtualFile result = file.findFileByRelativePath(configPath);
-                    if (result != null) {
-                        return result;
-                    }
-
-                }
-            }
-        }
-        return null;
-    }
-
-    private List<WebRoot> getWebRoots(List<WebtoperFacet> facets) {
-        List<WebRoot> webRoots = new ArrayList<WebRoot>();
-        for (WebtoperFacet facet : facets) {
-            WebFacet webFacet = (WebFacet) facet.getUnderlyingFacet();
-            webRoots.addAll(webFacet.getWebRoots());
-        }
-        return webRoots;
-    }
-
     private class ComponentReferenceProvider extends PsiReferenceProvider {
         @NotNull
         @Override
@@ -115,10 +82,8 @@ public class ComponentReferenceContributor extends PsiReferenceContributor {
             if (!matcher.matches()) return PsiReference.EMPTY_ARRAY;
 
             final Project project = element.getProject();
-            List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
-            List<WebRoot> webRoots = getWebRoots(facets);
             String configPath = matcher.group(2);
-            VirtualFile config = findConfig(configPath, webRoots);
+            VirtualFile config = Utils.findFileInArtifact(configPath, project);
             if (config == null) return PsiReference.EMPTY_ARRAY;
 
             final PsiFile file;
