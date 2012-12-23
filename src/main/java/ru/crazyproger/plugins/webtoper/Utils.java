@@ -17,6 +17,8 @@
 package ru.crazyproger.plugins.webtoper;
 
 import com.intellij.facet.FacetManager;
+import com.intellij.javaee.web.WebRoot;
+import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -27,7 +29,9 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.util.FileContentUtil;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
@@ -74,5 +78,43 @@ public class Utils {
             facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
         }
         return facets;
+    }
+
+    /**
+     * todo try to find configuration inside artifact file system(maybe it will be faster) - best variant
+     * todo searching order - first files must be from closest layers
+     */
+    @Nullable
+    public static VirtualFile findFileInArtifact(String configPath, Project project) {
+        final List<WebtoperFacet> facets = getWebtoperFacets(project);
+        final List<WebRoot> webRoots = getWebRoots(facets);
+        return findConfig(configPath, webRoots);
+    }
+
+    @Nullable
+    public static VirtualFile findConfig(String configPath, List<WebRoot> webRoots) {
+        for (WebRoot webRoot : webRoots) {
+            boolean isStartsWith = StringUtils.startsWith("/" + configPath, webRoot.getRelativePath());
+            if (isStartsWith) {
+                final VirtualFile file = webRoot.getFile();
+                if (file != null) {
+                    final VirtualFile result = file.findFileByRelativePath(configPath);
+                    if (result != null) {
+                        return result;
+                    }
+
+                }
+            }
+        }
+        return null;
+    }
+
+    public static List<WebRoot> getWebRoots(List<WebtoperFacet> facets) {
+        List<WebRoot> webRoots = new ArrayList<WebRoot>();
+        for (WebtoperFacet facet : facets) {
+            WebFacet webFacet = (WebFacet) facet.getUnderlyingFacet();
+            webRoots.addAll(webFacet.getWebRoots());
+        }
+        return webRoots;
     }
 }

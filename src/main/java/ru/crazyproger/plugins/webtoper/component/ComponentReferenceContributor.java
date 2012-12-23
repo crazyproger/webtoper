@@ -18,22 +18,19 @@ package ru.crazyproger.plugins.webtoper.component;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.intellij.javaee.web.WebRoot;
-import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.XmlAttributeValuePattern;
 import com.intellij.patterns.XmlPatterns;
+import com.intellij.patterns.XmlTagPattern;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.ProcessingContext;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
-import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,52 +42,22 @@ import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 /**
  * @author crazyproger
- *         todo try to find configuration inside artifact file system(maybe it will be faster)
- *         todo searching order - first files must be from closest layers
  *         todo refactoring
  */
 public class ComponentReferenceContributor extends PsiReferenceContributor {
     public static final Pattern EXTENDS_PATTERN = Pattern.compile("\"\\s*(\\w+)\\s*:\\s*/?(.+)\\s*\"");
+    public static final XmlTagPattern.Capture COMPONENT_CAPTURE = xmlTag().withName("component").withParent(
+            xmlTag().withName("scope"));
 
     @Override
     public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
-        XmlAttributeValuePattern xmlPattern = XmlPatterns.xmlAttributeValue().withLocalName("extends")
-                .withSuperParent(2,
-                        xmlTag().withName("component").withParent(
-                                xmlTag().withName("scope")));
-        registrar.registerReferenceProvider(xmlPattern, new PsiReferenceProvider() {
-            @NotNull
-            @Override
-            public PsiReference[] getReferencesByElement(@NotNull final PsiElement element, @NotNull ProcessingContext context) {
-                String text = element.getText();
-                Matcher matcher = EXTENDS_PATTERN.matcher(text);
-                if (!matcher.matches()) return PsiReference.EMPTY_ARRAY;
-
-                final Project project = element.getProject();
-                List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
-                List<WebRoot> webRoots = getWebRoots(facets);
-                String configPath = matcher.group(2);
-                VirtualFile config = findConfig(configPath, webRoots);
-                if (config == null) return PsiReference.EMPTY_ARRAY;
-
-                final PsiFile file;
-                file = PsiManager.getInstance(project).findFile(config);
-                if (!(file instanceof XmlFile)) return PsiReference.EMPTY_ARRAY;
-
-                String componentId = matcher.group(1);
-                final Collection<XmlTag> tags = PsiTreeUtil.findChildrenOfType(file, XmlTag.class);
-                List<XmlTag> componentTags = findComponentTags(componentId, tags);
-                if (componentTags.isEmpty()) return PsiReference.EMPTY_ARRAY;
-
-                Collection<PsiReference> references = Collections2.transform(componentTags, new Function<XmlTag, PsiReference>() {
-                    @Override
-                    public PsiReference apply(@Nullable XmlTag xmlTag) {
-                        return new PsiReferenceBase.Immediate<PsiElement>(element, xmlTag);
-                    }
-                });
-                return references.toArray(new PsiReference[references.size()]);
-            }
-        });
+        XmlAttributeValuePattern extendsPattern = XmlPatterns.xmlAttributeValue().withLocalName("extends")
+                .withSuperParent(2, COMPONENT_CAPTURE);
+        XmlAttributeValuePattern modifiesPattern = XmlPatterns.xmlAttributeValue().withLocalName("modifies")
+                .withSuperParent(2, COMPONENT_CAPTURE);
+        ComponentReferenceProvider provider = new ComponentReferenceProvider();
+        registrar.registerReferenceProvider(extendsPattern, provider);
+        registrar.registerReferenceProvider(modifiesPattern, provider);
     }
 
     private List<XmlTag> findComponentTags(String componentId, Collection<XmlTag> tags) {
@@ -106,30 +73,35 @@ public class ComponentReferenceContributor extends PsiReferenceContributor {
         return componentTags;
     }
 
-    @Nullable
-    private VirtualFile findConfig(String configPath, List<WebRoot> webRoots) {
-        for (WebRoot webRoot : webRoots) {
-            boolean isStartsWith = StringUtils.startsWith("/" + configPath, webRoot.getRelativePath());
-            if (isStartsWith) {
-                final VirtualFile file = webRoot.getFile();
-                if (file != null) {
-                    final VirtualFile result = file.findFileByRelativePath(configPath);
-                    if (result != null) {
-                        return result;
-                    }
+    private class ComponentReferenceProvider extends PsiReferenceProvider {
+        @NotNull
+        @Override
+        public PsiReference[] getReferencesByElement(@NotNull final PsiElement element, @NotNull ProcessingContext context) {
+            String text = element.getText();
+            Matcher matcher = EXTENDS_PATTERN.matcher(text);
+            if (!matcher.matches()) return PsiReference.EMPTY_ARRAY;
 
+            final Project project = element.getProject();
+            String configPath = matcher.group(2);
+            VirtualFile config = Utils.findFileInArtifact(configPath, project);
+            if (config == null) return PsiReference.EMPTY_ARRAY;
+
+            final PsiFile file;
+            file = PsiManager.getInstance(project).findFile(config);
+            if (!(file instanceof XmlFile)) return PsiReference.EMPTY_ARRAY;
+
+            String componentId = matcher.group(1);
+            final Collection<XmlTag> tags = PsiTreeUtil.findChildrenOfType(file, XmlTag.class);
+            List<XmlTag> componentTags = findComponentTags(componentId, tags);
+            if (componentTags.isEmpty()) return PsiReference.EMPTY_ARRAY;
+
+            Collection<PsiReference> references = Collections2.transform(componentTags, new Function<XmlTag, PsiReference>() {
+                @Override
+                public PsiReference apply(@Nullable XmlTag xmlTag) {
+                    return new PsiReferenceBase.Immediate<PsiElement>(element, xmlTag);
                 }
-            }
+            });
+            return references.toArray(new PsiReference[references.size()]);
         }
-        return null;
-    }
-
-    private List<WebRoot> getWebRoots(List<WebtoperFacet> facets) {
-        List<WebRoot> webRoots = new ArrayList<WebRoot>();
-        for (WebtoperFacet facet : facets) {
-            WebFacet webFacet = (WebFacet) facet.getUnderlyingFacet();
-            webRoots.addAll(webFacet.getWebRoots());
-        }
-        return webRoots;
     }
 }
