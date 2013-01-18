@@ -35,7 +35,7 @@ public class NlsCompletionTest extends LightCodeInsightFixtureTestCase {
     private String testName;
 
     protected String getTestDataPath() {
-        return WebtoperTestHelper.getTestDataPath() + "/completion";
+        return WebtoperTestHelper.getTestDataPath() + "/nls" + "/completion";
     }
 
     public void testNlsXml() throws Throwable {

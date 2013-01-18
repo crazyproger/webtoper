@@ -26,7 +26,7 @@ import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
 public class NlsHierarchyTest extends LightCodeInsightFixtureTestCase {
 
     protected String getTestDataPath() {
-        return WebtoperTestHelper.getTestDataPath() + "/hierarchy";
+        return WebtoperTestHelper.getTestDataPath() + "/nls/" + "/hierarchy";
     }
 
     public void testOneParent() throws Throwable {
