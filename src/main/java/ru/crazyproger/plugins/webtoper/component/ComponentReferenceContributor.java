@@ -63,7 +63,7 @@ public class ComponentReferenceContributor extends PsiReferenceContributor {
     private List<XmlTag> findComponentTags(String componentId, Collection<XmlTag> tags) {
         List<XmlTag> componentTags = new ArrayList<XmlTag>();
         for (XmlTag tag : tags) {
-            if ("component".equals(tag.getName())) {
+            if ("component".equals(tag.getName()) || "action".equals(tag.getName())) {
                 final String id = tag.getAttributeValue("id", null);
                 if (componentId.equals(id)) {
                     componentTags.add(tag);
