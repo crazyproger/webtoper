@@ -1,4 +1,4 @@
-package ru.crazyproger.plugins.webtoper.component.dom.schema;
+package ru.crazyproger.plugins.webtoper.component.dom.schema.converter;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -37,7 +37,7 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @Override
     public NlsFileImpl fromString(@Nullable @NonNls String s, ConvertContext context) {
         Set<NlsFileImpl> files = NlsUtils.getNlsFiles(s, context.getProject());
-        return files.isEmpty() ? null : files.iterator().next();
+        return files.isEmpty() ? null : files.iterator().next();  // todo we must show all variants(PsiPolyVarRef)
     }
 
     @Nullable

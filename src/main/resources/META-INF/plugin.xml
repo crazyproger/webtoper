@@ -70,8 +70,6 @@ on how to target different products -->
 
         <!--component-->
         <psi.referenceContributor language="XML" order="first"
-                                  implementation="ru.crazyproger.plugins.webtoper.component.ComponentReferenceContributor"/>
-        <psi.referenceContributor language="XML" order="first"
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
 
         <dom.fileDescription implementation="ru.crazyproger.plugins.webtoper.component.dom.ConfigFileDescription"/>

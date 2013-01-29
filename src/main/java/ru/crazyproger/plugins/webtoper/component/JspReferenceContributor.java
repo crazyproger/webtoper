@@ -19,6 +19,7 @@ package ru.crazyproger.plugins.webtoper.component;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.PsiElementPattern;
+import com.intellij.patterns.XmlTagPattern;
 import com.intellij.psi.*;
 import com.intellij.psi.jsp.JspFile;
 import com.intellij.psi.xml.XmlTokenType;
@@ -28,14 +29,17 @@ import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.Utils;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static com.intellij.patterns.XmlPatterns.xmlTag;
 
 /**
  * @author crazyproger
  */
 public class JspReferenceContributor extends PsiReferenceContributor {
 
+    public static final XmlTagPattern.Capture COMPONENT_CAPTURE = xmlTag().withName("component").withParent(
+            xmlTag().withName("scope"));
     public static final PsiElementPattern.Capture<PsiElement> JSP_CAPTURE = psiElement(XmlTokenType.XML_DATA_CHARACTERS)
-            .inside(ComponentReferenceContributor.COMPONENT_CAPTURE);
+            .inside(COMPONENT_CAPTURE);
 
     @Override
     public void registerReferenceProviders(PsiReferenceRegistrar registrar) {

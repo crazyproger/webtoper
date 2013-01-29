@@ -19,20 +19,23 @@ package ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.util.xml.*;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Filter;
-import ru.crazyproger.plugins.webtoper.component.dom.schema.NlsDomConverter;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.converter.ExtendsModifiesConverter;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.converter.NlsDomConverter;
 
 import java.util.List;
 
 /**
  * @author crazyproger
  */
-public interface PrimaryElement extends CustomChildrenContainer {
+public interface PrimaryElement extends CustomChildrenContainer, DomElement {
 
     @Attribute("extends")
-    GenericAttributeValue<String> getExtendsValue(); // todo PrimaryElement
+    @Convert(ExtendsModifiesConverter.class)
+    GenericAttributeValue<PrimaryElement> getExtendsValue();
 
     @Attribute("modifies")
-    GenericAttributeValue<String> getModifiesValue(); // todo PrimaryElement
+    @Convert(ExtendsModifiesConverter.class)
+    GenericAttributeValue<PrimaryElement> getModifiesValue();
 
     @Attribute("version")
     GenericAttributeValue<String> getVersion();
