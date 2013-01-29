@@ -1,0 +1,4 @@
+1. hotkeys  (p223)
+2. dynamicfilter(p233)
+3. documentation :D
+4. component configuration(p249)
