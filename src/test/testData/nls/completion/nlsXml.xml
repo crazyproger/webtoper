@@ -15,8 +15,12 @@
   ~ limitations under the License.
   -->
 
-<root>
-    <nlsbundle>
-        <caret>
-    </nlsbundle>
-</root>
+<config>
+    <scope>
+        <component>
+            <nlsbundle>
+                <caret>
+            </nlsbundle>
+        </component>
+    </scope>
+</config>

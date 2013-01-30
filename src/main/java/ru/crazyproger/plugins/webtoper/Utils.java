@@ -22,6 +22,7 @@ import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
@@ -68,6 +69,7 @@ public class Utils {
         FileContentUtil.reparseFiles(project, files, true);
     }
 
+    // todo should accept module instead of project
     @NotNull
     public static List<WebtoperFacet> getWebtoperFacets(Project project) {
         ModuleManager moduleManager = ModuleManager.getInstance(project);
@@ -116,5 +118,40 @@ public class Utils {
             webRoots.addAll(webFacet.getWebRoots());
         }
         return webRoots;
+    }
+
+    @Nullable
+    public static String findPathInArtifact(VirtualFile file, Module module) {
+        final List<WebtoperFacet> facets = getWebtoperFacets(module.getProject());
+        final List<WebRoot> webRoots = getWebRoots(facets);
+        for (WebRoot webRoot : webRoots) {
+            VirtualFile webRootFolder = webRoot.getFile();
+            assert webRootFolder != null;
+            if (VfsUtil.isAncestor(webRootFolder, file, false)) {
+                return VfsUtil.getRelativePath(file, webRootFolder, '/');
+            }
+        }
+        return null;
+    }
+
+    @NotNull
+    public static GlobalSearchScope getWebRootsScope(Module module) {
+        Project project = module.getProject();
+        final List<WebtoperFacet> facets = getWebtoperFacets(project);
+        final List<WebRoot> webRoots = getWebRoots(facets);
+        if (webRoots.isEmpty()) {
+            return GlobalSearchScope.EMPTY_SCOPE;
+        }
+        GlobalSearchScope scope = null;
+        for (WebRoot webRoot : webRoots) {
+            VirtualFile file = webRoot.getFile();
+            if (file != null) {
+                GlobalSearchScope searchScope = GlobalSearchScopes.directoryScope(project, file, true);
+                scope = (scope == null) ? searchScope : scope.union(searchScope);
+            }
+
+        }
+        assert scope != null;
+        return scope;
     }
 }
