@@ -77,6 +77,8 @@ on how to target different products -->
                          enabledByDefault="true" level="ERROR"
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
                          groupName="Empty inspection name"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+                                        implementationClass="ru.crazyproger.plugins.webtoper.component.ClassLineMarkerProvider"/>
 
 
         <!--nls-->
