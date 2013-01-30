@@ -48,6 +48,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
                     public void visitDomElement(DomElement element) {
                     }
 
+                    @SuppressWarnings("UnusedDeclaration")
                     public void visitPrimaryElement(PrimaryElement element) {
                         if (currentPrimaryElement.getClass().equals(element.getClass())) {
                             if (StringUtils.isBlank(element.getModifiesValue().getStringValue())) {
@@ -65,7 +66,8 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
     @Nullable
     @Override
     public PrimaryElement fromString(@Nullable @NonNls String s, ConvertContext context) {
-        // todo parse another variants of references (p40)
+        // todo support another formats of references (p40)
+        if (StringUtils.isEmpty(s)) return null;
         Matcher matcher = ExtendsModifiesConverter.EXTENDS_PATTERN.matcher(s);
         if (!matcher.matches()) return null;
 
@@ -90,6 +92,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
                 public void visitDomElement(DomElement element) {
                 }
 
+                @SuppressWarnings("UnusedDeclaration")
                 public void visitPrimaryElement(PrimaryElement element) {
                     if (element instanceof IdentifiedById) {
                         IdentifiedById byId = (IdentifiedById) element;
