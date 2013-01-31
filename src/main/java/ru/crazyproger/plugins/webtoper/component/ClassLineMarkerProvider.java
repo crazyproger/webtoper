@@ -44,8 +44,8 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull Collection<LineMarkerInfo> result) {
         for (PsiElement element : elements) {
-            if (element instanceof PsiClass) {
-                collectClassLineMarkers((PsiClass) element, result);
+            if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass) {
+                collectClassLineMarkers((PsiClass) element.getParent(), result);
             }
         }
     }
