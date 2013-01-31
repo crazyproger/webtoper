@@ -17,7 +17,7 @@
 <idea-plugin version="2">
     <id>ru.crazyproger.plugins.webtoper</id>
     <name>Webtoper</name>
-    <version>0.4</version>
+    <version>0.5</version>
     <vendor email="vladimir.rudev@gmail.com">Vladimir Rudev</vendor>
 
     <description><![CDATA[
@@ -40,6 +40,9 @@
             </li>
             <li>0.4: (end of a year release)added basic support for component configuration(<a
                     href="http://crazyproger.myjetbrains.com/youtrack/issues?q=fixed+in%3A+v0.4">report</a>)
+            </li>
+            <li>0.5: Component configuration improvements(first step), gutter icon for class used in component(<a
+                    href="http://crazyproger.myjetbrains.com/youtrack/releaseNotes?q=Fix+versions%3A+v0.5">report</a>)
             </li>
         </ul>
         ]]>
@@ -70,19 +73,22 @@ on how to target different products -->
 
         <!--component-->
         <psi.referenceContributor language="XML" order="first"
-                                  implementation="ru.crazyproger.plugins.webtoper.component.ComponentReferenceContributor"/>
-        <psi.referenceContributor language="XML" order="first"
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
+
+        <dom.fileDescription implementation="ru.crazyproger.plugins.webtoper.component.dom.ConfigFileDescription"/>
+        <localInspection language="XML" shortName="EmptyInspection" displayName="Empty inspection"
+                         enabledByDefault="true" level="ERROR"
+                         implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
+                         groupName="Empty inspection name"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+                                        implementationClass="ru.crazyproger.plugins.webtoper.component.ClassLineMarkerProvider"/>
+
 
         <!--nls-->
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
-        <completion.contributor language="XML"
-                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsXmlCompletionContributor"/>
         <completion.contributor language="Nls" order="first"
                                 implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesCompletionContributor"/>
-        <psi.referenceContributor language="XML"
-                                  implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlNlsReferenceContributor"/>
         <psi.referenceContributor language="Nls"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
         <stubElementTypeHolder class="ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes"/>

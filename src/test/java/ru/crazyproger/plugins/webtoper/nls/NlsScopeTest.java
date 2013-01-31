@@ -45,7 +45,7 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
 
     @Override
     protected String getTestPath() {
-        return WebtoperTestHelper.TEST_DATA_PATH;
+        return WebtoperTestHelper.TEST_DATA_PATH + "/nls";
     }
 
     protected String getTestDataPath() {

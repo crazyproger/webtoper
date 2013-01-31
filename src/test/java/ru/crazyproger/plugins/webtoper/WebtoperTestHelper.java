@@ -16,8 +16,6 @@
 
 package ru.crazyproger.plugins.webtoper;
 
-import com.intellij.openapi.application.PathManager;
-
 import java.io.File;
 
 public class WebtoperTestHelper {
@@ -30,6 +28,7 @@ public class WebtoperTestHelper {
     }
 
     public static String getRootPath() {
-        return new File(PathManager.getResourceRoot(WebtoperTestHelper.class, "/ru/crazyproger/plugins/webtoper/WebtoperTestHelper.class")).getParentFile().getParent();
+//        return new File(PathManager.getResourceRoot(WebtoperTestHelper.class, "/ru/crazyproger/plugins/webtoper/WebtoperTestHelper.class")).getParentFile().getParent();
+        return new File(".").getAbsolutePath();
     }
 }
