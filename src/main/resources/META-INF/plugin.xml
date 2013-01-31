@@ -17,7 +17,7 @@
 <idea-plugin version="2">
     <id>ru.crazyproger.plugins.webtoper</id>
     <name>Webtoper</name>
-    <version>0.4</version>
+    <version>0.5</version>
     <vendor email="vladimir.rudev@gmail.com">Vladimir Rudev</vendor>
 
     <description><![CDATA[
@@ -40,6 +40,9 @@
             </li>
             <li>0.4: (end of a year release)added basic support for component configuration(<a
                     href="http://crazyproger.myjetbrains.com/youtrack/issues?q=fixed+in%3A+v0.4">report</a>)
+            </li>
+            <li>0.5: Component configuration improvements(first step), gutter icon for class used in component(<a
+                    href="http://crazyproger.myjetbrains.com/youtrack/releaseNotes?q=Fix+versions%3A+v0.5">report</a>)
             </li>
         </ul>
         ]]>

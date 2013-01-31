@@ -8,7 +8,11 @@ import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttribute;
@@ -23,7 +27,6 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElemen
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,9 +74,9 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
         for (PsiReference reference : references) {
             PsiElement referenceElement = reference.getElement();
             DomElement domElement = getDomElement(referenceElement, domManager);
-            if (domElement == null) return Collections.emptyList();
+            if (domElement == null) continue;
             PrimaryElement primary = domElement.getParentOfType(PrimaryElement.class, false);
-            if (primary == null) return Collections.emptyList();
+            if (primary == null) continue;
             elements.add(referenceElement);
         }
         return elements;
