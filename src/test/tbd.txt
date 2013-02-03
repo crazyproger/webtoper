@@ -1,2 +1,1 @@
-1. Nls renaming test
-2. component find usages(from xml)
+1. component find usages(from xml)
