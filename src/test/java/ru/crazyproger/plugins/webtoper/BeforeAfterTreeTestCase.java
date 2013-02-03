@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package ru.crazyproger.plugins.webtoper.nls;
+package ru.crazyproger.plugins.webtoper;
 
+import com.intellij.facet.Facet;
 import com.intellij.facet.FacetManager;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.javaee.web.facet.WebFacet;
@@ -23,33 +24,17 @@ import com.intellij.javaee.web.facet.WebFacetType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.testFramework.PlatformTestUtil;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 /**
  * @author crazyproger
  */
-public class NlsCompletionTest extends NlsTestCase {
-
+public abstract class BeforeAfterTreeTestCase extends WebtoperLightFixtureTestCase {
     private String testName;
-
-    protected String getTestDataPath() {
-        return super.getTestDataPath() + "/completion";
-    }
-
-    public void testNlsXml() throws Throwable {
-        final String testName = getTestName(true);
-        myFixture.configureByFiles(testName + ".xml", testName + "/Document.properties", testName + "/Document2.properties");
-        myFixture.testCompletionVariants(testName + ".xml", testName + ".Document", testName + ".Document2");
-    }
-
-    /**
-     * Check that already included files did not appear in completion
-     */
-    public void testProperty() throws Throwable {
-        myFixture.configureByFiles(testName + "/Case.properties", testName + "/Included.properties", testName + "/Variant.properties");
-        myFixture.testCompletionVariants(testName + "/Case.properties", testName + ".Variant");
-    }
+    private VirtualFile moduleRoot;
 
     @Override
     protected void setUp() throws Exception {
@@ -57,7 +42,7 @@ public class NlsCompletionTest extends NlsTestCase {
         Module module = myFixture.getModule();
         FacetManager facetManager = FacetManager.getInstance(module);
         WebFacet container = facetManager.createFacet(WebFacetType.getInstance(), "Web", null);
-        VirtualFile moduleRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
+        moduleRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
         container.addWebRoot(moduleRoot, "/");
         WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
         facet.getConfiguration().setNlsRoot(moduleRoot);
@@ -70,5 +55,31 @@ public class NlsCompletionTest extends NlsTestCase {
             }
         });
         testName = getTestName(true);
+        myFixture.copyDirectoryToProject(testName + "/before", "");
+
+    }
+
+
+    public void check() throws Exception {
+        VirtualFile after = LocalFileSystem.getInstance().findFileByPath(getTestDataPath() + "/" + testName + "/after");
+        PlatformTestUtil.assertDirectoriesEqual(after, moduleRoot, PlatformTestUtil.CVS_FILE_FILTER);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        Module module = myFixture.getModule();
+        FacetManager facetManager = FacetManager.getInstance(module);
+        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
+        Facet[] allFacets = facetModel.getAllFacets();
+        for (Facet facet : allFacets) {
+            facetModel.removeFacet(facet);
+        }
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                facetModel.commit();
+            }
+        });
+        super.tearDown();
     }
 }

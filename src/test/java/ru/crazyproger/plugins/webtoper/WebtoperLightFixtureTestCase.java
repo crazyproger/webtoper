@@ -16,19 +16,20 @@
 
 package ru.crazyproger.plugins.webtoper;
 
+import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+
 import java.io.File;
 
-public class WebtoperTestHelper {
+public abstract class WebtoperLightFixtureTestCase extends LightCodeInsightFixtureTestCase {
 
     public static final String TEST_DATA_PATH = "/src/test/testData";
 
-    public static String getTestDataPath() {
+    protected String getTestDataPath() {
         String projectRoot = getRootPath();
         return projectRoot + TEST_DATA_PATH;
     }
 
     public static String getRootPath() {
-//        return new File(PathManager.getResourceRoot(WebtoperTestHelper.class, "/ru/crazyproger/plugins/webtoper/WebtoperTestHelper.class")).getParentFile().getParent();
-        return new File(".").getAbsolutePath();
+        return new File("").getAbsolutePath();
     }
 }
