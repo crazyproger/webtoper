@@ -45,7 +45,7 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
 
     @Override
     protected String getTestPath() {
-        return WebtoperLightFixtureTestCase.TEST_DATA_PATH + "/nls";
+        return WebtoperLightFixtureTestCase.TEST_DATA_PATH + "/" + NlsTestCase.NLS_FOLDER;
     }
 
     protected String getTestDataPath() {

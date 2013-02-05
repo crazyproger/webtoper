@@ -22,8 +22,11 @@ import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
  * @author crazyproger
  */
 public abstract class NlsTestCase extends WebtoperLightFixtureTestCase {
+
+    public static final String NLS_FOLDER = "nls";
+
     @Override
     protected String getTestDataPath() {
-        return super.getTestDataPath() + "/nls";
+        return super.getTestDataPath() + "/" + NLS_FOLDER;
     }
 }

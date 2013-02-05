@@ -24,7 +24,7 @@ import ru.crazyproger.plugins.webtoper.BeforeAfterTreeTestCase;
 public class RenameTest extends BeforeAfterTreeTestCase {
     @Override
     protected String getTestDataPath() {
-        return super.getTestDataPath() + "/nls";
+        return super.getTestDataPath() + "/" + NlsTestCase.NLS_FOLDER;
     }
 
     public void testRenameFromXml() throws Exception {
