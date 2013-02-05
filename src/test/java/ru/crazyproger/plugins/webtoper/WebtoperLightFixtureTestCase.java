@@ -16,13 +16,26 @@
 
 package ru.crazyproger.plugins.webtoper;
 
+import com.intellij.facet.Facet;
+import com.intellij.facet.FacetManager;
+import com.intellij.facet.ModifiableFacetModel;
+import com.intellij.javaee.web.facet.WebFacet;
+import com.intellij.javaee.web.facet.WebFacetType;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.io.File;
 
 public abstract class WebtoperLightFixtureTestCase extends LightCodeInsightFixtureTestCase {
 
     public static final String TEST_DATA_PATH = "/src/test/testData";
+
+    protected VirtualFile moduleRoot;
+    protected String testName;
 
     protected String getTestDataPath() {
         String projectRoot = getRootPath();
@@ -31,5 +44,44 @@ public abstract class WebtoperLightFixtureTestCase extends LightCodeInsightFixtu
 
     public static String getRootPath() {
         return new File("").getAbsolutePath();
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        Module module = myFixture.getModule();
+        FacetManager facetManager = FacetManager.getInstance(module);
+        WebFacet container = facetManager.createFacet(WebFacetType.getInstance(), "Web", null);
+        moduleRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
+        container.addWebRoot(moduleRoot, "/");
+        WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
+        facet.getConfiguration().setNlsRoot(moduleRoot);
+        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
+        facetModel.addFacet(facet);
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                facetModel.commit();
+            }
+        });
+        testName = getTestName(true);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        Module module = myFixture.getModule();
+        FacetManager facetManager = FacetManager.getInstance(module);
+        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
+        Facet[] allFacets = facetModel.getAllFacets();
+        for (Facet facet : allFacets) {
+            facetModel.removeFacet(facet);
+        }
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                facetModel.commit();
+            }
+        });
+        super.tearDown();
     }
 }

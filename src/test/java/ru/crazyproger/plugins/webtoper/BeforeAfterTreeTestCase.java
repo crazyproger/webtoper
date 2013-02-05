@@ -16,70 +16,23 @@
 
 package ru.crazyproger.plugins.webtoper;
 
-import com.intellij.facet.Facet;
-import com.intellij.facet.FacetManager;
-import com.intellij.facet.ModifiableFacetModel;
-import com.intellij.javaee.web.facet.WebFacet;
-import com.intellij.javaee.web.facet.WebFacetType;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.PlatformTestUtil;
-import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 /**
  * @author crazyproger
  */
 public abstract class BeforeAfterTreeTestCase extends WebtoperLightFixtureTestCase {
-    private String testName;
-    private VirtualFile moduleRoot;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        Module module = myFixture.getModule();
-        FacetManager facetManager = FacetManager.getInstance(module);
-        WebFacet container = facetManager.createFacet(WebFacetType.getInstance(), "Web", null);
-        moduleRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
-        container.addWebRoot(moduleRoot, "/");
-        WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
-        facet.getConfiguration().setNlsRoot(moduleRoot);
-        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
-        facetModel.addFacet(facet);
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                facetModel.commit();
-            }
-        });
-        testName = getTestName(true);
         myFixture.copyDirectoryToProject(testName + "/before", "");
-
     }
 
-
-    public void check() throws Exception {
+    protected void check() throws Exception {
         VirtualFile after = LocalFileSystem.getInstance().findFileByPath(getTestDataPath() + "/" + testName + "/after");
         PlatformTestUtil.assertDirectoriesEqual(after, moduleRoot, PlatformTestUtil.CVS_FILE_FILTER);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        Module module = myFixture.getModule();
-        FacetManager facetManager = FacetManager.getInstance(module);
-        final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
-        Facet[] allFacets = facetModel.getAllFacets();
-        for (Facet facet : allFacets) {
-            facetModel.removeFacet(facet);
-        }
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                facetModel.commit();
-            }
-        });
-        super.tearDown();
     }
 }
