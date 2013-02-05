@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,24 @@
 
 package ru.crazyproger.plugins.webtoper.nls;
 
-import com.intellij.openapi.project.Project;
+import ru.crazyproger.plugins.webtoper.BeforeAfterTreeTestCase;
 
 /**
  * @author crazyproger
  */
-public class NlsHierarchyTest extends NlsTestCase {
-
-    protected String getTestDataPath() {
-        return super.getTestDataPath() + "/hierarchy";
-    }
-
-    public void testOneParent() throws Throwable {
-        String testName = getTestName(true);
-        myFixture.configureByFiles(testName + "/child.properties", testName + "/parent.properties");
-    }
-
+public class RenameTest extends BeforeAfterTreeTestCase {
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        Project project = myFixture.getProject();
-//        ProjectConfig config = ServiceManager.getService(project, ProjectConfig.class);
-//        config.setNlsRoots(ModuleRootManager.getInstance(myModule).getContentRoots());
+    protected String getTestDataPath() {
+        return super.getTestDataPath() + "/" + NlsTestCase.NLS_FOLDER;
+    }
+
+    public void testRenameFromXml() throws Exception {
+        doTest("renamed.properties");
+    }
+
+    private void doTest(String newName) throws Exception {
+        myFixture.configureFromExistingVirtualFile(myFixture.findFileInTempDir("nlsXml.xml"));
+        myFixture.renameElementAtCaret(newName);
+        check();
     }
 }

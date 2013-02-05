@@ -28,7 +28,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.TestSourceBasedTestCase;
-import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
+import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
@@ -45,11 +45,11 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
 
     @Override
     protected String getTestPath() {
-        return WebtoperTestHelper.TEST_DATA_PATH + "/nls";
+        return WebtoperLightFixtureTestCase.TEST_DATA_PATH + "/" + NlsTestCase.NLS_FOLDER;
     }
 
     protected String getTestDataPath() {
-        return WebtoperTestHelper.getRootPath();
+        return WebtoperLightFixtureTestCase.getRootPath();
     }
 
     @Override
