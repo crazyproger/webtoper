@@ -23,12 +23,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceProvider;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,8 +39,8 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
     @Override
     public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
         Project project = element.getContainingFile().getProject();
-        List<VirtualFile> nlsRoots = NlsUtils.getAllNlsRoots(project);
-        if (nlsRoots.isEmpty()) return PsiReference.EMPTY_ARRAY;
+        VirtualFile[] nlsRoots = NlsUtils.getAllNlsRoots(project);
+        if (ArrayUtils.isEmpty(nlsRoots)) return PsiReference.EMPTY_ARRAY;
 
         String text = StringUtils.trim(element.getText());
 
@@ -51,7 +51,8 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
             references.add(new TextElementNlsReference(element, nlsFile));
         }
         if (references.isEmpty()) {
-            return PsiReference.EMPTY_ARRAY;
+            return new PsiReference[]{new TextElementNlsReference(element, null)};
+//            return PsiReference.EMPTY_ARRAY;
         }
         return references.toArray(new PsiReference[references.size()]);
     }

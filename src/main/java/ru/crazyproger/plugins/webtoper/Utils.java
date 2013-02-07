@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,10 +77,15 @@ public class Utils {
         Module[] modules = moduleManager.getModules();
         List<WebtoperFacet> facets = new ArrayList<WebtoperFacet>(modules.length);
         for (Module module : modules) {
-            FacetManager facetManager = FacetManager.getInstance(module);
-            facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
+            Collection<WebtoperFacet> facetsByType = getWebtoperFacets(module);
+            facets.addAll(facetsByType);
         }
         return facets;
+    }
+
+    public static Collection<WebtoperFacet> getWebtoperFacets(Module module) {
+        FacetManager facetManager = FacetManager.getInstance(module);
+        return facetManager.getFacetsByType(WebtoperFacet.ID);
     }
 
     /**

@@ -32,6 +32,11 @@ public class TextElementNlsReference extends AbstractNlsReference<PsiElement> {
     }
 
     @Override
+    protected String getElementText() {
+        return getElement().getText();
+    }
+
+    @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
         final String oldText = myElement.getText();
         final String[] chunks = NlsUtils.nlsNameToPathChunks(oldText);

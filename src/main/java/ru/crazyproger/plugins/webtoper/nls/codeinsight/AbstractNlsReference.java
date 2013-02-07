@@ -1,17 +1,28 @@
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.LocalQuickFixProvider;
+import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.ElementManipulator;
+import com.intellij.psi.ElementManipulators;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReferenceBase;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
 /**
  * @author crazyproger
  */
-public abstract class AbstractNlsReference<T extends PsiElement> extends PsiReferenceBase<T> {
+public abstract class AbstractNlsReference<T extends PsiElement> extends PsiReferenceBase<T> implements LocalQuickFixProvider {
 
     private static final Logger LOG = Logger.getInstance("#" + AbstractNlsReference.class.getName());
 
@@ -52,5 +63,37 @@ public abstract class AbstractNlsReference<T extends PsiElement> extends PsiRefe
             LOG.error("Cannot find manipulator for " + myElement + " in " + this + " class " + getClass());
         }
         return manipulator;
+    }
+
+    protected abstract String getElementText();
+
+    @Nullable
+    @Override
+    public LocalQuickFix[] getQuickFixes() {
+        return new LocalQuickFix[]{new LocalQuickFix() {
+            @NotNull
+            @Override
+            public String getName() {
+                return WebtoperBundle.message("create.nls.file.quickfix.text", getElementText());
+            }
+
+            @NotNull
+            @Override
+            public String getFamilyName() {
+                return WebtoperBundle.message("create.nls.file.quickfix.familyName");
+            }
+
+            @Override
+            public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+                String nameText = getElementText();
+                Module module = ModuleUtil.findModuleForPsiElement(getElement());
+                VirtualFile[] nlsRoots = NlsUtils.getNlsRoots(module);
+                assert nlsRoots.length > 0 : "Nls files without nls roots should not exists";
+
+                VirtualFile nlsRoot = nlsRoots[0]; // todo here should be dialog with asking what root to use, like source root choose
+
+
+            }
+        }};
     }
 }

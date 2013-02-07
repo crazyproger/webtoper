@@ -1,17 +1,10 @@
 package ru.crazyproger.plugins.webtoper.component.dom.schema.converter;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
-import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.CustomReferenceConverter;
@@ -22,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
+import ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsCompletionContributor;
 import ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlTagNlsReference;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -63,21 +56,7 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @Override
     public Collection<? extends NlsFileImpl> getVariants(ConvertContext context) {
         final Project project = context.getProject();
-        GlobalSearchScope nlsScope = NlsUtils.getNlsScope(project);
-        if (nlsScope == null) {
-            return Collections.emptyList();
-        }
-        Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
-        Collection<NlsFileImpl> nlsFiles = Collections2.transform(files, new Function<VirtualFile, NlsFileImpl>() {
-            @Override
-            public NlsFileImpl apply(@Nullable VirtualFile virtualFile) {
-                if (virtualFile != null) {
-                    return (NlsFileImpl) PsiManager.getInstance(project).findFile(virtualFile);
-                }
-                return null;
-            }
-        });
-        return Collections2.filter(nlsFiles, Predicates.notNull());
+        return NlsCompletionContributor.getNlsFiles(project);
     }
 
     @NotNull
@@ -86,6 +65,6 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
         if (value.getValue() != null) {
             return new PsiReference[]{new XmlTagNlsReference((XmlTag) element, value.getValue())};
         }
-        return PsiReference.EMPTY_ARRAY;
+        return new PsiReference[]{new XmlTagNlsReference((XmlTag) element, null)};
     }
 }

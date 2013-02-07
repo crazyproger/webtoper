@@ -20,6 +20,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import com.intellij.lang.properties.PropertiesFileType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -36,7 +37,11 @@ import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacetConfiguration;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author crazyproger
@@ -82,8 +87,13 @@ public class NlsUtils {
     }
 
     @NotNull
-    public static List<VirtualFile> getAllNlsRoots(Project project) {
+    public static VirtualFile[] getAllNlsRoots(Project project) {
         List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
+        return getNlsRoots(facets);
+    }
+
+    @NotNull
+    private static VirtualFile[] getNlsRoots(Collection<WebtoperFacet> facets) {
         List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>(facets.size());
         for (WebtoperFacet facet : facets) {
             WebtoperFacetConfiguration configuration = facet.getConfiguration();
@@ -92,7 +102,13 @@ public class NlsUtils {
                 nlsRoots.addAll(filtered);
             }
         }
-        return nlsRoots;
+        return nlsRoots.toArray(new VirtualFile[nlsRoots.size()]);
+    }
+
+    @NotNull
+    public static VirtualFile[] getNlsRoots(Module module) {
+        Collection<WebtoperFacet> facets = Utils.getWebtoperFacets(module);
+        return getNlsRoots(facets);
     }
 
     /**
@@ -100,7 +116,7 @@ public class NlsUtils {
      */
     @NotNull
     public static Set<NlsFileImpl> getNlsFiles(String nlsName, Project project) {
-        List<VirtualFile> nlsRoots = getAllNlsRoots(project);
+        VirtualFile[] nlsRoots = getAllNlsRoots(project);
         String[] pathChunks = nlsNameToPathChunks(nlsName);
         if (pathChunks == null) return Collections.emptySet();
 
