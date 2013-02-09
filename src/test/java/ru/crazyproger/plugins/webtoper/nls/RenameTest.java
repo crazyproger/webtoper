@@ -34,6 +34,6 @@ public class RenameTest extends BeforeAfterTreeTestCase {
     private void doTest(String newName) throws Exception {
         myFixture.configureFromExistingVirtualFile(myFixture.findFileInTempDir("nlsXml.xml"));
         myFixture.renameElementAtCaret(newName);
-        check();
+        checkAfter();
     }
 }

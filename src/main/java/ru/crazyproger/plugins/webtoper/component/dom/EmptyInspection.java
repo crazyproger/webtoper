@@ -17,6 +17,9 @@
 package ru.crazyproger.plugins.webtoper.component.dom;
 
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
 
 /**
@@ -25,5 +28,25 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
 public class EmptyInspection extends BasicDomElementsInspection<Config> {
     public EmptyInspection() {
         super(Config.class);
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getGroupDisplayName() {
+        return WebtoperBundle.message("webtoper.inspections.group.name");
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getDisplayName() {
+        return WebtoperBundle.message("emptyInspection.inspection.displayName");
+    }
+
+    @NotNull
+    @Override
+    public String getShortName() {
+        return "EmptyInspection";
     }
 }

@@ -22,6 +22,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
@@ -48,5 +49,25 @@ public class NlsFileInspection extends LocalInspectionTool {
                 }
             }
         };
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getGroupDisplayName() {
+        return WebtoperBundle.message("webtoper.inspections.group.name");
+    }
+
+    @Nls
+    @NotNull
+    @Override
+    public String getDisplayName() {
+        return WebtoperBundle.message("nlsFiles.inspection.displayName");
+    }
+
+    @NotNull
+    @Override
+    public String getShortName() {
+        return "NlsInspection";
     }
 }

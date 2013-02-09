@@ -76,10 +76,10 @@ on how to target different products -->
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
 
         <dom.fileDescription implementation="ru.crazyproger.plugins.webtoper.component.dom.ConfigFileDescription"/>
-        <localInspection language="XML" shortName="EmptyInspection" displayName="Empty inspection"
-                         enabledByDefault="true" level="ERROR"
+        <localInspection language="XML" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
-                         groupName="Webtoper inspections group"/>
+                         shortName="EmptyInspection" groupKey="webtoper.inspections.group.name"
+                         key="emptyInspection.inspection.displayName"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="ru.crazyproger.plugins.webtoper.component.ClassLineMarkerProvider"/>
 
@@ -98,11 +98,10 @@ on how to target different products -->
         <lang.parserDefinition language="Nls"
                                implementationClass="ru.crazyproger.plugins.webtoper.nls.parser.NlsParserDefinition"/>
         <lang.ast.factory language="Nls" implementationClass="ru.crazyproger.plugins.webtoper.nls.psi.NlsASTFactory"/>
-        <localInspection language="Nls" shortName="NlsInspection" displayName="Nls files inspection"
-                         enabledByDefault="true" level="ERROR"
+        <localInspection language="Nls" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
                          implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsFileInspection"
-                         groupName="Webtoper inspections group"/>
-
+                         shortName="NlsInspection" groupKey="webtoper.inspections.group.name"
+                         key="nlsFiles.inspection.displayName"/>
 
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>
