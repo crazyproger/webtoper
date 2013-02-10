@@ -20,6 +20,8 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.PlatformTestUtil;
 
+import java.io.IOException;
+
 /**
  * @author crazyproger
  */
@@ -31,7 +33,7 @@ public abstract class BeforeAfterTreeTestCase extends WebtoperLightFixtureTestCa
         myFixture.copyDirectoryToProject(testName + "/before", "");
     }
 
-    protected void check() throws Exception {
+    protected void checkAfter() throws IOException {
         VirtualFile after = LocalFileSystem.getInstance().findFileByPath(getTestDataPath() + "/" + testName + "/after");
         PlatformTestUtil.assertDirectoriesEqual(after, moduleRoot, PlatformTestUtil.CVS_FILE_FILTER);
     }

@@ -20,6 +20,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import com.intellij.lang.properties.PropertiesFileType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -29,6 +30,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
+import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
@@ -36,7 +38,11 @@ import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacetConfiguration;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author crazyproger
@@ -71,19 +77,26 @@ public class NlsUtils {
         return null;
     }
 
-    @Nullable
+    @NotNull
     public static String[] nlsNameToPathChunks(@NotNull String nlsName) {
-        if (StringUtil.isEmpty(nlsName)) {
-            return null;
-        }
-        String[] chunks = nlsName.split("\\.");
+        String[] chunks = nlsName.trim().split("\\.");
         chunks[chunks.length - 1] += PropertiesFileType.DOT_DEFAULT_EXTENSION;
         return chunks;
     }
 
     @NotNull
-    public static List<VirtualFile> getAllNlsRoots(Project project) {
+    public static String nlsNameToPath(@NotNull String name, @NotNull String separator) {
+        return name.replaceAll("\\.", separator) + PropertiesFileType.DOT_DEFAULT_EXTENSION;
+    }
+
+    @NotNull
+    public static VirtualFile[] getAllNlsRoots(Project project) {
         List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
+        return getNlsRoots(facets);
+    }
+
+    @NotNull
+    private static VirtualFile[] getNlsRoots(Collection<WebtoperFacet> facets) {
         List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>(facets.size());
         for (WebtoperFacet facet : facets) {
             WebtoperFacetConfiguration configuration = facet.getConfiguration();
@@ -92,7 +105,13 @@ public class NlsUtils {
                 nlsRoots.addAll(filtered);
             }
         }
-        return nlsRoots;
+        return nlsRoots.toArray(new VirtualFile[nlsRoots.size()]);
+    }
+
+    @NotNull
+    public static VirtualFile[] getNlsRoots(Module module) {
+        Collection<WebtoperFacet> facets = Utils.getWebtoperFacets(module);
+        return getNlsRoots(facets);
     }
 
     /**
@@ -100,9 +119,9 @@ public class NlsUtils {
      */
     @NotNull
     public static Set<NlsFileImpl> getNlsFiles(String nlsName, Project project) {
-        List<VirtualFile> nlsRoots = getAllNlsRoots(project);
+        VirtualFile[] nlsRoots = getAllNlsRoots(project);
         String[] pathChunks = nlsNameToPathChunks(nlsName);
-        if (pathChunks == null) return Collections.emptySet();
+        if (ArrayUtils.isEmpty(pathChunks)) return Collections.emptySet();
 
         Set<NlsFileImpl> nlsFiles = Sets.newHashSet();
         for (VirtualFile nlsRoot : nlsRoots) {

@@ -76,10 +76,10 @@ on how to target different products -->
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
 
         <dom.fileDescription implementation="ru.crazyproger.plugins.webtoper.component.dom.ConfigFileDescription"/>
-        <localInspection language="XML" shortName="EmptyInspection" displayName="Empty inspection"
-                         enabledByDefault="true" level="ERROR"
+        <localInspection language="XML" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
-                         groupName="Empty inspection name"/>
+                         shortName="EmptyInspection" groupKey="webtoper.inspections.group.name"
+                         key="emptyInspection.inspection.displayName"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="ru.crazyproger.plugins.webtoper.component.ClassLineMarkerProvider"/>
 
@@ -88,7 +88,7 @@ on how to target different products -->
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
         <completion.contributor language="Nls" order="first"
-                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesCompletionContributor"/>
+                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsCompletionContributor"/>
         <psi.referenceContributor language="Nls"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
         <stubElementTypeHolder class="ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes"/>
@@ -98,9 +98,10 @@ on how to target different products -->
         <lang.parserDefinition language="Nls"
                                implementationClass="ru.crazyproger.plugins.webtoper.nls.parser.NlsParserDefinition"/>
         <lang.ast.factory language="Nls" implementationClass="ru.crazyproger.plugins.webtoper.nls.psi.NlsASTFactory"/>
-        <annotator language="Nls"
-                   implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsUnresolvedNameAnnotator"/>
-
+        <localInspection language="Nls" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
+                         implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsFileInspection"
+                         shortName="NlsInspection" groupKey="webtoper.inspections.group.name"
+                         key="nlsFiles.inspection.displayName"/>
 
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>
