@@ -30,6 +30,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
+import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
@@ -76,14 +77,16 @@ public class NlsUtils {
         return null;
     }
 
-    @Nullable
+    @NotNull
     public static String[] nlsNameToPathChunks(@NotNull String nlsName) {
-        if (StringUtil.isEmpty(nlsName)) {
-            return null;
-        }
-        String[] chunks = nlsName.split("\\.");
+        String[] chunks = nlsName.trim().split("\\.");
         chunks[chunks.length - 1] += PropertiesFileType.DOT_DEFAULT_EXTENSION;
         return chunks;
+    }
+
+    @NotNull
+    public static String nlsNameToPath(@NotNull String name, @NotNull String separator) {
+        return name.replaceAll("\\.", separator) + PropertiesFileType.DOT_DEFAULT_EXTENSION;
     }
 
     @NotNull
@@ -118,7 +121,7 @@ public class NlsUtils {
     public static Set<NlsFileImpl> getNlsFiles(String nlsName, Project project) {
         VirtualFile[] nlsRoots = getAllNlsRoots(project);
         String[] pathChunks = nlsNameToPathChunks(nlsName);
-        if (pathChunks == null) return Collections.emptySet();
+        if (ArrayUtils.isEmpty(pathChunks)) return Collections.emptySet();
 
         Set<NlsFileImpl> nlsFiles = Sets.newHashSet();
         for (VirtualFile nlsRoot : nlsRoots) {
