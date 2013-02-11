@@ -58,7 +58,7 @@ public class NlsCompletionContributor extends CompletionContributor {
                 Collection<NlsFileImpl> files = getNlsFiles(project);
                 if (files.isEmpty()) return;
                 final NlsFileImpl currentFile = (NlsFileImpl) parameters.getOriginalFile();
-                final Collection<PsiFile> includedFiles = currentFile.getIncludedFiles();
+                final Collection<NlsFileImpl> includedFiles = currentFile.getIncludedFiles();
                 Collection<NlsFileImpl> filtered = Collections2.filter(files, new Predicate<NlsFileImpl>() {
                     @Override
                     public boolean apply(@Nullable NlsFileImpl nlsFile) {
