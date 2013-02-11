@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Sets;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
@@ -65,14 +66,16 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
 
         Set<IProperty> parentProperties = new HashSet<IProperty>();
         for (NlsFileImpl parent : includedFiles) {
-            Collection<IProperty> properties = parent.getAllProperties();
+            // Obtaining all properties except properties in current file,
+            // else if include cycle occurs all properties in this file will be marked as.
+            // Due to getAllProperties particularity(it returns set(!) of properties,
+            // aggregator file properties overrides included properties) whe can't simply get all properties(PsiElements) from all files
+            // and remove those who from current file
+            Collection<IProperty> properties = parent.getAllPropertiesRecursive(Sets.newHashSet(currentFile));
             Collection<IProperty> withSameKey = Collections2.filter(properties, new PropertyKeyEqualsPredicate(key));
             parentProperties.addAll(withSameKey);
         }
         if (parentProperties.isEmpty()) return;
-
-        // properties of current file can be in parentProperties if include net contains cycle with this file
-        parentProperties.remove(element);
 
         Collection<PsiElement> targets = Collections2.transform(parentProperties, new Function<IProperty, PsiElement>() {
             @Override
@@ -97,10 +100,7 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
 
         @Override
         public boolean apply(@Nullable IProperty iProperty) {
-            if (iProperty != null) {
-                return key.equals(iProperty.getKey());
-            }
-            return false;
+            return iProperty != null && key.equals(iProperty.getKey());
         }
     }
 }

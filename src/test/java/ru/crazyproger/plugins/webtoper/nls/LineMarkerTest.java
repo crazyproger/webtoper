@@ -33,7 +33,7 @@ public class LineMarkerTest extends NlsTestCase {
 
     @Override
     protected String getTestDataPath() {
-        return super.getTestDataPath()+"/linemarker";
+        return super.getTestDataPath() + "/linemarker";
     }
 
     public void testSimpleChild() throws Exception {
@@ -44,6 +44,11 @@ public class LineMarkerTest extends NlsTestCase {
     public void testSecondLevel() throws Exception {
         myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "simpleChild" + EXT);
         doTest(3);
+    }
+
+    public void testRecursiveInclude() throws Exception {
+        myFixture.configureByFiles(getTestName(true) + EXT, "firstRecursive" + EXT);
+        doTest(1);
     }
 
     private void doTest(int count) {

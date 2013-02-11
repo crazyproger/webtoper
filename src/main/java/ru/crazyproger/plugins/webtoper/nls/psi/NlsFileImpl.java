@@ -76,7 +76,7 @@ public class NlsFileImpl extends PropertiesFileImpl {
         return getAllPropertiesRecursive(Sets.<NlsFileImpl>newHashSet(this));
     }
 
-    protected Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) {
+    public Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) {
         Collection<NlsFileImpl> includedFiles = getIncludedFiles();
         Map<String, IProperty> keyToProperty = Maps.newHashMap();
         for (NlsFileImpl nlsFile : includedFiles) {
