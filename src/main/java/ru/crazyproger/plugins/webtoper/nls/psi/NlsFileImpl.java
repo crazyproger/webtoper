@@ -79,7 +79,7 @@ public class NlsFileImpl extends PropertiesFileImpl {
     public Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) {
         Collection<NlsFileImpl> includedFiles = getIncludedFiles();
         Map<String, IProperty> keyToProperty = Maps.newHashMap();
-        for (NlsFileImpl nlsFile : includedFiles) {
+        for (NlsFileImpl nlsFile : includedFiles) {  // order matters!
             if (processedFiles.contains(nlsFile)) {
                 continue;
             }

@@ -37,10 +37,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
+
 /**
  * @author crazyproger
  */
 public class NlsLineMarkerProvider implements LineMarkerProvider {
+
     @Nullable
     @Override
     public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element) {
@@ -87,7 +90,16 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
             }
         });
         NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(AllIcons.General.OverridingMethod);
-        builder.setTargets(Collections2.filter(targets, Predicates.notNull()));
+        targets = Collections2.filter(targets, Predicates.notNull());
+        builder.setTargets(targets);
+        String tooltipText;
+        if (targets.size() > 1) {
+            tooltipText = message("nls.lineMarker.overrides.tooltip.multiple");
+        } else {
+            tooltipText = message("nls.lineMarker.overrides.tooltip.oneBundle", targets.iterator().next().getContainingFile().getName());
+        }
+        builder.setTooltipText(tooltipText);
+        builder.setPopupTitle(message("nls.lineMarker.overrides.popupTitle"));
         result.add(builder.createLineMarkerInfo(element));
     }
 
