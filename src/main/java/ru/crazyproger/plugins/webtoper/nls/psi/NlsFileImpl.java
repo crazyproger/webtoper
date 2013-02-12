@@ -83,6 +83,21 @@ public class NlsFileImpl extends PropertiesFileImpl {
         return getAllPropertiesRecursive(Sets.<NlsFileImpl>newHashSet(this));
     }
 
+    private Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) { // todo must be cached
+        Collection<NlsFileImpl> includedFiles = getIncludedFiles();
+        Map<String, IProperty> keyToProperty = Maps.newHashMap();
+        for (NlsFileImpl nlsFile : includedFiles) {  // order matters!
+            if (processedFiles.contains(nlsFile)) {
+                continue;
+            }
+            processedFiles.add(nlsFile);
+            Collection<IProperty> fileProperties = nlsFile.getAllPropertiesRecursive(processedFiles);
+            addPropertiesToMap(fileProperties, keyToProperty);
+        }
+        addPropertiesToMap(getProperties(), keyToProperty);
+        return keyToProperty.values();
+    }
+
     @Nullable
     public String getNlsName() { // todo must be cached
         for (VirtualFile folder : NlsUtils.getAllNlsRoots(getProject())) {
@@ -98,21 +113,6 @@ public class NlsFileImpl extends PropertiesFileImpl {
             }
         }
         return null;
-    }
-
-    public Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) { // todo must be cached
-        Collection<NlsFileImpl> includedFiles = getIncludedFiles();
-        Map<String, IProperty> keyToProperty = Maps.newHashMap();
-        for (NlsFileImpl nlsFile : includedFiles) {  // order matters!
-            if (processedFiles.contains(nlsFile)) {
-                continue;
-            }
-            processedFiles.add(nlsFile);
-            Collection<IProperty> fileProperties = nlsFile.getAllPropertiesRecursive(processedFiles);
-            addPropertiesToMap(fileProperties, keyToProperty);
-        }
-        addPropertiesToMap(getProperties(), keyToProperty);
-        return keyToProperty.values();
     }
 
     private void addPropertiesToMap(Collection<IProperty> fileProperties, Map<String, IProperty> properties) {

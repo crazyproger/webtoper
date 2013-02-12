@@ -34,10 +34,13 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.Collections2.filter;
 import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
 /**
@@ -70,28 +73,14 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
 
         Set<IProperty> parentProperties = new HashSet<IProperty>();
         for (NlsFileImpl parent : includedFiles) {
-            // Obtaining all properties except properties in current file,
-            // else if include cycle occurs all properties in this file will be marked as.
-            // Due to getAllProperties particularity(it returns set(!) of properties,
-            // aggregator file properties overrides included properties) whe can't simply get all properties(PsiElements) from all files
-            // and remove those who from current file
-            Collection<IProperty> properties = parent.getAllPropertiesRecursive(Sets.newHashSet(currentFile));
-            Collection<IProperty> withSameKey = Collections2.filter(properties, new PropertyKeyEqualsPredicate(key));
-            parentProperties.addAll(withSameKey);
+            Collection<IProperty> sameKey = getPropertiesWithKey(key, parent, Sets.<PsiFile>newHashSet(currentFile));
+            parentProperties.addAll(sameKey);
         }
         if (parentProperties.isEmpty()) return;
 
-        Collection<PsiElement> targets = Collections2.transform(parentProperties, new Function<IProperty, PsiElement>() {
-            @Override
-            public PsiElement apply(@Nullable IProperty iProperty) {
-                if (iProperty != null) {
-                    return iProperty.getPsiElement();
-                }
-                return null;
-            }
-        });
+        Collection<PsiElement> targets = Collections2.transform(parentProperties, new Property2PsiElementFunction());
         NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(AllIcons.General.OverridingMethod);
-        targets = Collections2.filter(targets, Predicates.notNull());
+        targets = filter(targets, Predicates.notNull());
         builder.setTargets(targets);
         String tooltipText;
         if (targets.size() > 1) {
@@ -106,6 +95,30 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
         result.add(builder.createLineMarkerInfo(element));
     }
 
+    @NotNull
+    private Collection<IProperty> getPropertiesWithKey(@NotNull final String key, @NotNull NlsFileImpl rootFile, @NotNull Collection<PsiFile> excludes) {
+        if (excludes.contains(rootFile)) {
+            return Collections.emptyList();
+        }
+        List<IProperty> fileProperties = rootFile.getProperties();
+        Collection<IProperty> withSameKey = filter(fileProperties, new PropertyKeyEqualsPredicate(key));
+        if (!withSameKey.isEmpty()) {
+            return withSameKey;
+        }
+
+        Collection<NlsFileImpl> includedFiles = rootFile.getIncludedFiles();
+        if (includedFiles.isEmpty()) return Collections.emptyList();
+
+        Collection<IProperty> result = new LinkedList<IProperty>();
+        Set<PsiFile> newExcludes = Sets.newHashSet(excludes);
+        newExcludes.add(rootFile);
+
+        for (NlsFileImpl nlsFile : includedFiles) {
+            result.addAll(getPropertiesWithKey(key, nlsFile, newExcludes));
+        }
+        return result;
+    }
+
     private static class PropertyKeyEqualsPredicate implements Predicate<IProperty> {
         private final String key;
 
@@ -116,6 +129,16 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
         @Override
         public boolean apply(@Nullable IProperty iProperty) {
             return iProperty != null && key.equals(iProperty.getKey());
+        }
+    }
+
+    private static class Property2PsiElementFunction implements Function<IProperty, PsiElement> {
+        @Override
+        public PsiElement apply(@Nullable IProperty iProperty) {
+            if (iProperty != null) {
+                return iProperty.getPsiElement();
+            }
+            return null;
         }
     }
 }

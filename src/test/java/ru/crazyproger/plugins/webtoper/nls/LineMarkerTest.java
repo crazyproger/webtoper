@@ -42,32 +42,36 @@ public class LineMarkerTest extends NlsTestCase {
 
     public void testSimpleChild() throws Exception {
         myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT);
-        doTest(1, message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"));
+        doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"));
     }
 
     public void testSecondLevel() throws Exception {
         myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "simpleChild" + EXT);
-        doTest(3, message("nls.lineMarker.overrides.tooltip.oneBundle", "simpleChild"));
+        String simpleChild = message("nls.lineMarker.overrides.tooltip.oneBundle", "simpleChild");
+        doTest(simpleChild,
+                message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"),
+                simpleChild);
     }
 
     public void testRecursiveInclude() throws Exception {
         myFixture.configureByFiles(getTestName(true) + EXT, "firstRecursive" + EXT);
-        doTest(1, message("nls.lineMarker.overrides.tooltip.oneBundle", "firstRecursive"));
+        doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "firstRecursive"));
     }
 
     public void testMultipleInclude() throws Exception {
         myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "anotherRoot" + EXT);
-        doTest(2, message("nls.lineMarker.overrides.tooltip.multiple"));
+        doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"),
+                message("nls.lineMarker.overrides.tooltip.multiple"));
     }
 
     // tests for 'overridden'
 
     public void testRoot() throws Exception {
         myFixture.configureByFile("rootPack/" + getTestName(true) + EXT);
-//        doTest(2, prefix);
+//        doTest(2, prefix)
     }
 
-    private void doTest(int count, String text) {
+    private void doTest(String... texts) {
         final Editor editor = myFixture.getEditor();
         final Project project = myFixture.getProject();
 
@@ -75,11 +79,12 @@ public class LineMarkerTest extends NlsTestCase {
 
         final List<LineMarkerInfo> infoList = DaemonCodeAnalyzerImpl.getLineMarkers(editor.getDocument(), project);
         assertNotNull(infoList);
-        assertEquals(count, infoList.size());
-        for (LineMarkerInfo markerInfo : infoList) {
+        assertEquals(texts.length, infoList.size());
+        for (int i = 0; i < infoList.size(); i++) {
+            LineMarkerInfo markerInfo = infoList.get(i);
             assertNotNull(markerInfo);
             String tooltip = markerInfo.getLineMarkerTooltip();
-            assertEquals(text, tooltip);
+            assertEquals(texts[i], tooltip);
         }
     }
 }
