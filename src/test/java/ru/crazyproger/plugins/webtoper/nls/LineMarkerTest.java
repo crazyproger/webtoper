@@ -28,6 +28,7 @@ import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
 /**
  * @author crazyproger
+ * @see ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsLineMarkerProvider
  */
 public class LineMarkerTest extends NlsTestCase {
 
@@ -55,7 +56,8 @@ public class LineMarkerTest extends NlsTestCase {
 
     public void testRecursiveInclude() throws Exception {
         myFixture.configureByFiles(getTestName(true) + EXT, "firstRecursive" + EXT);
-        doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "firstRecursive"));
+        doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "firstRecursive"),
+                message("nls.lineMarker.overridden.tooltip.oneBundle", "firstRecursive"));
     }
 
     public void testMultipleInclude() throws Exception {
@@ -67,8 +69,9 @@ public class LineMarkerTest extends NlsTestCase {
     // tests for 'overridden'
 
     public void testRoot() throws Exception {
-        myFixture.configureByFile("rootPack/" + getTestName(true) + EXT);
-//        doTest(2, prefix)
+        myFixture.configureByFiles("rootPack/" + getTestName(true) + EXT, "simpleChild" + EXT, "secondLevel" + EXT);
+        doTest(message("nls.lineMarker.overridden.tooltip.multiple"),
+                message("nls.lineMarker.overridden.tooltip.oneBundle", "secondLevel"));
     }
 
     private void doTest(String... texts) {

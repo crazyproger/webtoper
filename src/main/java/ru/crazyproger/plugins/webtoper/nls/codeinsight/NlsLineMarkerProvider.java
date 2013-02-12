@@ -17,9 +17,8 @@
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
@@ -29,10 +28,13 @@ import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.Property;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
+import com.intellij.refactoring.psi.SearchUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,7 +43,11 @@ import java.util.List;
 import java.util.Set;
 
 import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Sets.newHashSet;
 import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
+import static ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl.Property2PsiElementFunction;
+import static ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl.PropertyKeyEqualsPredicate;
 
 /**
  * @author crazyproger
@@ -59,6 +65,7 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
         for (PsiElement element : elements) {
             if (element instanceof Property) {
                 collectOverridingLineMarkers((Property) element, result);
+                collectOverriddenLineMarkers((Property) element, result);
             }
         }
     }
@@ -73,30 +80,23 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
 
         Set<IProperty> parentProperties = new HashSet<IProperty>();
         for (NlsFileImpl parent : includedFiles) {
-            Collection<IProperty> sameKey = getPropertiesWithKey(key, parent, Sets.<PsiFile>newHashSet(currentFile));
+            Collection<IProperty> sameKey = findOverriddenProperties(key, parent, Sets.<PsiFile>newHashSet(currentFile));
             parentProperties.addAll(sameKey);
         }
         if (parentProperties.isEmpty()) return;
 
-        Collection<PsiElement> targets = Collections2.transform(parentProperties, new Property2PsiElementFunction());
-        NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(AllIcons.General.OverridingMethod);
-        targets = filter(targets, Predicates.notNull());
-        builder.setTargets(targets);
-        String tooltipText;
-        if (targets.size() > 1) {
-            tooltipText = message("nls.lineMarker.overrides.tooltip.multiple");
-        } else {
-            PsiFile psiFile = targets.iterator().next().getContainingFile();
-            assert psiFile instanceof NlsFileImpl;
-            tooltipText = message("nls.lineMarker.overrides.tooltip.oneBundle", ((NlsFileImpl) psiFile).getNlsName());
-        }
-        builder.setTooltipText(tooltipText);
-        builder.setPopupTitle(message("nls.lineMarker.overrides.popupTitle"));
-        result.add(builder.createLineMarkerInfo(element));
+        MarkerInfo info = new MarkerInfo(element,
+                parentProperties,
+                result,
+                AllIcons.General.OverridingMethod,
+                "nls.lineMarker.overrides.popupTitle",
+                "nls.lineMarker.overrides.tooltip.multiple",
+                "nls.lineMarker.overrides.tooltip.oneBundle");
+        fillLineMarkers(info);
     }
 
     @NotNull
-    private Collection<IProperty> getPropertiesWithKey(@NotNull final String key, @NotNull NlsFileImpl rootFile, @NotNull Collection<PsiFile> excludes) {
+    private Collection<IProperty> findOverriddenProperties(@NotNull final String key, @NotNull NlsFileImpl rootFile, @NotNull Collection<PsiFile> excludes) {
         if (excludes.contains(rootFile)) {
             return Collections.emptyList();
         }
@@ -110,33 +110,144 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
         if (includedFiles.isEmpty()) return Collections.emptyList();
 
         Collection<IProperty> result = new LinkedList<IProperty>();
-        Set<PsiFile> newExcludes = Sets.newHashSet(excludes);
+        Set<PsiFile> newExcludes = newHashSet(excludes);
         newExcludes.add(rootFile);
 
         for (NlsFileImpl nlsFile : includedFiles) {
-            result.addAll(getPropertiesWithKey(key, nlsFile, newExcludes));
+            result.addAll(findOverriddenProperties(key, nlsFile, newExcludes));
         }
         return result;
     }
 
-    private static class PropertyKeyEqualsPredicate implements Predicate<IProperty> {
-        private final String key;
+    private void collectOverriddenLineMarkers(Property element, Collection<LineMarkerInfo> result) {
+        final String key = element.getKey();
+        if (key == null) return;
 
-        public PropertyKeyEqualsPredicate(String key) {
-            this.key = key;
+        NlsFileImpl currentFile = (NlsFileImpl) element.getContainingFile();
+        Collection<NlsFileImpl> referencing = getReferencingFiles(currentFile);
+        Set<IProperty> properties = newHashSet();
+        for (NlsFileImpl child : referencing) {
+            Collection<IProperty> overridingProperties = findOverridingProperties(key, child, Sets.<PsiFile>newHashSet(currentFile));
+            properties.addAll(overridingProperties);
         }
 
-        @Override
-        public boolean apply(@Nullable IProperty iProperty) {
-            return iProperty != null && key.equals(iProperty.getKey());
+        if (properties.isEmpty()) return;
+
+        MarkerInfo info = new MarkerInfo(element,
+                properties,
+                result,
+                AllIcons.General.OverridenMethod,
+                "nls.lineMarker.overridden.popupTitle",
+                "nls.lineMarker.overridden.tooltip.multiple",
+                "nls.lineMarker.overridden.tooltip.oneBundle");
+        fillLineMarkers(info);
+    }
+
+    private Collection<NlsFileImpl> getReferencingFiles(NlsFileImpl currentFile) {
+        Iterable<PsiReference> references = SearchUtils.findAllReferences(currentFile);
+
+        Collection<NlsFileImpl> directChilds = transform(Lists.<PsiReference>newArrayList(references), new Reference2ContainedFileFunction());
+
+        return filter(directChilds, Predicates.notNull());
+    }
+
+    private Collection<IProperty> findOverridingProperties(String key, NlsFileImpl currentFile, Set<PsiFile> excludes) {
+        if (excludes.contains(currentFile)) {
+            return Collections.emptyList();
+        }
+        List<IProperty> properties = currentFile.getProperties();
+        List<IProperty> result = new LinkedList<IProperty>();
+        Collection<IProperty> withSameKey = filter(properties, new PropertyKeyEqualsPredicate(key));
+        result.addAll(withSameKey);
+
+        excludes.add(currentFile);
+        Collection<NlsFileImpl> children = getReferencingFiles(currentFile);
+        for (NlsFileImpl child : children) {
+            result.addAll(findOverridingProperties(key, child, excludes));
+        }
+        return result;
+    }
+
+    private void fillLineMarkers(MarkerInfo info) {
+        Collection<PsiElement> targets = transform(info.getNavigationTargets(), new Property2PsiElementFunction());
+        NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(info.getIcon());
+        targets = filter(targets, Predicates.notNull());
+        builder.setTargets(targets);
+        String tooltipText;
+        if (targets.size() > 1) {
+            tooltipText = message(info.getMultiBundleKey());
+        } else {
+            PsiFile psiFile = targets.iterator().next().getContainingFile();
+            assert psiFile instanceof NlsFileImpl;
+            tooltipText = message(info.getOneBundleKey(), ((NlsFileImpl) psiFile).getNlsName());
+        }
+        builder.setTooltipText(tooltipText);
+        builder.setPopupTitle(message(info.getToolTipKey()));
+        info.getResult().add(builder.createLineMarkerInfo(info.getTarget()));
+    }
+
+    /**
+     * parameter object
+     */
+    private static class MarkerInfo {
+        private final Property target;
+        private final Collection<IProperty> navigationTargets;
+        private final Collection<LineMarkerInfo> result;
+        private final Icon icon;
+        private final String toolTipKey;
+        private final String multiBundleKey;
+        private final String oneBundleKey;
+
+        private MarkerInfo(Property target, Collection<IProperty> navigationTargets, Collection<LineMarkerInfo> result, Icon icon, String toolTipKey, String multiBundleKey, String oneBundleKey) {
+            this.target = target;
+            this.navigationTargets = navigationTargets;
+            this.result = result;
+            this.icon = icon;
+            this.toolTipKey = toolTipKey;
+            this.multiBundleKey = multiBundleKey;
+            this.oneBundleKey = oneBundleKey;
+        }
+
+        public Property getTarget() {
+            return target;
+        }
+
+        public Collection<IProperty> getNavigationTargets() {
+            return navigationTargets;
+        }
+
+        public Collection<LineMarkerInfo> getResult() {
+            return result;
+        }
+
+        public Icon getIcon() {
+            return icon;
+        }
+
+        public String getToolTipKey() {
+            return toolTipKey;
+        }
+
+        public String getMultiBundleKey() {
+            return multiBundleKey;
+        }
+
+        public String getOneBundleKey() {
+            return oneBundleKey;
         }
     }
 
-    private static class Property2PsiElementFunction implements Function<IProperty, PsiElement> {
+    public static class Reference2ContainedFileFunction implements Function<PsiReference, NlsFileImpl> {
         @Override
-        public PsiElement apply(@Nullable IProperty iProperty) {
-            if (iProperty != null) {
-                return iProperty.getPsiElement();
+        public NlsFileImpl apply(@Nullable PsiReference psiReference) {
+            if (psiReference != null) {
+                PsiElement element = psiReference.getElement();
+                if (element != null && element.isValid()) {
+                    PsiFile psiFile = element.getContainingFile();
+                    if (psiFile instanceof NlsFileImpl) {
+                        return (NlsFileImpl) psiFile;
+                    }
+                }
             }
             return null;
         }

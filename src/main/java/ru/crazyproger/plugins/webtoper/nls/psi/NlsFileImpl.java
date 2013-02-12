@@ -16,6 +16,8 @@
 
 package ru.crazyproger.plugins.webtoper.nls.psi;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.intellij.lang.properties.IProperty;
@@ -123,4 +125,28 @@ public class NlsFileImpl extends PropertiesFileImpl {
             }
         }
     }
+
+    public static class PropertyKeyEqualsPredicate implements Predicate<IProperty> {
+        private final String key;
+
+        public PropertyKeyEqualsPredicate(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public boolean apply(@Nullable IProperty iProperty) {
+            return iProperty != null && key.equals(iProperty.getKey());
+        }
+    }
+
+    public static class Property2PsiElementFunction implements Function<IProperty, PsiElement> {
+        @Override
+        public PsiElement apply(@Nullable IProperty iProperty) {
+            if (iProperty != null) {
+                return iProperty.getPsiElement();
+            }
+            return null;
+        }
+    }
+
 }
