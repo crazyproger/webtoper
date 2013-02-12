@@ -28,6 +28,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.Property;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
@@ -96,7 +97,9 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
         if (targets.size() > 1) {
             tooltipText = message("nls.lineMarker.overrides.tooltip.multiple");
         } else {
-            tooltipText = message("nls.lineMarker.overrides.tooltip.oneBundle", targets.iterator().next().getContainingFile().getName());
+            PsiFile psiFile = targets.iterator().next().getContainingFile();
+            assert psiFile instanceof NlsFileImpl;
+            tooltipText = message("nls.lineMarker.overrides.tooltip.oneBundle", ((NlsFileImpl) psiFile).getNlsName());
         }
         builder.setTooltipText(tooltipText);
         builder.setPopupTitle(message("nls.lineMarker.overrides.popupTitle"));

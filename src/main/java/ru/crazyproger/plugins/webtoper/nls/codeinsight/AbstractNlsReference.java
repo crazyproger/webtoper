@@ -22,7 +22,6 @@ import com.intellij.codeInspection.LocalQuickFixProvider;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.ElementManipulator;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
@@ -33,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
+import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 /**
  * @author crazyproger
@@ -65,9 +65,8 @@ public abstract class AbstractNlsReference<T extends PsiElement> extends PsiRefe
     public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
 
         PsiFile file = element.getContainingFile();
-        VirtualFile virtualFile = file.getVirtualFile();
-        if (virtualFile == null) throw new IllegalArgumentException("Can't bind to element " + element);
-        String name = NlsUtils.getNlsName(virtualFile, element.getProject());
+        if (!(file instanceof NlsFileImpl)) throw new IllegalArgumentException("Can't bind to element " + element);
+        String name = ((NlsFileImpl) file).getNlsName();
         if (name == null) throw new IllegalArgumentException("Can't bind to element " + element);
         return getManipulator().handleContentChange(myElement, getRangeInElement(), name);
     }

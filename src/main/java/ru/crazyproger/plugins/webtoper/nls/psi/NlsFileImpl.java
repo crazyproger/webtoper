@@ -19,12 +19,19 @@ package ru.crazyproger.plugins.webtoper.nls.psi;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.intellij.lang.properties.IProperty;
+import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.lang.properties.psi.impl.PropertiesFileImpl;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
 import java.util.ArrayList;
@@ -76,7 +83,24 @@ public class NlsFileImpl extends PropertiesFileImpl {
         return getAllPropertiesRecursive(Sets.<NlsFileImpl>newHashSet(this));
     }
 
-    public Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) {
+    @Nullable
+    public String getNlsName() { // todo must be cached
+        for (VirtualFile folder : NlsUtils.getAllNlsRoots(getProject())) {
+            if (folder != null) {
+                VirtualFile file = getVirtualFile();
+                assert file != null;
+                if (VfsUtil.isAncestor(folder, file, true)) {
+                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), '/');
+                    assert relativePath != null : "relative path must be";
+                    String dottedPath = relativePath.replaceAll("/", ".");
+                    return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) { // todo must be cached
         Collection<NlsFileImpl> includedFiles = getIncludedFiles();
         Map<String, IProperty> keyToProperty = Maps.newHashMap();
         for (NlsFileImpl nlsFile : includedFiles) {  // order matters!

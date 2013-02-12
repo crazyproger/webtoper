@@ -79,7 +79,7 @@ public class LineMarkerTest extends NlsTestCase {
         for (LineMarkerInfo markerInfo : infoList) {
             assertNotNull(markerInfo);
             String tooltip = markerInfo.getLineMarkerTooltip();
-            assertEquals(tooltip, text);
+            assertEquals(text, tooltip);
         }
     }
 }
