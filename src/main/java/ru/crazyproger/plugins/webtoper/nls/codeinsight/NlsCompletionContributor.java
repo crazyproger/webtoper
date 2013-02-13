@@ -30,7 +30,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -58,7 +57,7 @@ public class NlsCompletionContributor extends CompletionContributor {
                 Collection<NlsFileImpl> files = getNlsFiles(project);
                 if (files.isEmpty()) return;
                 final NlsFileImpl currentFile = (NlsFileImpl) parameters.getOriginalFile();
-                final Collection<PsiFile> includedFiles = currentFile.getIncludedFiles();
+                final Collection<NlsFileImpl> includedFiles = currentFile.getIncludedFiles();
                 Collection<NlsFileImpl> filtered = Collections2.filter(files, new Predicate<NlsFileImpl>() {
                     @Override
                     public boolean apply(@Nullable NlsFileImpl nlsFile) {
@@ -67,7 +66,7 @@ public class NlsCompletionContributor extends CompletionContributor {
                     }
                 });
 
-                Collection<LookupElement> lookupElements = Collections2.transform(filtered, new NlsFile2LookupElementFunction(project));
+                Collection<LookupElement> lookupElements = Collections2.transform(filtered, new NlsFile2LookupElementFunction());
 
                 result.addAllElements(lookupElements);
             }
@@ -101,18 +100,11 @@ public class NlsCompletionContributor extends CompletionContributor {
     }
 
     public static class NlsFile2LookupElementFunction implements Function<NlsFileImpl, LookupElement> {
-        private final Project project;
-
-        public NlsFile2LookupElementFunction(Project project) {
-            this.project = project;
-        }
 
         @Override
         public LookupElement apply(@Nullable NlsFileImpl nlsFile) {
             assert nlsFile != null;
-            VirtualFile virtualFile = nlsFile.getVirtualFile();
-            assert virtualFile != null;
-            String fullName = NlsUtils.getNlsName(virtualFile, project);   // todo getName must be from NlsNameImpl
+            String fullName = nlsFile.getNlsName();
             assert fullName != null;
             return LookupElementBuilder.create(nlsFile, fullName).withIcon(nlsFile.getIcon(0));
         }

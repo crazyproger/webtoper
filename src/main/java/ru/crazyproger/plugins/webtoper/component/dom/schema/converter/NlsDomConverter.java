@@ -17,9 +17,7 @@
 package ru.crazyproger.plugins.webtoper.component.dom.schema.converter;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.ConvertContext;
@@ -29,7 +27,6 @@ import com.intellij.util.xml.ResolvingConverter;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsCompletionContributor;
 import ru.crazyproger.plugins.webtoper.nls.codeinsight.XmlTagNlsReference;
@@ -52,14 +49,7 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @Nullable
     @Override
     public String toString(@Nullable NlsFileImpl propertiesFile, ConvertContext context) {
-        assert propertiesFile != null;
-        PsiFile psiFile = propertiesFile.getContainingFile();
-        if (NlsLanguage.INSTANCE.equals(psiFile.getLanguage())) {
-            VirtualFile virtualFile = psiFile.getVirtualFile();
-            assert virtualFile != null;
-            return NlsUtils.getNlsName(virtualFile, context.getProject());
-        }
-        return null;
+        return propertiesFile != null ? propertiesFile.getNlsName() : null;
     }
 
     @Nullable

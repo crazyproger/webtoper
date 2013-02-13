@@ -102,6 +102,8 @@ on how to target different products -->
                          implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsFileInspection"
                          shortName="NlsInspection" groupKey="webtoper.inspections.group.name"
                          key="nlsFiles.inspection.displayName"/>
+        <codeInsight.lineMarkerProvider language="Nls"
+                                        implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsLineMarkerProvider"/>
 
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>

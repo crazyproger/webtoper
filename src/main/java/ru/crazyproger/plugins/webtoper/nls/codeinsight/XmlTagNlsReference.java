@@ -48,7 +48,7 @@ public class XmlTagNlsReference extends AbstractNlsReference<XmlTag> {
     public Object[] getVariants() {
         final Project project = getElement().getProject();
         Collection<NlsFileImpl> filtered = NlsCompletionContributor.getNlsFiles(project);
-        Collection<LookupElement> result = Collections2.transform(filtered, new NlsFile2LookupElementFunction(project));
+        Collection<LookupElement> result = Collections2.transform(filtered, new NlsFile2LookupElementFunction());
         return result.toArray(new Object[result.size()]);
     }
 }

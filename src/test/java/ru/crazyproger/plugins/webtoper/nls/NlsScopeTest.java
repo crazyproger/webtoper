@@ -25,11 +25,13 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.TestSourceBasedTestCase;
 import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
+import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,7 +97,9 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
         GlobalSearchScope nlsScope = NlsUtils.getNlsScope(getProject());
         Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
         VirtualFile file = files.iterator().next();
-        String fullName = NlsUtils.getNlsName(file, getProject());
+        PsiFile psiFile = getPsiManager().findFile(file);
+        assertTrue(psiFile instanceof NlsFileImpl);
+        String fullName = ((NlsFileImpl) psiFile).getNlsName();
         assertEquals("ru.crazyproger.l1.document.Document", fullName);
     }
 

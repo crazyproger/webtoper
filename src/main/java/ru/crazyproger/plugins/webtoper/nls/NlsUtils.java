@@ -22,8 +22,6 @@ import com.google.common.collect.Sets;
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -60,21 +58,6 @@ public class NlsUtils {
             }
         }
         return scope;
-    }
-
-    @Nullable
-    public static String getNlsName(@NotNull VirtualFile file, @NotNull Project project) {
-        for (VirtualFile folder : getAllNlsRoots(project)) {
-            if (folder != null) {
-                if (VfsUtil.isAncestor(folder, file, true)) {
-                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), '/');
-                    assert relativePath != null : "relative path must be";
-                    String dottedPath = relativePath.replaceAll("/", ".");
-                    return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
-                }
-            }
-        }
-        return null;
     }
 
     @NotNull
