@@ -18,7 +18,6 @@ package ru.crazyproger.plugins.webtoper.component.dom.schema.converter;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.ConvertContext;
@@ -50,13 +49,7 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @Nullable
     @Override
     public String toString(@Nullable NlsFileImpl propertiesFile, ConvertContext context) {
-        assert propertiesFile != null;
-        PsiFile psiFile = propertiesFile.getContainingFile();
-        if (psiFile instanceof NlsFileImpl) {
-            NlsFileImpl file = (NlsFileImpl) psiFile;
-            return file.getNlsName();
-        }
-        return null;
+        return propertiesFile != null ? propertiesFile.getNlsName() : null;
     }
 
     @Nullable
