@@ -49,9 +49,6 @@ import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 import static ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl.Property2PsiElementFunction;
 import static ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl.PropertyKeyEqualsPredicate;
 
-/**
- * @author crazyproger
- */
 public class NlsLineMarkerProvider implements LineMarkerProvider {
 
     @Nullable

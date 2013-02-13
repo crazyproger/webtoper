@@ -24,9 +24,8 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ClassAttribut
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.CustomChildrenContainer;
 
 /**
- * @author crazyproger
- *         todo if arguments provided, then container sibling must be(component optional)
- *         (p221)
+ * todo if arguments provided, then container sibling must be(component optional)
+ * (p221)
  */
 public interface Execution extends ArgumentsContainer, ClassAttributeContainer, CustomChildrenContainer, DomElement {
 

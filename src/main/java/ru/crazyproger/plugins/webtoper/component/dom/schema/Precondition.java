@@ -24,9 +24,6 @@ import com.intellij.util.xml.SubTag;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ClassAttributeContainer;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.CustomChildrenContainer;
 
-/**
- * @author crazyproger
- */
 public interface Precondition extends CustomChildrenContainer, ClassAttributeContainer, DomElement {
     @SubTag("role")
     String getRoles();

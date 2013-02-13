@@ -20,9 +20,6 @@ import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
 
-/**
- * @author crazyproger
- */
 public class WebtoperIcons {
     private static Icon load(String path) {
         return IconLoader.getIcon(path, WebtoperIcons.class);

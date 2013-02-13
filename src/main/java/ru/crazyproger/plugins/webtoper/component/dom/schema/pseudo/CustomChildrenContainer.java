@@ -21,9 +21,6 @@ import com.intellij.util.xml.DomElement;
 
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public interface CustomChildrenContainer {
     @CustomChildren
     List<DomElement> getCustomChildren();

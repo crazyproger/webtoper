@@ -27,7 +27,6 @@ import java.util.List;
 import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
 /**
- * @author crazyproger
  * @see ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsLineMarkerProvider
  */
 public class LineMarkerTest extends NlsTestCase {

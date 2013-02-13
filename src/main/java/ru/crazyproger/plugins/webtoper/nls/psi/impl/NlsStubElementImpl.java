@@ -24,9 +24,6 @@ import com.intellij.psi.stubs.StubElement;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 
-/**
- * @author crazyproger
- */
 public class NlsStubElementImpl<T extends StubElement> extends StubBasedPsiElementBase<T> {
     public NlsStubElementImpl(@NotNull T stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);

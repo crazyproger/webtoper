@@ -23,9 +23,6 @@ import com.intellij.psi.PsiReferenceRegistrar;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-/**
- * @author crazyproger
- */
 public class NlsIncludesReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(PsiReferenceRegistrar registrar) {

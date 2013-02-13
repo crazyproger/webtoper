@@ -40,9 +40,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public class Utils {
     public static void reparseFilesInRoots(Project project, Iterable<VirtualFile> roots, String extension) {
         List<VirtualFile> files = new LinkedList<VirtualFile>();

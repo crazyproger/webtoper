@@ -34,9 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-/**
- * @author crazyproger
- */
 public abstract class AbstractNlsReference<T extends PsiElement> extends PsiReferenceBase<T> implements LocalQuickFixProvider {
 
     private static final Logger LOG = Logger.getInstance("#" + AbstractNlsReference.class.getName());

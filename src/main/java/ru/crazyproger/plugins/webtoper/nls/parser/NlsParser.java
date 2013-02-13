@@ -27,9 +27,6 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 
-/**
- * @author crazyproger
- */
 public class NlsParser implements PsiParser {
     private static final Logger LOG = Logger.getInstance("#" + NlsParser.class.getName());
 

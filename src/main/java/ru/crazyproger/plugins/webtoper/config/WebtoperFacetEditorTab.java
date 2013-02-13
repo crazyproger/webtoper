@@ -39,9 +39,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Arrays;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacetEditorTab extends FacetEditorTab {
     private final WebtoperFacetConfiguration configuration;
     private final FacetEditorContext context;

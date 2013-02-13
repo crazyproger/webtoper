@@ -22,9 +22,6 @@ import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public static final FacetTypeId<WebtoperFacet> ID = new FacetTypeId<WebtoperFacet>("webtoper");

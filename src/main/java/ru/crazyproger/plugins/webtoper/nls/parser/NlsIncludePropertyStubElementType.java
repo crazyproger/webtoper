@@ -26,9 +26,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludePropertyStubImpl;
 
 import java.io.IOException;
 
-/**
- * @author crazyproger
- */
 public class NlsIncludePropertyStubElementType extends NlsStubElementType<NlsIncludePropertyStub, NlsIncludeProperty> {
     public NlsIncludePropertyStubElementType() {
         super("NLS_INCLUDE_PROPERTY");

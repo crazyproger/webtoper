@@ -69,9 +69,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author crazyproger
- */
 public class ErrorSubmitter extends ErrorReportSubmitter {
     public static final String ENCODING = "UTF8";
     public static final String SUBMIT_URL = "https://script.google.com/macros/s/AKfycbxhP9JtHwKbvTFfV-AYgRxXyOTOLH0wgySwtv24lPzmcA5ae2ae/exec";

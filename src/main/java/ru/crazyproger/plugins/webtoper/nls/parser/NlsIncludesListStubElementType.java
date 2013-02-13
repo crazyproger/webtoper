@@ -26,9 +26,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludesListStubImpl;
 
 import java.io.IOException;
 
-/**
- * @author crazyproger
- */
 public class NlsIncludesListStubElementType extends NlsStubElementType<NlsIncludesListStub, NlsIncludesList> {
     public NlsIncludesListStubElementType() {
         super("NLS_INCLUDES_LIST");

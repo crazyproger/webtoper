@@ -18,9 +18,6 @@ package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
 import com.intellij.psi.PsiElement;
 
-/**
- * @author crazyproger
- */
 public class TextElementNlsReference extends AbstractNlsReference<PsiElement> {
 
     public TextElementNlsReference(PsiElement element, PsiElement resolveTo) {

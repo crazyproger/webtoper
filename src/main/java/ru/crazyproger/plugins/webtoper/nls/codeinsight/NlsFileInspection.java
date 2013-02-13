@@ -27,9 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
-/**
- * @author crazyproger
- */
 public class NlsFileInspection extends LocalInspectionTool {
 
     @NotNull

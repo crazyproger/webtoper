@@ -18,9 +18,6 @@ package ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo;
 
 import com.intellij.util.xml.GenericAttributeValue;
 
-/**
- * @author crazyproger
- */
 public interface ScopeDefiner {
     // todo hack tag should have dynamic attributes
     GenericAttributeValue<String> getLocation();

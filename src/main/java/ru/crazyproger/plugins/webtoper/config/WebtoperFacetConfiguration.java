@@ -34,9 +34,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacetConfiguration implements FacetConfiguration {
     public static final String WEBTOP_ROOT_LAYER = "Webtop";
     public static final String PARENT_LAYER_ATTRIBUTE = "parentLayer";

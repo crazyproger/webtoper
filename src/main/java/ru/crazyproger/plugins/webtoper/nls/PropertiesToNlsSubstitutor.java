@@ -24,9 +24,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * @author crazyproger
- */
 public class PropertiesToNlsSubstitutor extends LanguageSubstitutor {
     @Nullable
     @Override

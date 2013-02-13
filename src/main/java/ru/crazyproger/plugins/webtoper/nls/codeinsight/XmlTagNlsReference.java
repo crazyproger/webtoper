@@ -29,9 +29,6 @@ import java.util.Collection;
 
 import static ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsCompletionContributor.NlsFile2LookupElementFunction;
 
-/**
- * @author crazyproger
- */
 public class XmlTagNlsReference extends AbstractNlsReference<XmlTag> {
     public XmlTagNlsReference(XmlTag element, @Nullable PsiElement resolveTo) {
         super(element, resolveTo);

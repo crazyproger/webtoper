@@ -27,9 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
 
-/**
- * @author crazyproger
- */
 public class ConfigFileDescription extends DomFileDescription<Config> {
     private static final String ROOT_TAG_NAME = "config";
 

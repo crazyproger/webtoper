@@ -35,9 +35,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 import java.util.Collection;
 import java.util.Set;
 
-/**
- * @author crazyproger
- */
 public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements CustomReferenceConverter<NlsFileImpl> {
     @Nullable
     @Override

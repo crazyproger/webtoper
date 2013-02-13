@@ -21,9 +21,6 @@ import com.intellij.util.xml.SubTagList;
 
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public interface Arguments extends DomElement {
     @SubTagList("argument")
     List<Argument> getArguments();

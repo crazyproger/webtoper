@@ -45,9 +45,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public class ClassLineMarkerProvider implements LineMarkerProvider {
     public static final Icon COMPONENT_LINE_MARK = IconLoader.getIcon("/icons/puzzle_green_16.png");
 

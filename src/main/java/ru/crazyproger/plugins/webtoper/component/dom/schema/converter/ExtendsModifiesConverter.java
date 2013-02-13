@@ -48,8 +48,6 @@ import java.util.regex.Pattern;
 /**
  * todo tests
  * todo refactor
- *
- * @author crazyproger
  */
 public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement> {
     public static final Pattern EXTENDS_PATTERN = Pattern.compile("\\s*(\\w+)\\s*:\\s*/?(.+)\\s*");

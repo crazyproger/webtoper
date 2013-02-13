@@ -22,9 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
 
-/**
- * @author crazyproger
- */
 public class EmptyInspection extends BasicDomElementsInspection<Config> {
     public EmptyInspection() {
         super(Config.class);

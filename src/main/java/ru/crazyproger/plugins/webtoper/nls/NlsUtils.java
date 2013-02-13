@@ -42,9 +42,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author crazyproger
- */
 public class NlsUtils {
     @Nullable
     public static GlobalSearchScope getNlsScope(@NotNull Project project) {

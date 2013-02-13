@@ -17,16 +17,19 @@
 package ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo;
 
 import com.intellij.lang.properties.psi.PropertiesFile;
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
+import com.intellij.util.xml.Convert;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Filter;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.converter.ExtendsModifiesConverter;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.converter.NlsDomConverter;
 
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public interface PrimaryElement extends CustomChildrenContainer, DomElement {
 
     @Attribute("extends")

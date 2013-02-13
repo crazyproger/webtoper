@@ -20,9 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 
-/**
- * @author crazyproger
- */
+
 public class FindComponentUsagesTest extends WebtoperLightFixtureTestCase {
 
     @Override

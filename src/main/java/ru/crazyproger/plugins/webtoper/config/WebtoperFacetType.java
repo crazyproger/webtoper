@@ -27,9 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetConfiguration> {
     public WebtoperFacetType() {
         super(WebtoperFacet.ID, "webtoper", "Webtoper", WebFacet.ID);

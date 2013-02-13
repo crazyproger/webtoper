@@ -30,7 +30,6 @@ import ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsFileInspection;
 import java.io.IOException;
 
 /**
- * @author crazyproger
  * @see EmptyInspection
  * @see NlsFileInspection
  * @see ru.crazyproger.plugins.webtoper.nls.codeinsight.AbstractNlsReference#getQuickFixes()

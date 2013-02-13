@@ -40,8 +40,6 @@ import java.util.List;
 /**
  * Simple test that check configuration of NLS folders and {@link NlsUtils#getNlsScope(com.intellij.openapi.project.Project)} method.
  * <p/>
- *
- * @author crazyproger
  */
 public class NlsScopeTest extends TestSourceBasedTestCase {
 

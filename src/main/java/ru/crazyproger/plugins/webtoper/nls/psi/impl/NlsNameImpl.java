@@ -23,9 +23,6 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author crazyproger
- */
 public class NlsNameImpl extends LeafPsiElement {
     public NlsNameImpl(IElementType type, CharSequence text) {
         super(type, text);

@@ -18,9 +18,6 @@ package ru.crazyproger.plugins.webtoper.component.dom.schema;
 
 import com.intellij.util.xml.NamedEnum;
 
-/**
- * @author crazyproger
- */
 public enum NavigatonType implements NamedEnum {
     JUMP("jump"),
     RETURN_JUMP("returnjump"),

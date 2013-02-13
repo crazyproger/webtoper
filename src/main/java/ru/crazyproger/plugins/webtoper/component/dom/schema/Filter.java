@@ -20,8 +20,5 @@ import com.intellij.util.xml.DomElement;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.CustomChildrenContainer;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ScopeDefiner;
 
-/**
- * @author crazyproger
- */
 public interface Filter extends CustomChildrenContainer, ScopeDefiner, DomElement {
 }

@@ -16,9 +16,7 @@
 
 package ru.crazyproger.plugins.webtoper.nls;
 
-/**
- * @author crazyproger
- */
+
 public class NlsCompletionTest extends NlsTestCase {
 
     protected String getTestDataPath() {

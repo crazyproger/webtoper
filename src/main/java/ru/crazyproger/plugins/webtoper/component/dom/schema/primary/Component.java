@@ -24,9 +24,6 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.Pages;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-/**
- * @author crazyproger
- */
 public interface Component extends PrimaryElement, IdentifiedById, DomElement {
     @SubTag("class")
     GenericDomValue<PsiClass> getClassValue();

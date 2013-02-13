@@ -23,9 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.parser.NlsTokenTypes;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
-/**
- * @author crazyproger
- */
 public class NlsASTFactory extends PropertiesASTFactory {
 
     @Nullable

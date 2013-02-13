@@ -31,9 +31,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.Set;
 
-/**
- * @author crazyproger
- */
 public class WholeElementTextRefProvider extends PsiReferenceProvider {
     @NotNull
     @Override

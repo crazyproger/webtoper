@@ -22,9 +22,7 @@ import com.intellij.testFramework.PlatformTestUtil;
 
 import java.io.IOException;
 
-/**
- * @author crazyproger
- */
+
 public abstract class BeforeAfterTreeTestCase extends WebtoperLightFixtureTestCase {
 
     @Override

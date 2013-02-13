@@ -18,9 +18,7 @@ package ru.crazyproger.plugins.webtoper.nls;
 
 import com.intellij.openapi.project.Project;
 
-/**
- * @author crazyproger
- */
+
 public class NlsHierarchyTest extends NlsTestCase {
 
     protected String getTestDataPath() {

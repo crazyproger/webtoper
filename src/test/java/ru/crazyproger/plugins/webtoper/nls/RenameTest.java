@@ -18,9 +18,7 @@ package ru.crazyproger.plugins.webtoper.nls;
 
 import ru.crazyproger.plugins.webtoper.BeforeAfterTreeTestCase;
 
-/**
- * @author crazyproger
- */
+
 public class RenameTest extends BeforeAfterTreeTestCase {
     @Override
     protected String getTestDataPath() {

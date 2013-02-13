@@ -38,9 +38,6 @@ import ru.crazyproger.plugins.webtoper.Utils;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.XmlPatterns.xmlTag;
 
-/**
- * @author crazyproger
- */
 public class JspReferenceContributor extends PsiReferenceContributor {
 
     public static final XmlTagPattern.Capture COMPONENT_CAPTURE = xmlTag().withName("component").withParent(

@@ -20,9 +20,6 @@ import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.NameValue;
 
-/**
- * @author crazyproger
- */
 public interface IdentifiedById {
     @Attribute
     @NameValue

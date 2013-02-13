@@ -33,9 +33,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludePropertyImpl;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludesListImpl;
 
-/**
- * @author crazyproger
- */
 public class NlsParserDefinition extends PropertiesParserDefinition {
     public static final IStubFileElementType NLS_FILE_NODE_TYPE = new IStubFileElementType("NLS.file", NlsLanguage.INSTANCE);
 

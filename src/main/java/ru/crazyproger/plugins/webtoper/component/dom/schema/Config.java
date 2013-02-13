@@ -16,14 +16,15 @@
 
 package ru.crazyproger.plugins.webtoper.component.dom.schema;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.DefinesXml;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 @DefinesXml
 public interface Config extends DomElement {
     @NotNull

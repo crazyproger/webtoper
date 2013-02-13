@@ -21,9 +21,6 @@ import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.util.IncorrectOperationException;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
-/**
- * @author crazyproger
- */
 public class NlsNameManipulator extends AbstractElementManipulator<NlsNameImpl> {
     @Override
     public NlsNameImpl handleContentChange(NlsNameImpl element, TextRange range, String newContent)

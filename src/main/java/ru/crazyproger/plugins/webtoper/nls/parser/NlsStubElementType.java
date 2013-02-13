@@ -25,9 +25,6 @@ import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 
 import java.io.IOException;
 
-/**
- * @author vrudev
- */
 public abstract class NlsStubElementType<StubT extends StubElement, PsiT extends PsiElement> extends IStubElementType<StubT, PsiT> {
     public NlsStubElementType(String debugName) {
         super(debugName, NlsLanguage.INSTANCE);

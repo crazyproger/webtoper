@@ -34,9 +34,6 @@ import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
 import java.io.IOException;
 
-/**
- * @author crazyproger
- */
 class CreateNlsQuickFix implements LocalQuickFix {
 
     private static final Logger LOG = Logger.getInstance("#" + CreateNlsQuickFix.class.getName());

@@ -24,9 +24,6 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author crazyproger
- */
 public class NlsLanguage extends Language {
     public static final NlsLanguage INSTANCE = new NlsLanguage();
 

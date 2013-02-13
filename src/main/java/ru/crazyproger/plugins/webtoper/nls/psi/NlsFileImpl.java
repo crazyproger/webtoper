@@ -43,9 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author crazyproger
- */
 public class NlsFileImpl extends PropertiesFileImpl {
 
     public NlsFileImpl(FileViewProvider viewProvider) {

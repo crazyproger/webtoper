@@ -18,9 +18,7 @@ package ru.crazyproger.plugins.webtoper.nls;
 
 import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 
-/**
- * @author crazyproger
- */
+
 public abstract class NlsTestCase extends WebtoperLightFixtureTestCase {
 
     public static final String NLS_FOLDER = "nls";

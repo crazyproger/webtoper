@@ -21,9 +21,6 @@ import com.intellij.util.xml.SubTagList;
 
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public interface Preconditions extends DomElement {
     @SubTagList("precondition")
     List<Precondition> getPreconditions();

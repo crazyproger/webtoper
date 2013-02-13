@@ -45,9 +45,6 @@ import java.util.Collections;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-/**
- * @author crazyproger
- */
 public class NlsCompletionContributor extends CompletionContributor {
     public NlsCompletionContributor() {
         extend(CompletionType.BASIC, psiElement(NlsNameImpl.class), new CompletionProvider<CompletionParameters>() {

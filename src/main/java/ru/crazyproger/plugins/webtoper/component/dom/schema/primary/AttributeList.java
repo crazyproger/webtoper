@@ -19,8 +19,5 @@ package ru.crazyproger.plugins.webtoper.component.dom.schema.primary;
 import com.intellij.util.xml.DomElement;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-/**
- * @author crazyproger
- */
 public interface AttributeList extends PrimaryElement, DomElement {
 }
