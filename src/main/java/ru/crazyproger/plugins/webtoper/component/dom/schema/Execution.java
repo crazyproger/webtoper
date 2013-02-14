@@ -23,10 +23,7 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ArgumentsCont
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ClassAttributeContainer;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.CustomChildrenContainer;
 
-/**
- * todo if arguments provided, then container sibling must be(component optional)
- * (p221)
- */
+// todo #WT-36
 public interface Execution extends ArgumentsContainer, ClassAttributeContainer, CustomChildrenContainer, DomElement {
 
     GenericDomValue<Permit> getPermit();
@@ -37,7 +34,7 @@ public interface Execution extends ArgumentsContainer, ClassAttributeContainer, 
     @SubTag("navigation")
     GenericDomValue<NavigatonType> getNavigationType();
 
-    GenericDomValue<String> getComponent(); // todo reference to component
+    GenericDomValue<String> getComponent(); // todo #WT-37
 
-    GenericDomValue<String> getContainer(); // todo reference to container(component)
+    GenericDomValue<String> getContainer(); // todo #WT-37
 }

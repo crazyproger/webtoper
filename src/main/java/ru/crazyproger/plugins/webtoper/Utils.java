@@ -67,7 +67,7 @@ public class Utils {
         FileContentUtil.reparseFiles(project, files, true);
     }
 
-    // todo should accept module instead of project
+    // todo #WT-27
     @NotNull
     public static List<WebtoperFacet> getWebtoperFacets(Project project) {
         ModuleManager moduleManager = ModuleManager.getInstance(project);
@@ -86,8 +86,8 @@ public class Utils {
     }
 
     /**
-     * todo try to find configuration inside artifact file system(maybe it will be faster) - best variant
-     * todo searching order - first files must be from closest layers
+     * todo #WT-29
+     * todo #WT-28
      */
     @Nullable
     public static VirtualFile findFileInArtifact(String configPath, Project project) {

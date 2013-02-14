@@ -39,8 +39,8 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @Nullable
     @Override
     public NlsFileImpl fromString(@Nullable @NonNls String s, ConvertContext context) {
-        Set<NlsFileImpl> files = NlsUtils.getNlsFiles(s, context.getProject());
-        return files.isEmpty() ? null : files.iterator().next();  // todo we must show all variants(PsiPolyVarRef)
+        Set<NlsFileImpl> files = NlsUtils.getNlsFiles(s, context.getModule());
+        return files.isEmpty() ? null : files.iterator().next();
     }
 
     @Nullable
@@ -65,9 +65,6 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @NotNull
     @Override
     public PsiReference[] createReferences(GenericDomValue<NlsFileImpl> value, PsiElement element, ConvertContext context) {
-        if (value.getValue() != null) {
-            return new PsiReference[]{new XmlTagNlsReference((XmlTag) element, value.getValue())};
-        }
-        return new PsiReference[]{new XmlTagNlsReference((XmlTag) element, null)};
+        return new PsiReference[]{new XmlTagNlsReference((XmlTag) element, value.getValue())};
     }
 }

@@ -29,10 +29,10 @@ public interface Precondition extends CustomChildrenContainer, ClassAttributeCon
     String getRoles();
 
     @SubTag("argument")
-    String getArguments(); // todo link to parent primary-element params(p220)
+    String getArguments(); // todo #WT-37
 
     @SubTag
-    GenericDomValue<Boolean> isReversePrecondition(); // todo should be with 'component' sibling
+    GenericDomValue<Boolean> isReversePrecondition(); // todo #WT-36
 
     @SubTag
     GenericDomValue<String> getComponent();

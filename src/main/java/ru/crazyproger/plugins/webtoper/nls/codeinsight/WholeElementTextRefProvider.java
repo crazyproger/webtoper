@@ -17,7 +17,9 @@
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
 import com.google.common.collect.Sets;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -41,7 +43,12 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
 
         String text = StringUtils.trim(element.getText());
 
-        Set<NlsFileImpl> nlsFiles = NlsUtils.getNlsFiles(text, project);
+        VirtualFile virtualFile = element.getContainingFile().getVirtualFile();
+        if (virtualFile == null) return PsiReference.EMPTY_ARRAY;
+
+        Module module = ProjectFileIndex.SERVICE.getInstance(project).getModuleForFile(virtualFile);
+
+        Set<NlsFileImpl> nlsFiles = NlsUtils.getNlsFiles(text, module);
 
         Set<PsiReference> references = Sets.newHashSet();
         for (NlsFileImpl nlsFile : nlsFiles) {

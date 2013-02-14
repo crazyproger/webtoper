@@ -20,7 +20,7 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 
 public interface Param extends DomElement {
-    GenericAttributeValue<String> getName(); // todo should be unique with siblings
+    GenericAttributeValue<String> getName(); // todo #WT-31
 
     GenericAttributeValue<Boolean> getRequired();
 }

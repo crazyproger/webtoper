@@ -23,7 +23,7 @@ import com.intellij.util.xml.Required;
 
 public interface Argument extends DomElement {
     @Required
-    GenericAttributeValue<String> getName(); // todo should be unique with siblings
+    GenericAttributeValue<String> getName(); // todo #WT-31
 
     @Required
     @Attribute("value")

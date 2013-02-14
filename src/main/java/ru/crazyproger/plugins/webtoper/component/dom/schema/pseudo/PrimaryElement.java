@@ -50,5 +50,5 @@ public interface PrimaryElement extends CustomChildrenContainer, DomElement {
     @SubTagList("filter")
     List<Filter> getFilters();
 
-    // todo modify(after, before), insert, remove
+    // todo #WT-35
 }

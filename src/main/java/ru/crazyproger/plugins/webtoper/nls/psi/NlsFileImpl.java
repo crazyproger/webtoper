@@ -82,7 +82,7 @@ public class NlsFileImpl extends PropertiesFileImpl {
         return getAllPropertiesRecursive(Sets.<NlsFileImpl>newHashSet(this));
     }
 
-    private Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) { // todo must be cached
+    private Collection<IProperty> getAllPropertiesRecursive(@NotNull Set<NlsFileImpl> processedFiles) { // todo #WT-30
         Collection<NlsFileImpl> includedFiles = getIncludedFiles();
         Map<String, IProperty> keyToProperty = Maps.newHashMap();
         for (NlsFileImpl nlsFile : includedFiles) {  // order matters!
@@ -98,7 +98,7 @@ public class NlsFileImpl extends PropertiesFileImpl {
     }
 
     @Nullable
-    public String getNlsName() { // todo must be cached
+    public String getNlsName() {
         for (VirtualFile folder : NlsUtils.getAllNlsRoots(getProject())) {
             if (folder != null) {
                 VirtualFile file = getVirtualFile();

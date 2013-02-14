@@ -46,8 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * todo tests
- * todo refactor
+ * todo #WT-34
  */
 public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement> {
     public static final Pattern EXTENDS_PATTERN = Pattern.compile("\\s*(\\w+)\\s*:\\s*/?(.+)\\s*");
@@ -86,7 +85,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
     @Nullable
     @Override
     public PrimaryElement fromString(@Nullable @NonNls String s, ConvertContext context) {
-        // todo support another formats of references (p40)
+        // todo #WT-33
         if (StringUtils.isEmpty(s)) return null;
         Matcher matcher = ExtendsModifiesConverter.EXTENDS_PATTERN.matcher(s);
         if (!matcher.matches()) return null;

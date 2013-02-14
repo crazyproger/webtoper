@@ -94,11 +94,9 @@ public class NlsUtils {
         return getNlsRoots(facets);
     }
 
-    /**
-     * todo here should be module instead of project, for using layout inheritance
-     */
     @NotNull
-    public static Set<NlsFileImpl> getNlsFiles(String nlsName, Project project) {
+    public static Set<NlsFileImpl> getNlsFiles(String nlsName, Module module) {
+        Project project = module.getProject();
         VirtualFile[] nlsRoots = getAllNlsRoots(project);
         String[] pathChunks = nlsNameToPathChunks(nlsName);
         if (ArrayUtils.isEmpty(pathChunks)) return Collections.emptySet();
