@@ -17,6 +17,7 @@
 package ru.crazyproger.plugins.webtoper;
 
 import com.intellij.facet.FacetManager;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.javaee.web.WebRoot;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
@@ -156,5 +157,11 @@ public class Utils {
         }
         assert scope != null;
         return scope;
+    }
+
+    @NotNull
+    public static GlobalSearchScope getXmlConfigsScope(Module module) {
+        GlobalSearchScope rootsScope = Utils.getWebRootsScope(module);
+        return GlobalSearchScope.getScopeRestrictedByFileTypes(rootsScope, XmlFileType.INSTANCE);
     }
 }

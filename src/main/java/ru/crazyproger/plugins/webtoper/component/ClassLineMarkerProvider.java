@@ -28,6 +28,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -57,7 +58,9 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
     @Override
     public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull Collection<LineMarkerInfo> result) {
         for (PsiElement element : elements) {
-            if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass) {
+            if (element instanceof PsiIdentifier
+                    && element.getParent() instanceof PsiClass
+                    && element.getContainingFile() instanceof PsiJavaFile) {
                 collectClassLineMarkers((PsiClass) element.getParent(), result);
             }
         }
@@ -82,7 +85,7 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
 
     private Collection<PsiElement> getNavigatablePsiElements(PsiClass element, Module module) {
         Collection<PsiElement> elements = new ArrayList<PsiElement>();
-        PsiReference[] references = ReferencesSearch.search(element, Utils.getWebRootsScope(module), false).toArray(new PsiReference[0]);
+        PsiReference[] references = ReferencesSearch.search(element, Utils.getXmlConfigsScope(module), false).toArray(new PsiReference[0]);
         DomManager domManager = DomManager.getDomManager(element.getProject());
         for (PsiReference reference : references) {
             PsiElement referenceElement = reference.getElement();
