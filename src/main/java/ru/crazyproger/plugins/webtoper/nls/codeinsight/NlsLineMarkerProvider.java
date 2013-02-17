@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import javax.swing.*;
+import javax.swing.Icon;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -171,7 +171,7 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
         targets = filter(targets, Predicates.notNull());
         builder.setTargets(targets);
         String tooltipText;
-        if (targets.size() > 1) {
+        if (targets.size() > 1) {  // todo #WT-39
             tooltipText = message(info.getMultiBundleKey());
         } else {
             PsiFile psiFile = targets.iterator().next().getContainingFile();

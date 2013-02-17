@@ -16,16 +16,8 @@
 
 package ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo;
 
-import com.intellij.util.xml.Attribute;
+import com.intellij.openapi.util.Iconable;
 import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.NameValue;
 
-public interface IdentifiedById extends DomElement {
-    @Attribute
-    @NameValue
-    GenericAttributeValue<String> getId();
-
-    @Attribute
-    GenericAttributeValue<Boolean> getNotdefined();
+public interface DomIconable extends DomElement, Iconable {
 }

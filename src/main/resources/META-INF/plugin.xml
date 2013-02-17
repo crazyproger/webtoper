@@ -76,6 +76,12 @@ on how to target different products -->
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
 
         <dom.fileDescription implementation="ru.crazyproger.plugins.webtoper.component.dom.ConfigFileDescription"/>
+        <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Action"
+                            implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.ActionImpl"/>
+        <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.Precondition"
+                            implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.PreconditionImpl"/>
+        <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Component"
+                            implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.ComponentImpl"/>
         <localInspection language="XML" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
                          shortName="EmptyInspection" groupKey="webtoper.inspections.group.name"

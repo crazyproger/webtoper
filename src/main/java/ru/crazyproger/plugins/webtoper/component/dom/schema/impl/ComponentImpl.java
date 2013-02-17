@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo;
+package ru.crazyproger.plugins.webtoper.component.dom.schema.impl;
 
-import com.intellij.util.xml.Attribute;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.NameValue;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Component;
+import ru.crazyproger.plugins.webtoper.config.Icons;
 
-public interface IdentifiedById extends DomElement {
-    @Attribute
-    @NameValue
-    GenericAttributeValue<String> getId();
+import javax.swing.Icon;
 
-    @Attribute
-    GenericAttributeValue<Boolean> getNotdefined();
+public abstract class ComponentImpl implements Component {
+    @Override
+    public Icon getIcon(@IconFlags int flags) {
+        return Icons.C16;
+    }
 }

@@ -21,10 +21,11 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.SubTag;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Pages;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.DomIconable;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-public interface Component extends PrimaryElement, IdentifiedById, DomElement {
+public interface Component extends PrimaryElement, IdentifiedById, DomElement, DomIconable {
     @SubTag("class")
     GenericDomValue<PsiClass> getClassValue();
 

@@ -17,6 +17,7 @@
 package ru.crazyproger.plugins.webtoper.component.dom.schema.primary;
 
 import com.intellij.util.xml.DomElement;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.DomIconable;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ExecutionContainer;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ParamsContainer;
@@ -24,5 +25,5 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.Preconditions
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
 public interface Action extends PrimaryElement, IdentifiedById, ParamsContainer, ExecutionContainer,
-        PreconditionsContainer, DomElement {
+        PreconditionsContainer, DomElement, DomIconable {
 }
