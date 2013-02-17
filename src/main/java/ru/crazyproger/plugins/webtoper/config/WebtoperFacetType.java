@@ -52,6 +52,6 @@ public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetCon
     @Nullable
     @Override
     public Icon getIcon() {
-        return WebtoperIcons.WEBTOPER_16;
+        return Icons.W16;
     }
 }

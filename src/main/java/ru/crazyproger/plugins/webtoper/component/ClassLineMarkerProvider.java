@@ -22,7 +22,6 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -40,14 +39,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
+import ru.crazyproger.plugins.webtoper.config.Icons;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class ClassLineMarkerProvider implements LineMarkerProvider {
-    public static final Icon COMPONENT_LINE_MARK = IconLoader.getIcon("/icons/puzzle_green_16.png");
 
     @Nullable
     @Override
@@ -76,7 +74,7 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
         if (module == null) return;
         Collection<PsiElement> elements = getNavigatablePsiElements(element, module);
         if (elements.isEmpty()) return;
-        NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(COMPONENT_LINE_MARK);
+        NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(Icons.C16);
         builder.setTargets(elements);
         PsiIdentifier identifier = PsiTreeUtil.getChildOfType(element, PsiIdentifier.class);
         if (identifier == null) return;
