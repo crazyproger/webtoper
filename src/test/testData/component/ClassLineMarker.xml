@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<config version="1.0">
+    <scope>
+        <component id="Document"
+                   extends="AbstractDocument:/layer1/config/document.xml">
+            <class>SingleUsage</class>
+        </component>
+        <action>
+            <execution class="MultipleUsage">
+            </execution>
+            <preconditions>
+                <precondition class="MultipleUsage"/>
+            </preconditions>
+        </action>
+    </scope>
+</config>

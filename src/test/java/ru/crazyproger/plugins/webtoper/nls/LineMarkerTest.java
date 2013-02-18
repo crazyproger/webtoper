@@ -16,26 +16,21 @@
 
 package ru.crazyproger.plugins.webtoper.nls;
 
-import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
 import com.intellij.lang.properties.PropertiesFileType;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-
-import java.util.List;
+import ru.crazyproger.plugins.webtoper.LineMarkertestCase;
 
 import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
 /**
  * @see ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsLineMarkerProvider
  */
-public class LineMarkerTest extends NlsTestCase {
+public class LineMarkerTest extends LineMarkertestCase {
 
     public static final String EXT = PropertiesFileType.DOT_DEFAULT_EXTENSION;
 
     @Override
     protected String getTestDataPath() {
-        return super.getTestDataPath() + "/linemarker";
+        return super.getTestDataPath() + "/nls/linemarker";
     }
 
     // tests for 'overriding'
@@ -71,22 +66,5 @@ public class LineMarkerTest extends NlsTestCase {
         myFixture.configureByFiles("rootPack/" + getTestName(true) + EXT, "simpleChild" + EXT, "secondLevel" + EXT);
         doTest(message("nls.lineMarker.overridden.tooltip.multiple"),
                 message("nls.lineMarker.overridden.tooltip.oneBundle", "secondLevel"));
-    }
-
-    private void doTest(String... texts) {
-        final Editor editor = myFixture.getEditor();
-        final Project project = myFixture.getProject();
-
-        myFixture.doHighlighting();
-
-        final List<LineMarkerInfo> infoList = DaemonCodeAnalyzerImpl.getLineMarkers(editor.getDocument(), project);
-        assertNotNull(infoList);
-        assertEquals(texts.length, infoList.size());
-        for (int i = 0; i < infoList.size(); i++) {
-            LineMarkerInfo markerInfo = infoList.get(i);
-            assertNotNull(markerInfo);
-            String tooltip = markerInfo.getLineMarkerTooltip();
-            assertEquals(texts[i], tooltip);
-        }
     }
 }
