@@ -16,6 +16,7 @@
 
 package ru.crazyproger.plugins.webtoper.component;
 
+import com.google.common.collect.Iterables;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
@@ -76,6 +77,8 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
     private void collectClassLineMarkers(PsiClass element, Collection<LineMarkerInfo> result) {
         ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
         PsiFile containingFile = element.getContainingFile();
+        PsiIdentifier identifier = PsiTreeUtil.getChildOfType(element, PsiIdentifier.class);
+        if (identifier == null) return;
         if (containingFile == null) return;
         VirtualFile virtualFile = containingFile.getVirtualFile();
         if (virtualFile == null) return;
@@ -83,14 +86,19 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
         if (module == null) return;
         Collection<PsiElement> elements = getNavigatablePsiElements(element, module);
         if (elements.isEmpty()) return;
-        NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(Icons.C16);
+        Icon icon;
+        MyPsiElementCellRenderer renderer = new MyPsiElementCellRenderer(DomManager.getDomManager(element.getProject()));
+        if (elements.size() > 1) {
+            icon = Icons.W16;
+        } else {
+            icon = renderer.getIcon(Iterables.getFirst(elements, null));
+        }
+        NavigationGutterIconBuilder<PsiElement> builder = NavigationGutterIconBuilder.create(icon);
         builder.setTargets(elements);
-        PsiIdentifier identifier = PsiTreeUtil.getChildOfType(element, PsiIdentifier.class);
-        if (identifier == null) return;
         builder.setPopupTitle(message("class.lineMarker.popupTitle"));
         builder.setTooltipTitle(message("class.lineMarker.tooltip.title"));
         builder.setNamer(new XmlFileByElementNamer());
-        builder.setCellRenderer(new MyPsiElementCellRenderer(DomManager.getDomManager(element.getProject())));
+        builder.setCellRenderer(renderer);
         result.add(builder.createLineMarkerInfo(identifier));
     }
 
