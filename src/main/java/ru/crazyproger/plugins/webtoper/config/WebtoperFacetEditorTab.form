@@ -14,6 +14,7 @@
         </constraints>
         <properties>
           <text value="&amp;Parent layer:"/>
+          <visible value="false"/>
         </properties>
       </component>
       <vspacer id="ce0c4">
@@ -36,7 +37,9 @@
             <preferred-size width="100" height="-1"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <visible value="false"/>
+        </properties>
       </component>
       <component id="1012e" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="pNlsRoot">
         <constraints>
