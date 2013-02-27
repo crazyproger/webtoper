@@ -17,7 +17,7 @@
 <idea-plugin version="2">
     <id>ru.crazyproger.plugins.webtoper</id>
     <name>Webtoper</name>
-    <version>0.5</version>
+    <version>0.5.1</version>
     <vendor email="vladimir.rudev@gmail.com">Vladimir Rudev</vendor>
 
     <description><![CDATA[
@@ -25,7 +25,9 @@
         Most important is:
         <ul>
             <li>Supporting nls(navigation, hierarchy)</li>
-            <li>Component model</li>
+            <li>Component model(navigation, autocomletion)</li>
+            <li>Nls completion</li>
+            <li>Gutter icons</li>
         </ul>
 
         <strong>Bug tracker page:</strong>
@@ -43,6 +45,9 @@
             </li>
             <li>0.5: Component configuration improvements(first step), gutter icon for class used in component(<a
                     href="http://crazyproger.myjetbrains.com/youtrack/releaseNotes?q=Fix+versions%3A+v0.5">report</a>)
+            </li>
+            <li>0.5.1: NLS overrides/overridden gutter icons, class gutter improvements(<a
+                    href="http://crazyproger.myjetbrains.com/youtrack/releaseNotes?q=Fix+versions%3A+v0.5.1">report</a>)
             </li>
         </ul>
         ]]>
