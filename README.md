@@ -20,7 +20,7 @@ usages in configuration files, jsp navigation, 'extends=...' and 'modifies=...' 
 All planned futures and improvements can be viewed [here](http://crazyproger.myjetbrains.com/youtrack/search/?q=project%3A+WT+%23Unresolved+%23Feature).
 
 ## Installation
-Plugin is not yet published in JetBrains plugin repository, but last(and not only) release can be obtained [here](todo link)
+Plugin is not yet published in JetBrains plugin repository, but last(and not only) release can be obtained [here](https://tom-crazyproger.rhcloud.com/nexus/service/local/repositories/releases/content/ru/crazyproger/plugins/webtoper/0.5.1/webtoper-0.5.1.jar)
 Current version supports IDEA Ultimate Edition since 12.0.4 version.
 To install:
 
