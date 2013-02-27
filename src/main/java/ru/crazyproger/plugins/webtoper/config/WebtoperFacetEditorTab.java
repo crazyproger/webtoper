@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Arrays;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacetEditorTab extends FacetEditorTab {
     private final WebtoperFacetConfiguration configuration;
     private final FacetEditorContext context;

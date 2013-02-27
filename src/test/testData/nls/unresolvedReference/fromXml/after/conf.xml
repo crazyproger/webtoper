@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config version="1.0">
+    <scope>
+        <component>
+            <nlsbundle>newFolder.second.created</nlsbundle>
+        </component>
+    </scope>
+</config>

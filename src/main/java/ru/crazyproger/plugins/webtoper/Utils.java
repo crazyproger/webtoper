@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package ru.crazyproger.plugins.webtoper;
 
 import com.intellij.facet.FacetManager;
+import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.javaee.web.WebRoot;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
@@ -36,12 +37,10 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public class Utils {
     public static void reparseFilesInRoots(Project project, Iterable<VirtualFile> roots, String extension) {
         List<VirtualFile> files = new LinkedList<VirtualFile>();
@@ -69,22 +68,27 @@ public class Utils {
         FileContentUtil.reparseFiles(project, files, true);
     }
 
-    // todo should accept module instead of project
+    // todo #WT-27
     @NotNull
     public static List<WebtoperFacet> getWebtoperFacets(Project project) {
         ModuleManager moduleManager = ModuleManager.getInstance(project);
         Module[] modules = moduleManager.getModules();
         List<WebtoperFacet> facets = new ArrayList<WebtoperFacet>(modules.length);
         for (Module module : modules) {
-            FacetManager facetManager = FacetManager.getInstance(module);
-            facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
+            Collection<WebtoperFacet> facetsByType = getWebtoperFacets(module);
+            facets.addAll(facetsByType);
         }
         return facets;
     }
 
+    public static Collection<WebtoperFacet> getWebtoperFacets(Module module) {
+        FacetManager facetManager = FacetManager.getInstance(module);
+        return facetManager.getFacetsByType(WebtoperFacet.ID);
+    }
+
     /**
-     * todo try to find configuration inside artifact file system(maybe it will be faster) - best variant
-     * todo searching order - first files must be from closest layers
+     * todo #WT-29
+     * todo #WT-28
      */
     @Nullable
     public static VirtualFile findFileInArtifact(String configPath, Project project) {
@@ -153,5 +157,11 @@ public class Utils {
         }
         assert scope != null;
         return scope;
+    }
+
+    @NotNull
+    public static GlobalSearchScope getXmlConfigsScope(Module module) {
+        GlobalSearchScope rootsScope = Utils.getWebRootsScope(module);
+        return GlobalSearchScope.getScopeRestrictedByFileTypes(rootsScope, XmlFileType.INSTANCE);
     }
 }

@@ -21,9 +21,6 @@ import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.SubTag;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-/**
- * @author crazyproger
- */
 public interface Application extends PrimaryElement, DomElement {
     @SubTag("hideinvalidactions")
     GenericDomValue<Boolean> isHideInvalidActions();

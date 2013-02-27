@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetConfiguration> {
     public WebtoperFacetType() {
         super(WebtoperFacet.ID, "webtoper", "Webtoper", WebFacet.ID);
@@ -55,6 +52,6 @@ public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetCon
     @Nullable
     @Override
     public Icon getIcon() {
-        return WebtoperIcons.WEBTOPER_16;
+        return Icons.W16;
     }
 }

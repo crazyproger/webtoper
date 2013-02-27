@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@ import com.intellij.psi.PsiReferenceRegistrar;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-/**
- * @author crazyproger
- */
 public class NlsIncludesReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(PsiReferenceRegistrar registrar) {

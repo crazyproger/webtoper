@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,8 @@
 
 package ru.crazyproger.plugins.webtoper.nls.codeinsight;
 
-import com.google.common.base.Joiner;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-import org.apache.commons.lang.StringUtils;
-import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
-/**
- * @author crazyproger
- */
 public class TextElementNlsReference extends AbstractNlsReference<PsiElement> {
 
     public TextElementNlsReference(PsiElement element, PsiElement resolveTo) {
@@ -32,14 +25,7 @@ public class TextElementNlsReference extends AbstractNlsReference<PsiElement> {
     }
 
     @Override
-    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        final String oldText = myElement.getText();
-        final String[] chunks = NlsUtils.nlsNameToPathChunks(oldText);
-        String newFileName = StringUtils.substringBeforeLast(newElementName, ".");
-        assert chunks != null;
-        chunks[chunks.length - 1] = newFileName;
-        final String newNlsName = Joiner.on(".").join(chunks);
-        return getManipulator().handleContentChange(myElement, getRangeInElement(), newNlsName);
+    protected String getElementText() {
+        return getElement().getText();
     }
-
 }

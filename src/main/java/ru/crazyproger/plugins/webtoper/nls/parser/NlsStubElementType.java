@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,6 @@ import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 
 import java.io.IOException;
 
-/**
- * @author vrudev
- */
 public abstract class NlsStubElementType<StubT extends StubElement, PsiT extends PsiElement> extends IStubElementType<StubT, PsiT> {
     public NlsStubElementType(String debugName) {
         super(debugName, NlsLanguage.INSTANCE);

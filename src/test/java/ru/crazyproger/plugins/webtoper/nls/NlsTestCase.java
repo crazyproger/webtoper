@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package ru.crazyproger.plugins.webtoper.config;
+package ru.crazyproger.plugins.webtoper.nls;
 
-import com.intellij.openapi.util.IconLoader;
+import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 
-import javax.swing.*;
 
-/**
- * @author crazyproger
- */
-public class WebtoperIcons {
-    private static Icon load(String path) {
-        return IconLoader.getIcon(path, WebtoperIcons.class);
+public abstract class NlsTestCase extends WebtoperLightFixtureTestCase {
+
+    public static final String NLS_FOLDER = "nls";
+
+    @Override
+    protected String getTestDataPath() {
+        return super.getTestDataPath() + "/" + NLS_FOLDER;
     }
-
-    public static final Icon WEBTOPER_16 = load("/icons/wletter16.png"); // 48x48
-    public static final Icon WEBTOPER = load("/icons/wletter48.png"); // 48x48
 }

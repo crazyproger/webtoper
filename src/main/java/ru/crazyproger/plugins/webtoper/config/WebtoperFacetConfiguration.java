@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author crazyproger
- */
 public class WebtoperFacetConfiguration implements FacetConfiguration {
     public static final String WEBTOP_ROOT_LAYER = "Webtop";
     public static final String PARENT_LAYER_ATTRIBUTE = "parentLayer";

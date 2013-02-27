@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludeProperty;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsIncludePropertyStub;
 
-/**
- * @author crazyproger
- */
 public class NlsIncludePropertyImpl extends NlsStubElementImpl<NlsIncludePropertyStub> implements NlsIncludeProperty {
 
     public NlsIncludePropertyImpl(final NlsIncludePropertyStub stub) {

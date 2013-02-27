@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.XmlTagPattern;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.PsiReferenceContributor;
+import com.intellij.psi.PsiReferenceProvider;
+import com.intellij.psi.PsiReferenceRegistrar;
 import com.intellij.psi.jsp.JspFile;
 import com.intellij.psi.xml.XmlTokenType;
 import com.intellij.util.ProcessingContext;
@@ -31,9 +38,6 @@ import ru.crazyproger.plugins.webtoper.Utils;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.XmlPatterns.xmlTag;
 
-/**
- * @author crazyproger
- */
 public class JspReferenceContributor extends PsiReferenceContributor {
 
     public static final XmlTagPattern.Capture COMPONENT_CAPTURE = xmlTag().withName("component").withParent(

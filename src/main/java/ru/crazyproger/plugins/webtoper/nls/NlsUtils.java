@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import com.intellij.lang.properties.PropertiesFileType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.GlobalSearchScopes;
+import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
@@ -36,11 +36,12 @@ import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacetConfiguration;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-/**
- * @author crazyproger
- */
 public class NlsUtils {
     @Nullable
     public static GlobalSearchScope getNlsScope(@NotNull Project project) {
@@ -56,34 +57,26 @@ public class NlsUtils {
         return scope;
     }
 
-    @Nullable
-    public static String getNlsName(@NotNull VirtualFile file, @NotNull Project project) {
-        for (VirtualFile folder : getAllNlsRoots(project)) {
-            if (folder != null) {
-                if (VfsUtil.isAncestor(folder, file, true)) {
-                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), '/');
-                    assert relativePath != null : "relative path must be";
-                    String dottedPath = relativePath.replaceAll("/", ".");
-                    return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
-                }
-            }
-        }
-        return null;
-    }
-
-    @Nullable
+    @NotNull
     public static String[] nlsNameToPathChunks(@NotNull String nlsName) {
-        if (StringUtil.isEmpty(nlsName)) {
-            return null;
-        }
-        String[] chunks = nlsName.split("\\.");
+        String[] chunks = nlsName.trim().split("\\.");
         chunks[chunks.length - 1] += PropertiesFileType.DOT_DEFAULT_EXTENSION;
         return chunks;
     }
 
     @NotNull
-    public static List<VirtualFile> getAllNlsRoots(Project project) {
+    public static String nlsNameToPath(@NotNull String name, @NotNull String separator) {
+        return name.replaceAll("\\.", separator) + PropertiesFileType.DOT_DEFAULT_EXTENSION;
+    }
+
+    @NotNull
+    public static VirtualFile[] getAllNlsRoots(Project project) {
         List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
+        return getNlsRoots(facets);
+    }
+
+    @NotNull
+    private static VirtualFile[] getNlsRoots(Collection<WebtoperFacet> facets) {
         List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>(facets.size());
         for (WebtoperFacet facet : facets) {
             WebtoperFacetConfiguration configuration = facet.getConfiguration();
@@ -92,17 +85,21 @@ public class NlsUtils {
                 nlsRoots.addAll(filtered);
             }
         }
-        return nlsRoots;
+        return nlsRoots.toArray(new VirtualFile[nlsRoots.size()]);
     }
 
-    /**
-     * todo here should be module instead of project, for using layout inheritance
-     */
     @NotNull
-    public static Set<NlsFileImpl> getNlsFiles(String nlsName, Project project) {
-        List<VirtualFile> nlsRoots = getAllNlsRoots(project);
+    public static VirtualFile[] getNlsRoots(Module module) {
+        Collection<WebtoperFacet> facets = Utils.getWebtoperFacets(module);
+        return getNlsRoots(facets);
+    }
+
+    @NotNull
+    public static Set<NlsFileImpl> getNlsFiles(String nlsName, Module module) {
+        Project project = module.getProject();
+        VirtualFile[] nlsRoots = getAllNlsRoots(project);
         String[] pathChunks = nlsNameToPathChunks(nlsName);
-        if (pathChunks == null) return Collections.emptySet();
+        if (ArrayUtils.isEmpty(pathChunks)) return Collections.emptySet();
 
         Set<NlsFileImpl> nlsFiles = Sets.newHashSet();
         for (VirtualFile nlsRoot : nlsRoots) {

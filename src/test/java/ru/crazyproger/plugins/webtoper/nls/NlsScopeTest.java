@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,13 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.TestSourceBasedTestCase;
-import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
+import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
+import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,18 +40,16 @@ import java.util.List;
 /**
  * Simple test that check configuration of NLS folders and {@link NlsUtils#getNlsScope(com.intellij.openapi.project.Project)} method.
  * <p/>
- *
- * @author crazyproger
  */
 public class NlsScopeTest extends TestSourceBasedTestCase {
 
     @Override
     protected String getTestPath() {
-        return WebtoperTestHelper.TEST_DATA_PATH + "/nls";
+        return WebtoperLightFixtureTestCase.TEST_DATA_PATH + "/" + NlsTestCase.NLS_FOLDER;
     }
 
     protected String getTestDataPath() {
-        return WebtoperTestHelper.getRootPath();
+        return WebtoperLightFixtureTestCase.getRootPath();
     }
 
     @Override
@@ -95,7 +95,9 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
         GlobalSearchScope nlsScope = NlsUtils.getNlsScope(getProject());
         Collection<VirtualFile> files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, nlsScope);
         VirtualFile file = files.iterator().next();
-        String fullName = NlsUtils.getNlsName(file, getProject());
+        PsiFile psiFile = getPsiManager().findFile(file);
+        assertTrue(psiFile instanceof NlsFileImpl);
+        String fullName = ((NlsFileImpl) psiFile).getNlsName();
         assertEquals("ru.crazyproger.l1.document.Document", fullName);
     }
 

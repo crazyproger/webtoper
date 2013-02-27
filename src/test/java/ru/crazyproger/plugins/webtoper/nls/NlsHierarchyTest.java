@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,12 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
-import ru.crazyproger.plugins.webtoper.WebtoperTestHelper;
 
-/**
- * @author crazyproger
- */
-public class NlsHierarchyTest extends LightCodeInsightFixtureTestCase {
+
+public class NlsHierarchyTest extends NlsTestCase {
 
     protected String getTestDataPath() {
-        return WebtoperTestHelper.getTestDataPath() + "/nls/" + "/hierarchy";
+        return super.getTestDataPath() + "/hierarchy";
     }
 
     public void testOneParent() throws Throwable {

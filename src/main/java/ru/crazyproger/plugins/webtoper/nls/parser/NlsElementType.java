@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
 import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 
-/**
- * @author crazyproger
- */
 public class NlsElementType extends IElementType {
     public NlsElementType(@NonNls String debugName) {
         super(debugName, NlsLanguage.INSTANCE);

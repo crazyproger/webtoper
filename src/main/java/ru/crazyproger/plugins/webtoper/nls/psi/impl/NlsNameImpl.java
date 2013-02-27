@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author crazyproger
- */
 public class NlsNameImpl extends LeafPsiElement {
     public NlsNameImpl(IElementType type, CharSequence text) {
         super(type, text);

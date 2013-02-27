@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,6 @@ import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsIncludesListStubImpl;
 
 import java.io.IOException;
 
-/**
- * @author crazyproger
- */
 public class NlsIncludesListStubElementType extends NlsStubElementType<NlsIncludesListStub, NlsIncludesList> {
     public NlsIncludesListStubElementType() {
         super("NLS_INCLUDES_LIST");

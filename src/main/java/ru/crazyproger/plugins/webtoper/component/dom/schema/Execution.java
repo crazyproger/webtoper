@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Vladimir Rudev
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.crazyproger.plugins.webtoper.component.dom.schema;
 
 import com.intellij.util.xml.DomElement;
@@ -7,11 +23,7 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ArgumentsCont
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ClassAttributeContainer;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.CustomChildrenContainer;
 
-/**
- * @author crazyproger
- *         todo if arguments provided, then container sibling must be(component optional)
- *         (p221)
- */
+// todo #WT-36
 public interface Execution extends ArgumentsContainer, ClassAttributeContainer, CustomChildrenContainer, DomElement {
 
     GenericDomValue<Permit> getPermit();
@@ -22,7 +34,7 @@ public interface Execution extends ArgumentsContainer, ClassAttributeContainer, 
     @SubTag("navigation")
     GenericDomValue<NavigatonType> getNavigationType();
 
-    GenericDomValue<String> getComponent(); // todo reference to component
+    GenericDomValue<String> getComponent(); // todo #WT-37
 
-    GenericDomValue<String> getContainer(); // todo reference to container(component)
+    GenericDomValue<String> getContainer(); // todo #WT-37
 }

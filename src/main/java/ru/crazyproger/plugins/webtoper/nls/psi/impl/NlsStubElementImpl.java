@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vladimir Rudev
+ * Copyright 2013 Vladimir Rudev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,6 @@ import com.intellij.psi.stubs.StubElement;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.nls.NlsLanguage;
 
-/**
- * @author crazyproger
- */
 public class NlsStubElementImpl<T extends StubElement> extends StubBasedPsiElementBase<T> {
     public NlsStubElementImpl(@NotNull T stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);

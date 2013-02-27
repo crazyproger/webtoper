@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2012 Vladimir Rudev
+  ~ Copyright 2013 Vladimir Rudev
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 <idea-plugin version="2">
     <id>ru.crazyproger.plugins.webtoper</id>
     <name>Webtoper</name>
-    <version>0.5</version>
+    <version>0.5.1</version>
     <vendor email="vladimir.rudev@gmail.com">Vladimir Rudev</vendor>
 
     <description><![CDATA[
@@ -25,7 +25,9 @@
         Most important is:
         <ul>
             <li>Supporting nls(navigation, hierarchy)</li>
-            <li>Component model</li>
+            <li>Component model(navigation, autocomletion)</li>
+            <li>Nls completion</li>
+            <li>Gutter icons</li>
         </ul>
 
         <strong>Bug tracker page:</strong>
@@ -44,12 +46,15 @@
             <li>0.5: Component configuration improvements(first step), gutter icon for class used in component(<a
                     href="http://crazyproger.myjetbrains.com/youtrack/releaseNotes?q=Fix+versions%3A+v0.5">report</a>)
             </li>
+            <li>0.5.1: NLS overrides/overridden gutter icons, class gutter improvements(<a
+                    href="http://crazyproger.myjetbrains.com/youtrack/releaseNotes?q=Fix+versions%3A+v0.5.1">report</a>)
+            </li>
         </ul>
         ]]>
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="123.72" until-build="123.9999"/>
+    <idea-version since-build="123.169" until-build="128.9999"/>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
 on how to target different products -->
@@ -76,10 +81,16 @@ on how to target different products -->
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
 
         <dom.fileDescription implementation="ru.crazyproger.plugins.webtoper.component.dom.ConfigFileDescription"/>
-        <localInspection language="XML" shortName="EmptyInspection" displayName="Empty inspection"
-                         enabledByDefault="true" level="ERROR"
+        <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Action"
+                            implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.ActionImpl"/>
+        <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.Precondition"
+                            implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.PreconditionImpl"/>
+        <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Component"
+                            implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.ComponentImpl"/>
+        <localInspection language="XML" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
-                         groupName="Empty inspection name"/>
+                         shortName="EmptyInspection" groupKey="webtoper.inspections.group.name"
+                         key="emptyInspection.inspection.displayName"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="ru.crazyproger.plugins.webtoper.component.ClassLineMarkerProvider"/>
 
@@ -88,7 +99,7 @@ on how to target different products -->
         <lang.substitutor language="Properties"
                           implementationClass="ru.crazyproger.plugins.webtoper.nls.PropertiesToNlsSubstitutor"/>
         <completion.contributor language="Nls" order="first"
-                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesCompletionContributor"/>
+                                implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsCompletionContributor"/>
         <psi.referenceContributor language="Nls"
                                   implementation="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsIncludesReferenceContributor"/>
         <stubElementTypeHolder class="ru.crazyproger.plugins.webtoper.nls.parser.NlsElementTypes"/>
@@ -98,9 +109,12 @@ on how to target different products -->
         <lang.parserDefinition language="Nls"
                                implementationClass="ru.crazyproger.plugins.webtoper.nls.parser.NlsParserDefinition"/>
         <lang.ast.factory language="Nls" implementationClass="ru.crazyproger.plugins.webtoper.nls.psi.NlsASTFactory"/>
-        <annotator language="Nls"
-                   implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsUnresolvedNameAnnotator"/>
-
+        <localInspection language="Nls" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
+                         implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsFileInspection"
+                         shortName="NlsInspection" groupKey="webtoper.inspections.group.name"
+                         key="nlsFiles.inspection.displayName"/>
+        <codeInsight.lineMarkerProvider language="Nls"
+                                        implementationClass="ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsLineMarkerProvider"/>
 
         <errorHandler implementation="ru.crazyproger.plugins.webtoper.ErrorSubmitter"/>
     </extensions>

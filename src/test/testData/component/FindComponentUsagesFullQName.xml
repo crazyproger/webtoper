@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config version="1.0">
+    <scope>
+        <component id="Doc<caret>ument">
+        </component>
+        <component id="ImpDocument" extends="Document:/FindComponentUsagesFullQName.xml">
+        </component>
+        <component modifies="Document:/FindComponentUsagesFullQName.xml">
+        </component>
+    </scope>
+</config>
