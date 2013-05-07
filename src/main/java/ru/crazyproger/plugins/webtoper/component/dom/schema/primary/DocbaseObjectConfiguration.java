@@ -17,7 +17,17 @@
 package ru.crazyproger.plugins.webtoper.component.dom.schema.primary;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.SubTag;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.Names;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.Types;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-public interface DocbaseObjectConfig extends PrimaryElement, DomElement {
+public interface DocbaseObjectConfiguration extends PrimaryElement, IdentifiedById, DomElement {
+
+    @SubTag
+    Names getNames();
+
+    @SubTag
+    Types getTypes();
 }

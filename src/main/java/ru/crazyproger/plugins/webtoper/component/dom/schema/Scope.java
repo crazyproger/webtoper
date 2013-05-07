@@ -22,7 +22,7 @@ import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Action;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Application;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.AttributeList;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Component;
-import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.DocbaseObjectConfig;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.primary.DocbaseObjectConfiguration;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.ScopeDefiner;
 
 import java.util.List;
@@ -35,8 +35,8 @@ public interface Scope extends ScopeDefiner, DomElement {
     @SubTagList("component")
     List<Component> getComponents();
 
-    @SubTagList("docbaseobjectconfig")
-    List<DocbaseObjectConfig> getDocbaseObjectConfigs();
+    @SubTagList("docbaseobjectconfiguration")
+    List<DocbaseObjectConfiguration> getDocbaseObjectConfigurations();
 
     @SubTagList("application")
     List<Application> getApplications();
