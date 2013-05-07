@@ -29,15 +29,20 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathUtil;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WebtoperFacetEditorTab extends FacetEditorTab {
     private final WebtoperFacetConfiguration configuration;
@@ -87,17 +92,24 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
     @Override
     public void apply() throws ConfigurationException {
         if (!isModified()) return;
-        VirtualFile nlsRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(pNlsRoot.getText()));
-        VirtualFile oldRoot = configuration.getNlsRoot();
-        configuration.setNlsRoot(nlsRoot);
-        configuration.setParentLayer((String) cbParentLayer.getSelectedItem());
-        if (nlsRoot != null) {
-            if (oldRoot != null) {
-                Utils.reparseFilesInRoots(context.getProject(), Arrays.asList(oldRoot, nlsRoot), PropertiesFileType.DEFAULT_EXTENSION);
-            } else {
-                Utils.reparseFilesInRoot(context.getProject(), nlsRoot, PropertiesFileType.DEFAULT_EXTENSION);
+        String nlsText = pNlsRoot.getText();
+        List<VirtualFile> toReparse = new ArrayList<VirtualFile>(2);
+        configuration.getNlsRoots().clear();
+        if (StringUtils.isNotBlank(nlsText)) {
+            VirtualFile nlsRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(nlsText));
+            if (nlsRoot != null) {
+                configuration.setNlsRoot(nlsRoot);
+                toReparse.add(nlsRoot);
             }
         }
+
+        VirtualFile oldRoot = configuration.getNlsRoot();
+        if (oldRoot != null) {
+            toReparse.add(0, oldRoot);
+        }
+        Utils.reparseFilesInRoots(context.getProject(), toReparse, PropertiesFileType.DEFAULT_EXTENSION);
+
+        configuration.setParentLayer((String) cbParentLayer.getSelectedItem());
     }
 
     @Override
