@@ -87,6 +87,9 @@ on how to target different products -->
                             implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.PreconditionImpl"/>
         <dom.implementation interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.primary.Component"
                             implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.ComponentImpl"/>
+        <dom.implementation
+                interfaceClass="ru.crazyproger.plugins.webtoper.component.dom.schema.primary.DocbaseObjectConfiguration"
+                implementationClass="ru.crazyproger.plugins.webtoper.component.dom.schema.impl.DocbaseObjectConfigurationImpl"/>
         <localInspection language="XML" enabledByDefault="true" level="ERROR" bundle="messages.WebtoperBundle"
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
                          shortName="EmptyInspection" groupKey="webtoper.inspections.group.name"

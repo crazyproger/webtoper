@@ -20,10 +20,11 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.SubTag;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Names;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Types;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.DomIconable;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-public interface DocbaseObjectConfiguration extends PrimaryElement, IdentifiedById, DomElement {
+public interface DocbaseObjectConfiguration extends PrimaryElement, IdentifiedById, DomIconable, DomElement {
 
     @SubTag
     Names getNames();
