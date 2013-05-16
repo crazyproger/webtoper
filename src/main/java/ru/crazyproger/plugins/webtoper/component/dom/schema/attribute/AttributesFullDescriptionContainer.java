@@ -4,8 +4,8 @@ import com.intellij.util.xml.SubTagList;
 
 import java.util.List;
 
-public interface AttributesDescriptionContainer {
+public interface AttributesFullDescriptionContainer {
 
     @SubTagList("attribute")
-    List<AttributeDescription> getAttributesDescriptions();
+    List<AttributeFullDescription> getAttributesDescriptions();
 }

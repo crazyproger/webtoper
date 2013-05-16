@@ -17,7 +17,28 @@
 package ru.crazyproger.plugins.webtoper.component.dom.schema.primary;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.Category;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.DataDictionaryPopulation;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.Description;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.attribute.AttributeDescription;
+import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 
-public interface AttributeList extends PrimaryElement, DomElement {
+import java.util.List;
+
+public interface AttributeList extends PrimaryElement, IdentifiedById, DomElement {
+
+    @SubTagList("pseudo_attributes")
+    List<AttributeDescription> getPseudoAttributes();
+
+    @SubTag("desc")
+    Description getDescription();
+
+    @SubTag("data_dictionary_population")
+    DataDictionaryPopulation getDataDictionaryPopulation();
+
+    @SubTag("category")
+    Category getCategory();
 }
