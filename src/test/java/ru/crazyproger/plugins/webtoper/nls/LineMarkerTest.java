@@ -17,14 +17,14 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
 import com.intellij.lang.properties.PropertiesFileType;
-import ru.crazyproger.plugins.webtoper.LineMarkertestCase;
+import ru.crazyproger.plugins.webtoper.LineMarkerTestCase;
 
 import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
 /**
  * @see ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsLineMarkerProvider
  */
-public class LineMarkerTest extends LineMarkertestCase {
+public class LineMarkerTest extends LineMarkerTestCase {
 
     public static final String EXT = PropertiesFileType.DOT_DEFAULT_EXTENSION;
 

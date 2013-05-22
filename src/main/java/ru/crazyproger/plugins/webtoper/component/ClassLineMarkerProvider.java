@@ -84,7 +84,7 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
         if (virtualFile == null) return;
         Module module = fileIndex.getModuleForFile(virtualFile);
         if (module == null) return;
-        Collection<PsiElement> elements = getNavigatablePsiElements(element, module);
+        Collection<PsiElement> elements = getNavigablePsiElements(element, module);
         if (elements.isEmpty()) return;
         Icon icon;
         MyPsiElementCellRenderer renderer = new MyPsiElementCellRenderer(DomManager.getDomManager(element.getProject()));
@@ -102,7 +102,7 @@ public class ClassLineMarkerProvider implements LineMarkerProvider {
         result.add(builder.createLineMarkerInfo(identifier));
     }
 
-    private Collection<PsiElement> getNavigatablePsiElements(PsiClass element, Module module) {
+    private Collection<PsiElement> getNavigablePsiElements(PsiClass element, Module module) {
         Collection<PsiElement> elements = new ArrayList<PsiElement>();
         PsiReference[] references = ReferencesSearch.search(element, Utils.getXmlConfigsScope(module), false).toArray(new PsiReference[0]);
         DomManager domManager = DomManager.getDomManager(element.getProject());

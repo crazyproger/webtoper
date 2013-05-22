@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import javax.swing.Icon;
 import java.util.List;
 
-public abstract class LineMarkertestCase extends WebtoperLightFixtureTestCase {
+public abstract class LineMarkerTestCase extends WebtoperLightFixtureTestCase {
 
     protected void doTest(TextIconTuple... texts) {
         List<LineMarkerInfo> infos = doHighlighting();
