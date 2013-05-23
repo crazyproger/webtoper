@@ -94,6 +94,9 @@ on how to target different products -->
                          implementationClass="ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection"
                          shortName="EmptyInspection" groupKey="webtoper.inspections.group.name"
                          key="emptyInspection.inspection.displayName"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="ru.crazyproger.plugins.webtoper.component.PrimaryElementLineMarkerProvider"/>
+
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="ru.crazyproger.plugins.webtoper.component.ClassLineMarkerProvider"/>
 

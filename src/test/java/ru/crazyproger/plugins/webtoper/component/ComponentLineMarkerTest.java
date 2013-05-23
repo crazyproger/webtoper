@@ -12,7 +12,7 @@ public class ComponentLineMarkerTest extends LineMarkerTestCase {
     // this test was created after ClassLineMarkerProvider was implemented :)
     public static final String CLASS_TOOLTIP = "<html><body>Used in:<br>&nbsp;&nbsp;&nbsp;&nbsp;ClassLineMarker.xml<br></body></html>";
 
-    public static final String PRIMARY_ELEMENT_EXTENDED_TOOLTIP = "<html><body>Extended by:<br>&nbsp;&nbsp;&nbsp;&nbsp;PrimaryElementLineMarkerExtends.xml<br></body></html>";
+    public static final String PRIMARY_ELEMENT_EXTENDED_TOOLTIP = "<html><body>Extended in:<br>&nbsp;&nbsp;&nbsp;&nbsp;PrimaryElementLineMarkerExtends.xml<br></body></html>";
     public static final String PRIMARY_ELEMENT_MODIFIED_TOOLTIP = "<html><body>Modified in:<br>&nbsp;&nbsp;&nbsp;&nbsp;PrimaryElementLineMarkerModifies.xml<br></body></html>";
 
     @Override

@@ -12,4 +12,6 @@ public interface Icons {
     Icon W16 = IconLoader.getIcon("/icons/LetterW16.png");
     Icon P16 = IconLoader.getIcon("/icons/LetterP16.png");
     Icon D16 = IconLoader.getIcon("/icons/LetterD16.png");
+    Icon MODIFIED16 = IconLoader.getIcon("/icons/Modified16.png");
+    Icon EXTENDED16 = IconLoader.getIcon("/icons/Extended16.png");
 }
