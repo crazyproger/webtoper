@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<config version="1.0">
+    <scope>
+        <component id="PrimaryElementLineMarker" extends="PrimaryElementLineMarker:PrimaryElementLineMarkerParent.xml">
+        </component>
+    </scope>
+</config>
