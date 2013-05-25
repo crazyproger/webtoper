@@ -17,7 +17,11 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
 import com.intellij.lang.properties.PropertiesFileType;
+import com.intellij.psi.PsiFile;
+import com.intellij.testFramework.TestDataFile;
+import org.jetbrains.annotations.NonNls;
 import ru.crazyproger.plugins.webtoper.LineMarkerTestCase;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
@@ -36,12 +40,12 @@ public class LineMarkerTest extends LineMarkerTestCase {
     // tests for 'overriding'
 
     public void testSimpleChild() throws Exception {
-        myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT);
+        configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT);
         doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"));
     }
 
     public void testSecondLevel() throws Exception {
-        myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "simpleChild" + EXT);
+        configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "simpleChild" + EXT);
         String simpleChild = message("nls.lineMarker.overrides.tooltip.oneBundle", "simpleChild");
         doTest(simpleChild,
                 message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"),
@@ -49,13 +53,13 @@ public class LineMarkerTest extends LineMarkerTestCase {
     }
 
     public void testRecursiveInclude() throws Exception {
-        myFixture.configureByFiles(getTestName(true) + EXT, "firstRecursive" + EXT);
+        configureByFiles(getTestName(true) + EXT, "firstRecursive" + EXT);
         doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "firstRecursive"),
                 message("nls.lineMarker.overridden.tooltip.oneBundle", "firstRecursive"));
     }
 
     public void testMultipleInclude() throws Exception {
-        myFixture.configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "anotherRoot" + EXT);
+        configureByFiles(getTestName(true) + EXT, "rootPack/root" + EXT, "anotherRoot" + EXT);
         doTest(message("nls.lineMarker.overrides.tooltip.oneBundle", "rootPack.root"),
                 message("nls.lineMarker.overrides.tooltip.multiple"));
     }
@@ -63,8 +67,16 @@ public class LineMarkerTest extends LineMarkerTestCase {
     // tests for 'overridden'
 
     public void testRoot() throws Exception {
-        myFixture.configureByFiles("rootPack/" + getTestName(true) + EXT, "simpleChild" + EXT, "secondLevel" + EXT);
+        configureByFiles("rootPack/" + getTestName(true) + EXT, "simpleChild" + EXT, "secondLevel" + EXT);
         doTest(message("nls.lineMarker.overridden.tooltip.multiple"),
                 message("nls.lineMarker.overridden.tooltip.oneBundle", "secondLevel"));
+    }
+
+    private PsiFile[] configureByFiles(@TestDataFile @NonNls String... filePaths) {
+        for (int i = 0; i < filePaths.length; i++) {
+            String filePath = filePaths[i];
+            filePaths[i] = WebtoperFacet.NLS_ROOT_NAME + "/" + filePath;
+        }
+        return myFixture.configureByFiles(filePaths);
     }
 }

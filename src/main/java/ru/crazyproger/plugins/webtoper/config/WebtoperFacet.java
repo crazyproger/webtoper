@@ -20,11 +20,13 @@ import com.intellij.facet.Facet;
 import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public static final FacetTypeId<WebtoperFacet> ID = new FacetTypeId<WebtoperFacet>("webtoper");
+    public static final String NLS_ROOT_NAME = "strings";
 
     public WebtoperFacet(@NotNull Module module, @NotNull String name, @NotNull WebtoperFacetConfiguration configuration, Facet underlyingFacet) {
         super(getFacetType(), module, name, configuration, underlyingFacet);
@@ -33,5 +35,26 @@ public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public static WebtoperFacetType getFacetType() {
         return (WebtoperFacetType) FacetTypeRegistry.getInstance().findFacetType(ID);
+    }
+
+
+    /**
+     * If facet is not valid - it should not be considered as Webtop layer.
+     *
+     * @return valid configuration or not
+     */
+    public boolean isValid() {
+        VirtualFile facetRoot = getConfiguration().getFacetRoot();
+        return facetRoot != null;
+    }
+
+    public VirtualFile getNlsRoot() {
+        if (!isValid()) {
+            throw new IllegalStateException("Facet is invalid:" + this);
+        }
+        VirtualFile facetRoot = getConfiguration().getFacetRoot();
+        // NPE checked in upper isValid() call
+        //noinspection ConstantConditions
+        return facetRoot.findFileByRelativePath(NLS_ROOT_NAME);
     }
 }

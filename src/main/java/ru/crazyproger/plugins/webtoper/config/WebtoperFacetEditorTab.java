@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -49,24 +50,24 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
     private final FacetEditorContext context;
     private JPanel rootPanel;
     private JComboBox cbParentLayer;
-    private TextFieldWithBrowseButton pNlsRoot;
+    private TextFieldWithBrowseButton pFacetRoot;
     private JLabel lParentLayer;
-    private JLabel lNlsRoot;
+    private JLabel lFacetRoot;
 
     public WebtoperFacetEditorTab(FacetEditorContext editorContext, WebtoperFacetConfiguration configuration) {
         this.configuration = configuration;
         this.context = editorContext;
 
         lParentLayer.setLabelFor(cbParentLayer);
-        lNlsRoot.setLabelFor(pNlsRoot);
-        pNlsRoot.getButton().addActionListener(new MyFolderFieldListener(pNlsRoot, configuration.getNlsRoot(), false, null));
+        lFacetRoot.setLabelFor(pFacetRoot);
+        pFacetRoot.getButton().addActionListener(new MyFolderFieldListener(pFacetRoot, configuration.getFacetRoot(), false, null));
         cbParentLayer.addItem(WebtoperFacetConfiguration.WEBTOP_ROOT_LAYER);
     }
 
     @Nls
     @Override
     public String getDisplayName() {
-        return "Webtoper layer settings";
+        return WebtoperBundle.message("facet.settings.displayName");
     }
 
     @Nullable
@@ -81,9 +82,9 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
         if ((selectedItem == null && configuration.getParentLayer() != null) || !(selectedItem == null || selectedItem.equals(configuration.getParentLayer()))) {
             return true;
         }
-        VirtualFile nlsRoot = configuration.getNlsRoot();
-        String rootText = pNlsRoot.getText();
-        if ((nlsRoot == null && !StringUtil.isEmpty(rootText)) || (nlsRoot != null && checkRelativePath(nlsRoot.getPath(), rootText))) {
+        VirtualFile facetRoot = configuration.getFacetRoot();
+        String rootText = pFacetRoot.getText();
+        if ((facetRoot == null && !StringUtil.isEmpty(rootText)) || (facetRoot != null && checkRelativePath(facetRoot.getPath(), rootText))) {
             return true;
         }
         return false;
@@ -92,21 +93,21 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
     @Override
     public void apply() throws ConfigurationException {
         if (!isModified()) return;
-        String nlsText = pNlsRoot.getText();
+        String facetRootText = pFacetRoot.getText();
         List<VirtualFile> toReparse = new ArrayList<VirtualFile>(2);
-        configuration.getNlsRoots().clear();
-        if (StringUtils.isNotBlank(nlsText)) {
-            VirtualFile nlsRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(nlsText));
-            if (nlsRoot != null) {
-                configuration.setNlsRoot(nlsRoot);
-                toReparse.add(nlsRoot);
+        VirtualFile oldRoot = configuration.getFacetRoot();
+        if (oldRoot != null) {
+            toReparse.add(0, oldRoot);
+            configuration.setFacetRoot(null);
+        }
+        if (StringUtils.isNotBlank(facetRootText)) {
+            VirtualFile facetRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(facetRootText));
+            if (facetRoot != null) {
+                configuration.setFacetRoot(facetRoot);
+                toReparse.add(facetRoot);
             }
         }
 
-        VirtualFile oldRoot = configuration.getNlsRoot();
-        if (oldRoot != null) {
-            toReparse.add(0, oldRoot);
-        }
         Utils.reparseFilesInRoots(context.getProject(), toReparse, PropertiesFileType.DEFAULT_EXTENSION);
 
         configuration.setParentLayer((String) cbParentLayer.getSelectedItem());
@@ -120,11 +121,11 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
         } else {
             cbParentLayer.setSelectedItem(parentLayer);
         }
-        VirtualFile nlsRoot = configuration.getNlsRoot();
-        if (nlsRoot != null) {
-            pNlsRoot.setText(FileUtil.toSystemDependentName(nlsRoot.getPath()));
+        VirtualFile facetRoot = configuration.getFacetRoot();
+        if (facetRoot != null) {
+            pFacetRoot.setText(FileUtil.toSystemDependentName(facetRoot.getPath()));
         } else {
-            pNlsRoot.setText("");
+            pFacetRoot.setText("");
         }
     }
 

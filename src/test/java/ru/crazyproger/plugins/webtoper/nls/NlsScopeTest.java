@@ -29,13 +29,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.TestSourceBasedTestCase;
+import org.jetbrains.annotations.NonNls;
 import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Simple test that check configuration of NLS folders and {@link NlsUtils#getNlsScope(com.intellij.openapi.project.Project)} method.
@@ -57,17 +56,13 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
         super.setUp();
 
         String moduleRootPath = ModuleRootManager.getInstance(getModule()).getContentRoots()[0].getPath();
-        FacetManager facetManager = FacetManager.getInstance(myModule);
+        @NonNls FacetManager facetManager = FacetManager.getInstance(myModule);
         WebFacet container = facetManager.createFacet(WebFacetType.getInstance(), "Web", null);
-        WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
-        List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>();
-        findAndAdd(moduleRootPath + "/layer1", nlsRoots);
-        findAndAdd(moduleRootPath + "/layer2", nlsRoots);
-        findAndAdd(moduleRootPath + "/layer3", nlsRoots);
-
-        facet.getConfiguration().setNlsRoots(nlsRoots);
         final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
-        facetModel.addFacet(facet);
+        findAndAdd(moduleRootPath + "/layer1", facetModel, facetManager, container);
+        findAndAdd(moduleRootPath + "/layer2", facetModel, facetManager, container);
+        findAndAdd(moduleRootPath + "/layer3", facetModel, facetManager, container);
+
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             @Override
             public void run() {
@@ -76,11 +71,14 @@ public class NlsScopeTest extends TestSourceBasedTestCase {
         });
     }
 
-    private void findAndAdd(String filePath, List<VirtualFile> nlsRoots) {
+    private void findAndAdd(@NonNls String filePath, ModifiableFacetModel facetModel, FacetManager facetManager, WebFacet container) {
         VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
-        if (file != null) {
-            nlsRoots.add(file);
+        if (file == null) {
+            return;
         }
+        WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
+        facet.getConfiguration().setFacetRoot(file);
+        facetModel.addFacet(facet);
     }
 
     public void testNlsFilesScope() throws Throwable {

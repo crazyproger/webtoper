@@ -55,7 +55,7 @@ public abstract class WebtoperLightFixtureTestCase extends LightCodeInsightFixtu
         moduleRoot = ModuleRootManager.getInstance(module).getContentRoots()[0];
         container.addWebRoot(moduleRoot, "/");
         WebtoperFacet facet = facetManager.createFacet(WebtoperFacet.getFacetType(), "Webtoper", container);
-        facet.getConfiguration().setNlsRoot(moduleRoot);
+        facet.getConfiguration().setFacetRoot(moduleRoot);
         final ModifiableFacetModel facetModel = facetManager.createModifiableModel();
         facetModel.addFacet(facet);
         ApplicationManager.getApplication().runWriteAction(new Runnable() {

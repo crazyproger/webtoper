@@ -16,8 +16,6 @@
 
 package ru.crazyproger.plugins.webtoper.nls;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.module.Module;
@@ -33,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.Utils;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
-import ru.crazyproger.plugins.webtoper.config.WebtoperFacetConfiguration;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import java.util.ArrayList;
@@ -79,10 +76,12 @@ public class NlsUtils {
     private static VirtualFile[] getNlsRoots(Collection<WebtoperFacet> facets) {
         List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>(facets.size());
         for (WebtoperFacet facet : facets) {
-            WebtoperFacetConfiguration configuration = facet.getConfiguration();
-            if (!configuration.getNlsRoots().isEmpty()) {
-                Collection<VirtualFile> filtered = Collections2.filter(configuration.getNlsRoots(), Predicates.notNull());
-                nlsRoots.addAll(filtered);
+            if (!facet.isValid()) continue;
+            VirtualFile nlsRoot = facet.getNlsRoot();
+            // actually, by specification layer always contain nls root folder,
+            // but what if programmer not yet create this folder
+            if (nlsRoot != null && nlsRoot.isValid()) {
+                nlsRoots.add(nlsRoot);
             }
         }
         return nlsRoots.toArray(new VirtualFile[nlsRoots.size()]);

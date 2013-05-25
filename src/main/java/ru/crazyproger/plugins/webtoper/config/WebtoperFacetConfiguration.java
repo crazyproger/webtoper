@@ -31,15 +31,16 @@ import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class WebtoperFacetConfiguration implements FacetConfiguration {
     public static final String WEBTOP_ROOT_LAYER = "Webtop";
     public static final String PARENT_LAYER_ATTRIBUTE = "parentLayer";
-    public static final String NLS_ROOT_TAG = "nlsRoot";
-    public static final String NLS_ROOT_FOLDER_ATTRIBUTE = "folder";
-    private final List<VirtualFile> nlsRoots = new ArrayList<VirtualFile>();
+    public static final String FACET_ROOT_TAG = "facetRoot";
+    public static final String ROOT_FOLDER_ATTRIBUTE = "folder";
+
+    private VirtualFile facetRoot;
+
     private WebtoperFacet facet;
     private String parentLayer;
 
@@ -62,13 +63,13 @@ public class WebtoperFacetConfiguration implements FacetConfiguration {
     @SuppressWarnings("unchecked")
     public void readExternal(Element element) throws InvalidDataException {
         parentLayer = element.getAttributeValue(PARENT_LAYER_ATTRIBUTE);
-        nlsRoots.clear();
-        List<Element> children = element.getChildren(NLS_ROOT_TAG);
-        for (Element child : children) {
-            String path = child.getAttributeValue(NLS_ROOT_FOLDER_ATTRIBUTE);
-            if (path != null) {
-                nlsRoots.add(LocalFileSystem.getInstance().findFileByPath(path));
-            }
+        facetRoot = null;
+        List<Element> children = element.getChildren(FACET_ROOT_TAG);
+        if (children.isEmpty()) return;
+        Element first = children.get(0);
+        String path = first.getAttributeValue(ROOT_FOLDER_ATTRIBUTE);
+        if (path != null) {
+            facetRoot = LocalFileSystem.getInstance().findFileByPath(path);
         }
     }
 
@@ -77,12 +78,12 @@ public class WebtoperFacetConfiguration implements FacetConfiguration {
         if (parentLayer != null) {
             element.setAttribute(PARENT_LAYER_ATTRIBUTE, parentLayer);
         }
+        if (facetRoot == null) return;
+
         PathMacroManager macroManager = PathMacroManager.getInstance(getFacet().getModule());
-        for (VirtualFile nlsRoot : nlsRoots) {
-            Element folder = new Element(NLS_ROOT_TAG);
-            folder.setAttribute(NLS_ROOT_FOLDER_ATTRIBUTE, nlsRoot.getPath());
-            element.addContent(folder);
-        }
+        Element folder = new Element(FACET_ROOT_TAG);
+        folder.setAttribute(ROOT_FOLDER_ATTRIBUTE, facetRoot.getPath());
+        element.addContent(folder);
         macroManager.collapsePaths(element);
     }
 
@@ -94,22 +95,13 @@ public class WebtoperFacetConfiguration implements FacetConfiguration {
         this.facet = facet;
     }
 
-    public VirtualFile getNlsRoot() {
-        return nlsRoots.isEmpty() ? null : nlsRoots.get(0);
+    @Nullable
+    public VirtualFile getFacetRoot() {
+        return facetRoot;
     }
 
-    public void setNlsRoot(VirtualFile nlsRoot) {
-        nlsRoots.clear();
-        nlsRoots.add(nlsRoot);
-    }
-
-    public void setNlsRoots(List<VirtualFile> nlsRoots) {
-        this.nlsRoots.clear();
-        this.nlsRoots.addAll(nlsRoots);
-    }
-
-    public List<VirtualFile> getNlsRoots() {
-        return nlsRoots;
+    public void setFacetRoot(VirtualFile facetRoot) {
+        this.facetRoot = facetRoot;
     }
 
     public String getParentLayer() {
