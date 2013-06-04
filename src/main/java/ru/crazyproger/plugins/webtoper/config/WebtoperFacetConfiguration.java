@@ -17,32 +17,32 @@
 package ru.crazyproger.plugins.webtoper.config;
 
 import com.intellij.facet.FacetConfiguration;
+import com.intellij.facet.pointers.FacetPointer;
+import com.intellij.facet.pointers.FacetPointersManager;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.components.PathMacroManager;
+import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.List;
 
-public class WebtoperFacetConfiguration implements FacetConfiguration {
-    public static final String WEBTOP_ROOT_LAYER = "Webtop";
-    public static final String PARENT_LAYER_ATTRIBUTE = "parentLayer";
-    public static final String FACET_ROOT_TAG = "facetRoot";
-    public static final String ROOT_FOLDER_ATTRIBUTE = "folder";
-
-    private VirtualFile facetRoot;
+public class WebtoperFacetConfiguration implements FacetConfiguration, PersistentStateComponent<WebtoperFacetConfiguration.State> {
 
     private WebtoperFacet facet;
-    private String parentLayer;
+
+    private VirtualFile facetRoot;
+    private FacetPointer<WebtoperFacet> parentFacetPointer;
+
+    private State myState = new State();
 
     @Nullable
     public static String getModuleDirPath(Module module) {
@@ -59,34 +59,6 @@ public class WebtoperFacetConfiguration implements FacetConfiguration {
         return new FacetEditorTab[]{new WebtoperFacetEditorTab(editorContext, this)};
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void readExternal(Element element) throws InvalidDataException {
-        parentLayer = element.getAttributeValue(PARENT_LAYER_ATTRIBUTE);
-        facetRoot = null;
-        List<Element> children = element.getChildren(FACET_ROOT_TAG);
-        if (children.isEmpty()) return;
-        Element first = children.get(0);
-        String path = first.getAttributeValue(ROOT_FOLDER_ATTRIBUTE);
-        if (path != null) {
-            facetRoot = LocalFileSystem.getInstance().findFileByPath(path);
-        }
-    }
-
-    @java.lang.Override
-    public void writeExternal(Element element) throws WriteExternalException {
-        if (parentLayer != null) {
-            element.setAttribute(PARENT_LAYER_ATTRIBUTE, parentLayer);
-        }
-        if (facetRoot == null) return;
-
-        PathMacroManager macroManager = PathMacroManager.getInstance(getFacet().getModule());
-        Element folder = new Element(FACET_ROOT_TAG);
-        folder.setAttribute(ROOT_FOLDER_ATTRIBUTE, facetRoot.getPath());
-        element.addContent(folder);
-        macroManager.collapsePaths(element);
-    }
-
     public WebtoperFacet getFacet() {
         return facet;
     }
@@ -97,18 +69,84 @@ public class WebtoperFacetConfiguration implements FacetConfiguration {
 
     @Nullable
     public VirtualFile getFacetRoot() {
+        if (facetRoot == null) {
+            Module module = getFacet().getModule();
+            if (myState.root != null) {
+                PathMacroManager macroManager = PathMacroManager.getInstance(module);
+                facetRoot = VirtualFileManager.getInstance().findFileByUrl(macroManager.expandPath(myState.root));
+            }
+        }
         return facetRoot;
     }
 
     public void setFacetRoot(VirtualFile facetRoot) {
         this.facetRoot = facetRoot;
+        myState.root = null;
+        if (facetRoot != null) {
+            PathMacroManager macroManager = PathMacroManager.getInstance(getFacet().getModule());
+            myState.root = macroManager.collapsePath(facetRoot.getUrl());
+        }
     }
 
-    public String getParentLayer() {
-        return parentLayer;
+    public FacetPointer<WebtoperFacet> getParentFacetPointer() {
+        if (parentFacetPointer == null) {
+            if (myState.parentFacetId != null) {
+                parentFacetPointer = FacetPointersManager.getInstance(getFacet().getModule().getProject()).create(myState.parentFacetId);
+            }
+        }
+        return parentFacetPointer;
     }
 
-    public void setParentLayer(String parentLayer) {
-        this.parentLayer = parentLayer;
+    public void setParentFacetPointer(FacetPointer<WebtoperFacet> parentFacetPointer) {
+        this.parentFacetPointer = parentFacetPointer;
+        myState.parentFacetId = null;
+        if (parentFacetPointer != null) {
+            WebtoperFacet parentFacet = parentFacetPointer.getFacet();
+            if (parentFacet != null) {
+                myState.parentFacetId = FacetPointersManager.constructId(parentFacet);
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public State getState() {
+        // should be updated here because of updating in setParentFacetPointer can cause creation of invalid id
+        // (when module or facet renamed)
+        if (parentFacetPointer != null) {
+            WebtoperFacet parentFacet = parentFacetPointer.getFacet();
+            if (parentFacet != null) {
+                myState.parentFacetId = FacetPointersManager.constructId(parentFacet);
+            }
+        }
+        return new State(myState);
+    }
+
+    @Override
+    public void loadState(State state) {
+        myState = state;
+        facetRoot = null;
+        parentFacetPointer = null;
+    }
+
+    @Override
+    public void readExternal(Element element) throws InvalidDataException {
+    }
+
+    @Override
+    public void writeExternal(Element element) throws WriteExternalException {
+    }
+
+    public static class State {
+        public State() {
+        }
+
+        public State(State state) {
+            this.root = state.root;
+            this.parentFacetId = state.parentFacetId;
+        }
+
+        public String root;
+        public String parentFacetId;
     }
 }
