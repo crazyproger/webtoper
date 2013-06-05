@@ -16,6 +16,8 @@
 
 package ru.crazyproger.plugins.webtoper;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.intellij.facet.FacetManager;
 import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.javaee.web.WebRoot;
@@ -23,9 +25,12 @@ import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -41,7 +46,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Utils {
+public class WebtoperUtil {
     public static void reparseFilesInRoots(Project project, Iterable<VirtualFile> roots, String extension) {
         List<VirtualFile> files = new LinkedList<VirtualFile>();
         for (VirtualFile file : roots) {
@@ -70,20 +75,21 @@ public class Utils {
 
     // todo #WT-27
     @NotNull
-    public static List<WebtoperFacet> getWebtoperFacets(Project project) {
+    public static List<WebtoperFacet> getAllFacets(Project project) {
         ModuleManager moduleManager = ModuleManager.getInstance(project);
         Module[] modules = moduleManager.getModules();
-        List<WebtoperFacet> facets = new ArrayList<WebtoperFacet>(modules.length);
+        List<WebtoperFacet> facets = new ArrayList<WebtoperFacet>();
         for (Module module : modules) {
-            Collection<WebtoperFacet> facetsByType = getWebtoperFacets(module);
+            Collection<WebtoperFacet> facetsByType = getFacets(module);
             facets.addAll(facetsByType);
         }
         return facets;
     }
 
-    public static Collection<WebtoperFacet> getWebtoperFacets(Module module) {
+    public static Collection<WebtoperFacet> getFacets(Module module) {
         FacetManager facetManager = FacetManager.getInstance(module);
-        return facetManager.getFacetsByType(WebtoperFacet.ID);
+        Collection<WebtoperFacet> facetsByType = facetManager.getFacetsByType(WebtoperFacet.ID);
+        return Collections2.filter(facetsByType, new ValidFacetPredicate());
     }
 
     /**
@@ -92,7 +98,7 @@ public class Utils {
      */
     @Nullable
     public static VirtualFile findFileInArtifact(String configPath, Project project) {
-        final List<WebtoperFacet> facets = getWebtoperFacets(project);
+        final List<WebtoperFacet> facets = getAllFacets(project);
         final List<WebRoot> webRoots = getWebRoots(facets);
         return findConfig(configPath, webRoots);
     }
@@ -126,7 +132,7 @@ public class Utils {
 
     @Nullable
     public static String findPathInArtifact(VirtualFile file, Module module) {
-        final List<WebtoperFacet> facets = getWebtoperFacets(module.getProject());
+        final List<WebtoperFacet> facets = getAllFacets(module.getProject());
         final List<WebRoot> webRoots = getWebRoots(facets);
         for (WebRoot webRoot : webRoots) {
             VirtualFile webRootFolder = webRoot.getFile();
@@ -141,7 +147,7 @@ public class Utils {
     @NotNull
     public static GlobalSearchScope getWebRootsScope(Module module) {
         Project project = module.getProject();
-        final List<WebtoperFacet> facets = getWebtoperFacets(project);
+        final List<WebtoperFacet> facets = getAllFacets(project);
         final List<WebRoot> webRoots = getWebRoots(facets);
         if (webRoots.isEmpty()) {
             return GlobalSearchScope.EMPTY_SCOPE;
@@ -161,7 +167,44 @@ public class Utils {
 
     @NotNull
     public static GlobalSearchScope getXmlConfigsScope(Module module) {
-        GlobalSearchScope rootsScope = Utils.getWebRootsScope(module);
+        GlobalSearchScope rootsScope = WebtoperUtil.getWebRootsScope(module);
         return GlobalSearchScope.getScopeRestrictedByFileTypes(rootsScope, XmlFileType.INSTANCE);
+    }
+
+    public static WebtoperFacet findFacetForElement(@NotNull PsiElement element) {
+        if (!element.isValid()) return null;
+
+        Project project = element.getProject();
+        if (project.isDefault()) return null;
+
+        PsiFile containingFile = element.getContainingFile();
+        if (containingFile != null) {
+            VirtualFile virtualFile = containingFile.getVirtualFile();
+            if (virtualFile != null) {
+                return findFacetForVirtualFile(virtualFile, project);
+            }
+        }
+        return null;
+    }
+
+    public static WebtoperFacet findFacetForVirtualFile(@NotNull VirtualFile file, Project project) {
+        Module module = ProjectFileIndex.SERVICE.getInstance(project).getModuleForFile(file);
+        if (module == null) return null;
+        Collection<WebtoperFacet> facets = getFacets(module);
+        for (WebtoperFacet facet : facets) {
+            VirtualFile facetRoot = facet.getConfiguration().getFacetRoot();
+            assert facetRoot != null;
+            if (VfsUtil.isAncestor(facetRoot, file, false)) {
+                return facet;
+            }
+        }
+        return null;
+    }
+
+    public static class ValidFacetPredicate implements Predicate<WebtoperFacet> {
+        @Override
+        public boolean apply(@Nullable WebtoperFacet webtoperFacet) {
+            return webtoperFacet != null && webtoperFacet.isValid();
+        }
     }
 }

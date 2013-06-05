@@ -29,7 +29,7 @@ import com.intellij.psi.search.GlobalSearchScopes;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
@@ -68,7 +68,7 @@ public class NlsUtils {
 
     @NotNull
     public static VirtualFile[] getAllNlsRoots(Project project) {
-        List<WebtoperFacet> facets = Utils.getWebtoperFacets(project);
+        List<WebtoperFacet> facets = WebtoperUtil.getAllFacets(project);
         return getNlsRoots(facets);
     }
 
@@ -85,12 +85,6 @@ public class NlsUtils {
             }
         }
         return nlsRoots.toArray(new VirtualFile[nlsRoots.size()]);
-    }
-
-    @NotNull
-    public static VirtualFile[] getNlsRoots(Module module) {
-        Collection<WebtoperFacet> facets = Utils.getWebtoperFacets(module);
-        return getNlsRoots(facets);
     }
 
     @NotNull

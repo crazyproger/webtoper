@@ -33,7 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Scope;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
@@ -54,7 +54,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
     @NotNull
     @Override
     public Collection<? extends PrimaryElement> getVariants(ConvertContext context) {
-        GlobalSearchScope scope = Utils.getWebRootsScope(context.getModule());
+        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(context.getModule());
         List<DomFileElement<Config>> fileElements = DomService.getInstance().getFileElements(Config.class, context.getProject(), scope);
         final List<PrimaryElement> result = new ArrayList<PrimaryElement>();
         final PrimaryElement currentPrimaryElement = context.getInvocationElement().getParentOfType(PrimaryElement.class, false);
@@ -92,7 +92,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
 
         final Project project = context.getProject();
         String configPath = matcher.group(2);
-        VirtualFile config = Utils.findFileInArtifact(configPath, project);
+        VirtualFile config = WebtoperUtil.findFileInArtifact(configPath, project);
         if (config == null) return null;
 
         final PsiFile file;
@@ -134,7 +134,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
             return null;
         }
         VirtualFile virtualFile = primaryElement.getXmlTag().getContainingFile().getVirtualFile();
-        String pathInArtifact = Utils.findPathInArtifact(virtualFile, context.getModule());
+        String pathInArtifact = WebtoperUtil.findPathInArtifact(virtualFile, context.getModule());
         if (pathInArtifact == null) {
             return null;
         }

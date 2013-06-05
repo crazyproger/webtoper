@@ -39,8 +39,8 @@ import com.intellij.util.PathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -87,7 +87,7 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
 
         final FacetPointersManager pointersManager = FacetPointersManager.getInstance(context.getProject());
 
-        List<WebtoperFacet> facets = getFacets();
+        Collection<WebtoperFacet> facets = getFacets();
         Collection<MyFacetComboListModel> items = Collections2.transform(facets, new Function<WebtoperFacet, MyFacetComboListModel>() {
             @Override
             public MyFacetComboListModel apply(WebtoperFacet webtoperFacet) {
@@ -108,14 +108,14 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
         cbParentLayer.setModel(comboBoxModel);
     }
 
-    private List<WebtoperFacet> getFacets() {
+    private Collection<WebtoperFacet> getFacets() {
         List<WebtoperFacet> result = new ArrayList<WebtoperFacet>();
         Module[] modules = context.getModulesProvider().getModules();
         FacetsProvider facetsProvider = context.getFacetsProvider();
         for (Module module : modules) {
             result.addAll(facetsProvider.getFacetsByType(module, WebtoperFacet.ID));
         }
-        return result;
+        return Collections2.filter(result, new WebtoperUtil.ValidFacetPredicate());
     }
 
     @Override
@@ -156,7 +156,7 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
             }
         }
 
-        Utils.reparseFilesInRoots(context.getProject(), toReparse, PropertiesFileType.DEFAULT_EXTENSION);
+        WebtoperUtil.reparseFilesInRoots(context.getProject(), toReparse, PropertiesFileType.DEFAULT_EXTENSION);
         Object selectedItem = cbParentLayer.getSelectedItem();
         if (selectedItem != null) {
             MyFacetComboListModel selected = (MyFacetComboListModel) selectedItem;

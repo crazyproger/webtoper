@@ -33,7 +33,7 @@ import com.intellij.psi.xml.XmlTokenType;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.XmlPatterns.xmlTag;
@@ -55,7 +55,7 @@ public class JspReferenceContributor extends PsiReferenceContributor {
                 if (!text.endsWith(".jsp")) return PsiReference.EMPTY_ARRAY;
 
                 final Project project = element.getProject();
-                final VirtualFile virtualFile = Utils.findFileInArtifact(text, project);
+                final VirtualFile virtualFile = WebtoperUtil.findFileInArtifact(text, project);
                 if (virtualFile == null) return PsiReference.EMPTY_ARRAY;
 
                 final PsiFile file;

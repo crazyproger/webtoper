@@ -14,7 +14,7 @@ import com.intellij.util.NullableFunction;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.DomIconable;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 
@@ -28,7 +28,7 @@ public abstract class AbstractXmlReferencedLineMarkerProvider<T> {
 
     protected Collection<T> getNavigablePsiElements(PsiElement element, Module module) {
         Collection<T> elements = new ArrayList<T>();
-        PsiReference[] references = ReferencesSearch.search(element, Utils.getXmlConfigsScope(module), false).toArray(new PsiReference[0]);
+        PsiReference[] references = ReferencesSearch.search(element, WebtoperUtil.getXmlConfigsScope(module), false).toArray(new PsiReference[0]);
         DomManager domManager = DomManager.getDomManager(element.getProject());
         for (PsiReference reference : references) {
             T referenceElement = getReferenceElement(reference, domManager);
