@@ -33,7 +33,8 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.nls.psi.impl.NlsNameImpl;
 
 import java.util.ArrayList;
@@ -99,16 +100,16 @@ public class NlsFileImpl extends PropertiesFileImpl {
 
     @Nullable
     public String getNlsName() {
-        for (VirtualFile folder : NlsUtils.getAllNlsRoots(getProject())) {
-            if (folder != null) {
-                VirtualFile file = getVirtualFile();
-                assert file != null;
-                if (VfsUtil.isAncestor(folder, file, true)) {
-                    String relativePath = FileUtil.getRelativePath(folder.getPath(), file.getPath(), '/');
-                    assert relativePath != null : "relative path must be";
-                    String dottedPath = relativePath.replaceAll("/", ".");
-                    return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
-                }
+        WebtoperFacet facet = WebtoperUtil.findFacetForElement(this);
+        VirtualFile nlsRoot = facet.getNlsRoot();
+        if (nlsRoot != null) {
+            VirtualFile file = getVirtualFile();
+            assert file != null;
+            if (VfsUtil.isAncestor(nlsRoot, file, true)) {
+                String relativePath = FileUtil.getRelativePath(nlsRoot.getPath(), file.getPath(), '/');
+                assert relativePath != null : "relative path must be";
+                String dottedPath = relativePath.replaceAll("/", ".");
+                return StringUtil.trimEnd(dottedPath, PropertiesFileType.DOT_DEFAULT_EXTENSION);
             }
         }
         return null;
