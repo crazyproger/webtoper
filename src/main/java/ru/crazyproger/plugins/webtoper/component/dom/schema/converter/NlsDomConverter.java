@@ -59,7 +59,7 @@ public class NlsDomConverter extends ResolvingConverter<NlsFileImpl> implements 
     @Override
     public Collection<? extends NlsFileImpl> getVariants(ConvertContext context) {
         final Project project = context.getProject();
-        return NlsCompletionContributor.getNlsFiles(project);
+        return NlsCompletionContributor.getNlsFiles(project); // todo #WT-27
     }
 
     @NotNull

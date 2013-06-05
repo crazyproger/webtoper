@@ -38,7 +38,7 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
     @Override
     public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
         Project project = element.getContainingFile().getProject();
-        VirtualFile[] nlsRoots = NlsUtils.getAllNlsRoots(project);
+        VirtualFile[] nlsRoots = NlsUtils.getAllNlsRoots(project);   // todo #WT-27
         if (ArrayUtils.isEmpty(nlsRoots)) return PsiReference.EMPTY_ARRAY;
 
         String text = StringUtils.trim(element.getText());
@@ -48,7 +48,7 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
 
         Module module = ProjectFileIndex.SERVICE.getInstance(project).getModuleForFile(virtualFile);
 
-        Set<NlsFileImpl> nlsFiles = NlsUtils.getNlsFiles(text, module);
+        Set<NlsFileImpl> nlsFiles = NlsUtils.getNlsFiles(text, module); // todo #WT-27
 
         Set<PsiReference> references = Sets.newHashSet();
         for (NlsFileImpl nlsFile : nlsFiles) {
@@ -56,7 +56,6 @@ public class WholeElementTextRefProvider extends PsiReferenceProvider {
         }
         if (references.isEmpty()) {
             return new PsiReference[]{new TextElementNlsReference(element, null)};
-//            return PsiReference.EMPTY_ARRAY;
         }
         return references.toArray(new PsiReference[references.size()]);
     }
