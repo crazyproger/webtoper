@@ -17,6 +17,8 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
 
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
+
 public class NlsCompletionTest extends NlsTestCase {
 
     protected String getTestDataPath() {
@@ -25,7 +27,9 @@ public class NlsCompletionTest extends NlsTestCase {
 
     public void testNlsXml() throws Throwable {
         final String testName = getTestName(true);
-        myFixture.configureByFiles(testName + ".xml", testName + "/Document.properties", testName + "/Document2.properties");
+        myFixture.configureByFiles(testName + ".xml",
+                WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Document.properties",
+                WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Document2.properties");
         myFixture.testCompletionVariants(testName + ".xml", testName + ".Document", testName + ".Document2");
     }
 
@@ -33,7 +37,10 @@ public class NlsCompletionTest extends NlsTestCase {
      * Check that already included files did not appear in completion
      */
     public void testProperty() throws Throwable {
-        myFixture.configureByFiles(testName + "/Case.properties", testName + "/Included.properties", testName + "/Variant.properties");
-        myFixture.testCompletionVariants(testName + "/Case.properties", testName + ".Variant");
+        myFixture.configureByFiles(
+                WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Case.properties",
+                WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Included.properties",
+                WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Variant.properties");
+        myFixture.testCompletionVariants(WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Case.properties", testName + ".Variant");
     }
 }

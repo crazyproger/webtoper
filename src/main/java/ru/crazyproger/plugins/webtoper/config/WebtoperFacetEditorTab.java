@@ -16,23 +16,30 @@
 
 package ru.crazyproger.plugins.webtoper.config;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.intellij.facet.pointers.FacetPointer;
+import com.intellij.facet.pointers.FacetPointersManager;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.lang.properties.PropertiesFileType;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.roots.ui.configuration.FacetsProvider;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.PathUtil;
+import com.intellij.ui.MutableCollectionComboBoxModel;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperBundle;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -42,6 +49,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class WebtoperFacetEditorTab extends FacetEditorTab {
@@ -49,24 +57,23 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
     private final FacetEditorContext context;
     private JPanel rootPanel;
     private JComboBox cbParentLayer;
-    private TextFieldWithBrowseButton pNlsRoot;
+    private TextFieldWithBrowseButton pFacetRoot;
     private JLabel lParentLayer;
-    private JLabel lNlsRoot;
+    private JLabel lFacetRoot;
 
     public WebtoperFacetEditorTab(FacetEditorContext editorContext, WebtoperFacetConfiguration configuration) {
         this.configuration = configuration;
         this.context = editorContext;
 
         lParentLayer.setLabelFor(cbParentLayer);
-        lNlsRoot.setLabelFor(pNlsRoot);
-        pNlsRoot.getButton().addActionListener(new MyFolderFieldListener(pNlsRoot, configuration.getNlsRoot(), false, null));
-        cbParentLayer.addItem(WebtoperFacetConfiguration.WEBTOP_ROOT_LAYER);
+        lFacetRoot.setLabelFor(pFacetRoot);
+        pFacetRoot.getButton().addActionListener(new MyFolderFieldListener(pFacetRoot, configuration.getFacetRoot(), false, null));
     }
 
     @Nls
     @Override
     public String getDisplayName() {
-        return "Webtoper layer settings";
+        return WebtoperBundle.message("facet.settings.displayName");
     }
 
     @Nullable
@@ -75,15 +82,57 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
         return rootPanel;
     }
 
+    private void updateComboModel(MyFacetComboListModel selectedItem) {
+
+        final FacetPointersManager pointersManager = FacetPointersManager.getInstance(context.getProject());
+
+        Collection<WebtoperFacet> facets = getFacets();
+        Collection<MyFacetComboListModel> items = Collections2.transform(facets, new Function<WebtoperFacet, MyFacetComboListModel>() {
+            @Override
+            public MyFacetComboListModel apply(WebtoperFacet webtoperFacet) {
+                return new MyFacetComboListModel(pointersManager.create(webtoperFacet), context);
+            }
+        });
+
+        ArrayList<MyFacetComboListModel> listModels = new ArrayList<MyFacetComboListModel>(items);
+        // remove item for current facet - facet can't have itself as a parent
+        listModels.remove(new MyFacetComboListModel(pointersManager.create(configuration.getFacet()), context));
+        MyFacetComboListModel emptyElement = new MyFacetComboListModel(null, context);
+        listModels.add(0, emptyElement);
+        MyFacetComboListModel selected = emptyElement;
+        if (listModels.contains(selectedItem)) {
+            selected = selectedItem;
+        }
+        MutableCollectionComboBoxModel comboBoxModel = new MutableCollectionComboBoxModel(listModels, selected);
+        cbParentLayer.setModel(comboBoxModel);
+    }
+
+    private Collection<WebtoperFacet> getFacets() {
+        List<WebtoperFacet> result = new ArrayList<WebtoperFacet>();
+        Module[] modules = context.getModulesProvider().getModules();
+        FacetsProvider facetsProvider = context.getFacetsProvider();
+        for (Module module : modules) {
+            result.addAll(facetsProvider.getFacetsByType(module, WebtoperFacet.ID));
+        }
+        return Collections2.filter(result, new WebtoperUtil.ValidFacetPredicate());
+    }
+
+    @Override
+    public void onTabEntering() {
+        super.onTabEntering();
+        updateComboModel((MyFacetComboListModel) cbParentLayer.getSelectedItem());
+    }
+
     @Override
     public boolean isModified() {
-        Object selectedItem = cbParentLayer.getSelectedItem();
-        if ((selectedItem == null && configuration.getParentLayer() != null) || !(selectedItem == null || selectedItem.equals(configuration.getParentLayer()))) {
+        MyFacetComboListModel selectedItem = (MyFacetComboListModel) cbParentLayer.getSelectedItem();
+        if (((selectedItem == null || selectedItem.pointer == null) && configuration.getParentFacetPointer() != null) ||
+                !(selectedItem == null || selectedItem.pointer == null || selectedItem.pointer.equals(configuration.getParentFacetPointer()))) {
             return true;
         }
-        VirtualFile nlsRoot = configuration.getNlsRoot();
-        String rootText = pNlsRoot.getText();
-        if ((nlsRoot == null && !StringUtil.isEmpty(rootText)) || (nlsRoot != null && checkRelativePath(nlsRoot.getPath(), rootText))) {
+        VirtualFile facetRoot = configuration.getFacetRoot();
+        String rootText = pFacetRoot.getText();
+        if ((facetRoot == null && !StringUtil.isEmpty(rootText)) || (facetRoot != null && !facetRoot.getPath().equals(rootText))) {
             return true;
         }
         return false;
@@ -92,39 +141,38 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
     @Override
     public void apply() throws ConfigurationException {
         if (!isModified()) return;
-        String nlsText = pNlsRoot.getText();
+        String facetRootText = pFacetRoot.getText();
         List<VirtualFile> toReparse = new ArrayList<VirtualFile>(2);
-        configuration.getNlsRoots().clear();
-        if (StringUtils.isNotBlank(nlsText)) {
-            VirtualFile nlsRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(nlsText));
-            if (nlsRoot != null) {
-                configuration.setNlsRoot(nlsRoot);
-                toReparse.add(nlsRoot);
+        VirtualFile oldRoot = configuration.getFacetRoot();
+        if (oldRoot != null) {
+            toReparse.add(0, oldRoot);
+            configuration.setFacetRoot(null);
+        }
+        if (StringUtils.isNotBlank(facetRootText)) {
+            VirtualFile facetRoot = LocalFileSystem.getInstance().findFileByIoFile(new File(facetRootText));
+            if (facetRoot != null) {
+                configuration.setFacetRoot(facetRoot);
+                toReparse.add(facetRoot);
             }
         }
 
-        VirtualFile oldRoot = configuration.getNlsRoot();
-        if (oldRoot != null) {
-            toReparse.add(0, oldRoot);
+        WebtoperUtil.reparseFilesInRoots(context.getProject(), toReparse, PropertiesFileType.DEFAULT_EXTENSION);
+        Object selectedItem = cbParentLayer.getSelectedItem();
+        if (selectedItem != null) {
+            MyFacetComboListModel selected = (MyFacetComboListModel) selectedItem;
+            configuration.setParentFacetPointer(selected.pointer);
         }
-        Utils.reparseFilesInRoots(context.getProject(), toReparse, PropertiesFileType.DEFAULT_EXTENSION);
-
-        configuration.setParentLayer((String) cbParentLayer.getSelectedItem());
     }
 
     @Override
     public void reset() {
-        String parentLayer = configuration.getParentLayer();
-        if (parentLayer == null) {
-            cbParentLayer.setSelectedIndex(-1);
+        MyFacetComboListModel selectedItem = new MyFacetComboListModel(configuration.getParentFacetPointer(), context);
+        updateComboModel(selectedItem);
+        VirtualFile facetRoot = configuration.getFacetRoot();
+        if (facetRoot != null) {
+            pFacetRoot.setText(FileUtil.toSystemDependentName(facetRoot.getPath()));
         } else {
-            cbParentLayer.setSelectedItem(parentLayer);
-        }
-        VirtualFile nlsRoot = configuration.getNlsRoot();
-        if (nlsRoot != null) {
-            pNlsRoot.setText(FileUtil.toSystemDependentName(nlsRoot.getPath()));
-        } else {
-            pNlsRoot.setText("");
+            pFacetRoot.setText("");
         }
     }
 
@@ -162,29 +210,6 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
         return FileChooser.chooseFiles(descriptor, rootPanel, context.getProject(), initialFile);
     }
 
-    private boolean checkRelativePath(String relativePathFromConfig, String absPathFromTextField) {
-        String pathFromConfig = relativePathFromConfig;
-        if (pathFromConfig != null && pathFromConfig.length() > 0) {
-            pathFromConfig = toAbsolutePath(pathFromConfig);
-        }
-        String pathFromTextField = absPathFromTextField.trim();
-        return !FileUtil.pathsEqual(pathFromConfig, pathFromTextField);
-    }
-
-    @Nullable
-    private String toAbsolutePath(String genRelativePath) {
-        if (genRelativePath == null) {
-            return null;
-        }
-        if (genRelativePath.length() == 0) {
-            return "";
-        }
-        String moduleDirPath = WebtoperFacetConfiguration.getModuleDirPath(context.getModule());
-        if (moduleDirPath == null) return null;
-        final String path = PathUtil.getCanonicalPath(new File(moduleDirPath, genRelativePath).getPath());
-        return path != null ? PathUtil.getLocalPath(path) : null;
-    }
-
     private class MyFolderFieldListener implements ActionListener {
         private final TextFieldWithBrowseButton myTextField;
         private final VirtualFile myDefaultDir;
@@ -219,5 +244,46 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
             }
         }
 
+    }
+
+    private class MyFacetComboListModel {
+        private FacetPointer<WebtoperFacet> pointer;
+        private FacetEditorContext context;
+
+        private MyFacetComboListModel(FacetPointer<WebtoperFacet> pointer, FacetEditorContext context) {
+            this.pointer = pointer;
+            this.context = context;
+        }
+
+        @Override
+        public String toString() {
+            if (pointer != null) {
+                return pointer.getFacetName(context.getModulesProvider(), context.getFacetsProvider());
+            }
+            return "";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            MyFacetComboListModel that = (MyFacetComboListModel) o;
+
+            if (pointer != null) {
+                if (!pointer.equals(that.pointer)) {
+                    return that.pointer != null && pointer.getId().equals(that.pointer.getId());
+                }
+            } else {
+                if (that.pointer != null) return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return pointer != null ? pointer.hashCode() : 0;
+        }
     }
 }

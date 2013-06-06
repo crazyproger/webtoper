@@ -22,7 +22,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -30,6 +29,7 @@ import com.intellij.util.ArrayUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 
 import java.io.IOException;
@@ -39,11 +39,11 @@ class CreateNlsQuickFix implements LocalQuickFix {
     private static final Logger LOG = Logger.getInstance("#" + CreateNlsQuickFix.class.getName());
 
     private final String nlsName;
-    private Module module;
+    private WebtoperFacet facet;
 
-    public CreateNlsQuickFix(String nlsName, Module module) {
+    public CreateNlsQuickFix(String nlsName, WebtoperFacet facet) {
         this.nlsName = nlsName;
-        this.module = module;
+        this.facet = facet;
     }
 
     @NotNull
@@ -60,11 +60,11 @@ class CreateNlsQuickFix implements LocalQuickFix {
 
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+        if (!facet.isValid()) return;
         final String nameText = nlsName;
-        VirtualFile[] nlsRoots = NlsUtils.getNlsRoots(module);
-        assert nlsRoots.length > 0 : "Nls files without nls roots should not exists";
 
-        final VirtualFile nlsRoot = nlsRoots[0]; // todo #WT-24
+
+        final VirtualFile nlsRoot = facet.getNlsRoot(); // todo #WT-24
         assert nlsRoot != null;
         assert nlsRoot.isValid();
 

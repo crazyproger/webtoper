@@ -24,7 +24,7 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomFileDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
 
 public class ConfigFileDescription extends DomFileDescription<Config> {
@@ -40,7 +40,7 @@ public class ConfigFileDescription extends DomFileDescription<Config> {
         if (forPsiElement == null) {
             return false;
         }
-        GlobalSearchScope scope = Utils.getWebRootsScope(forPsiElement);
+        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(forPsiElement);
         boolean isInWeb = scope.contains(file.getVirtualFile());
         XmlTag rootTag = file.getRootTag();
         return isInWeb && rootTag != null && ROOT_TAG_NAME.equals(rootTag.getName());

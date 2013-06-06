@@ -33,6 +33,7 @@ public abstract class BeforeAfterTreeTestCase extends WebtoperLightFixtureTestCa
 
     protected void checkAfter() throws IOException {
         VirtualFile after = LocalFileSystem.getInstance().findFileByPath(getTestDataPath() + "/" + testName + "/after");
+        after.refresh(false, true);
         PlatformTestUtil.assertDirectoriesEqual(after, moduleRoot, PlatformTestUtil.CVS_FILE_FILTER);
     }
 }

@@ -25,7 +25,7 @@ import com.intellij.openapi.module.ModuleType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetConfiguration> {
     public WebtoperFacetType() {
@@ -53,5 +53,10 @@ public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetCon
     @Override
     public Icon getIcon() {
         return Icons.W16;
+    }
+
+    @Override
+    public boolean isOnlyOneFacetAllowed() {
+        return false;
     }
 }

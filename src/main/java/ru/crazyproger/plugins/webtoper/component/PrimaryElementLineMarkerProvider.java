@@ -21,7 +21,7 @@ import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.Utils;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 import ru.crazyproger.plugins.webtoper.config.Icons;
 
@@ -66,7 +66,7 @@ public class PrimaryElementLineMarkerProvider extends AbstractXmlReferencedLineM
         if (containingFile == null) return false;
         VirtualFile virtualFile = containingFile.getVirtualFile();
         if (virtualFile == null) return false;
-        GlobalSearchScope scope = Utils.getWebRootsScope(fileIndex.getModuleForFile(virtualFile));
+        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(fileIndex.getModuleForFile(virtualFile));
         return scope.contains(virtualFile);
     }
 

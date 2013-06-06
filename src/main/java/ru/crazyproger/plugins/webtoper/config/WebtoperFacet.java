@@ -19,12 +19,17 @@ package ru.crazyproger.plugins.webtoper.config;
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
+import com.intellij.facet.pointers.FacetPointer;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.GlobalSearchScopes;
 import org.jetbrains.annotations.NotNull;
 
 public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public static final FacetTypeId<WebtoperFacet> ID = new FacetTypeId<WebtoperFacet>("webtoper");
+    public static final String NLS_ROOT_NAME = "strings";
 
     public WebtoperFacet(@NotNull Module module, @NotNull String name, @NotNull WebtoperFacetConfiguration configuration, Facet underlyingFacet) {
         super(getFacetType(), module, name, configuration, underlyingFacet);
@@ -33,5 +38,47 @@ public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public static WebtoperFacetType getFacetType() {
         return (WebtoperFacetType) FacetTypeRegistry.getInstance().findFacetType(ID);
+    }
+
+    public WebtoperFacet getParentFacet() {
+        FacetPointer<WebtoperFacet> pointer = getConfiguration().getParentFacetPointer();
+        return pointer == null ? null : pointer.getFacet();
+    }
+
+    /**
+     * If facet is not valid - it should not be considered as Webtop layer.
+     *
+     * @return valid configuration or not
+     */
+    public boolean isValid() {
+        VirtualFile facetRoot = getConfiguration().getFacetRoot();
+        return facetRoot != null && facetRoot.exists();
+    }
+
+    public VirtualFile getNlsRoot() {
+        checkValid();
+        VirtualFile facetRoot = getConfiguration().getFacetRoot();
+        // NPE checked in upper checkValid() call
+        //noinspection ConstantConditions
+        return facetRoot.findFileByRelativePath(NLS_ROOT_NAME);
+    }
+
+    /**
+     * @return scope with all NLS roots that can be accessed from this layer
+     */
+    public GlobalSearchScope getNlsScope() {
+        checkValid();
+        GlobalSearchScope scope = GlobalSearchScopes.directoryScope(getModule().getProject(), getNlsRoot(), true);
+        WebtoperFacet parentFacet = getParentFacet();
+        if (parentFacet != null && parentFacet.isValid()) {
+            return scope.union(parentFacet.getNlsScope());
+        }
+        return scope;
+    }
+
+    private void checkValid() {
+        if (!isValid()) {
+            throw new IllegalStateException("Facet is invalid:" + this);
+        }
     }
 }

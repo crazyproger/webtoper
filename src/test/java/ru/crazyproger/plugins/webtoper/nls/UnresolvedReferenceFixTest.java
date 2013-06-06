@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.BeforeAfterTreeTestCase;
 import ru.crazyproger.plugins.webtoper.WebtoperBundle;
 import ru.crazyproger.plugins.webtoper.component.dom.EmptyInspection;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 import ru.crazyproger.plugins.webtoper.nls.codeinsight.NlsFileInspection;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class UnresolvedReferenceFixTest extends BeforeAfterTreeTestCase {
     }
 
     private void doNlsFileTest(String nlsName) throws IOException {
-        doTest(nlsName, "nls.properties");
+        doTest(nlsName, WebtoperFacet.NLS_ROOT_NAME + "/" + "nls.properties");
     }
 
     private void doTest(String nlsName, String filePath) throws IOException {
