@@ -35,7 +35,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.MutableCollectionComboBoxModel;
-import com.intellij.util.PathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
@@ -126,13 +125,14 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
 
     @Override
     public boolean isModified() {
-        Object selectedItem = cbParentLayer.getSelectedItem();
-        if ((selectedItem == null && configuration.getParentFacetPointer() != null) || !(selectedItem == null || selectedItem.equals(configuration.getParentFacetPointer()))) {
+        MyFacetComboListModel selectedItem = (MyFacetComboListModel) cbParentLayer.getSelectedItem();
+        if (((selectedItem == null || selectedItem.pointer == null) && configuration.getParentFacetPointer() != null) ||
+                !(selectedItem == null || selectedItem.pointer == null || selectedItem.pointer.equals(configuration.getParentFacetPointer()))) {
             return true;
         }
         VirtualFile facetRoot = configuration.getFacetRoot();
         String rootText = pFacetRoot.getText();
-        if ((facetRoot == null && !StringUtil.isEmpty(rootText)) || (facetRoot != null && checkRelativePath(facetRoot.getPath(), rootText))) {
+        if ((facetRoot == null && !StringUtil.isEmpty(rootText)) || (facetRoot != null && !facetRoot.getPath().equals(rootText))) {
             return true;
         }
         return false;
@@ -210,29 +210,6 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
         return FileChooser.chooseFiles(descriptor, rootPanel, context.getProject(), initialFile);
     }
 
-    private boolean checkRelativePath(String relativePathFromConfig, String absPathFromTextField) {
-        String pathFromConfig = relativePathFromConfig;
-        if (pathFromConfig != null && pathFromConfig.length() > 0) {
-            pathFromConfig = toAbsolutePath(pathFromConfig);
-        }
-        String pathFromTextField = absPathFromTextField.trim();
-        return !FileUtil.pathsEqual(pathFromConfig, pathFromTextField);
-    }
-
-    @Nullable
-    private String toAbsolutePath(String genRelativePath) {
-        if (genRelativePath == null) {
-            return null;
-        }
-        if (genRelativePath.length() == 0) {
-            return "";
-        }
-        String moduleDirPath = WebtoperFacetConfiguration.getModuleDirPath(context.getModule());
-        if (moduleDirPath == null) return null;
-        final String path = PathUtil.getCanonicalPath(new File(moduleDirPath, genRelativePath).getPath());
-        return path != null ? PathUtil.getLocalPath(path) : null;
-    }
-
     private class MyFolderFieldListener implements ActionListener {
         private final TextFieldWithBrowseButton myTextField;
         private final VirtualFile myDefaultDir;
@@ -293,7 +270,13 @@ public class WebtoperFacetEditorTab extends FacetEditorTab {
 
             MyFacetComboListModel that = (MyFacetComboListModel) o;
 
-            if (pointer != null ? !pointer.equals(that.pointer) : that.pointer != null) return false;
+            if (pointer != null) {
+                if (!pointer.equals(that.pointer)) {
+                    return that.pointer != null && pointer.getId().equals(that.pointer.getId());
+                }
+            } else {
+                if (that.pointer != null) return false;
+            }
 
             return true;
         }
