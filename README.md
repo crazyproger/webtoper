@@ -30,8 +30,10 @@ To install:
 3. Choose dowloaded file and restart IDEA
 
 ## Configuration
-By default plugin is disabled for all projects, to enable it your project must contain properly configured [Web facets](http://www.jetbrains.com/idea/webhelp/enabling-web-application-support.html).
-Plugin is configured by creating facets of type 'Webtoper' and attaching them to [Web facets](http://www.jetbrains.com/idea/webhelp/enabling-web-application-support.html).
+By default plugin is disabled for all projects, to enable it your project must contain properly configured [Web facets](http://www.jetbrains.com/idea/webhelp/enabling-web-application-support.html).<br>
+Plugin is configured by creating facets of type 'Webtoper' and attaching them to [Web facets](http://www.jetbrains.com/idea/webhelp/enabling-web-application-support.html).<br>
+*(Right now I'm thinking about removing dependency from Web facets)*
+
 
 **Note**: you should create 'Webtoper' facet for each 'Web facet' included in your target WDK application.
 
@@ -43,10 +45,15 @@ To attach Webtoper to one Web facet you should:
 ![Choose 'Webtoper' facet][pStructureWebtoperType.png]
 3. Then select Web facet to which you want attach it<br>
 ![Select parent facet][selectParentFacet.png]
-4. Choose NLS root folder for current facet. NLS root - is the folder with nls files with full directory hierarchy, like source root for .java files<br>
-![Choose NLS root][selectNlsRoot.png]
+4. Choose layer root folder for current facet. Layer root - is the folder with all files of your webtop layer, like source root for .java files<br>
+![Choose layer root][selectLayerRoot.png]<br>
+**Note**: untill you not select layer root - this facet considered as invalid, this mean that it doesn't provide any helpfull functions. You also can't select it as parent for other facets.
+5. Change facet name(not necessary, but helpfull), best name is a layer name.
+6. Select parent layer - you should select layer which current is extend.
 
 After this IDEA will reparse some files and you can use all provided features of plugin.
+
+*Hint*:You also can create more than one 'Webtoper' facet to each Web facet - this is case when your module contains many layers.
 
 ## Contribution
 
@@ -64,4 +71,4 @@ Issue tracker is [here](http://crazyproger.myjetbrains.com/youtrack/dashboard).
 [pStructure.png]: https://raw.github.com/wiki/crazyproger/webtoper/img/configuration/pStructure.png "Project Structure"
 [pStructureWebtoperType.png]: https://raw.github.com/wiki/crazyproger/webtoper/img/configuration/pStructureWebtoperType.png "Choose 'Webtoper' type"
 [selectParentFacet.png]: https://raw.github.com/wiki/crazyproger/webtoper/img/configuration/selectParentFacet.png "Select parent facet"
-[selectNlsRoot.png]: https://raw.github.com/wiki/crazyproger/webtoper/img/configuration/selectNlsRoot.png "Select NLS root"
+[selectLayerRoot.png]: https://raw.github.com/wiki/crazyproger/webtoper/img/configuration/selectLayerRoot.png "Select layer root"
