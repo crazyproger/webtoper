@@ -29,9 +29,11 @@ import com.intellij.lang.properties.psi.Property;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.intellij.refactoring.psi.SearchUtils;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.nls.NlsUtils;
 import ru.crazyproger.plugins.webtoper.nls.psi.NlsFileImpl;
 
 import javax.swing.Icon;
@@ -141,11 +143,14 @@ public class NlsLineMarkerProvider implements LineMarkerProvider {
     }
 
     private Collection<NlsFileImpl> getReferencingFiles(NlsFileImpl currentFile) {
-        Iterable<PsiReference> references = SearchUtils.findAllReferences(currentFile);
+        GlobalSearchScope nlsScope = NlsUtils.getNlsScope(currentFile.getProject()); // todo #WT-27
+        if (nlsScope == null) return Collections.emptyList();
 
-        Collection<NlsFileImpl> directChilds = transform(Lists.<PsiReference>newArrayList(references), new Reference2ContainedFileFunction());
+        Iterable<PsiReference> references = ReferencesSearch.search(currentFile, nlsScope, true).findAll();
 
-        return filter(directChilds, Predicates.notNull());
+        Collection<NlsFileImpl> directChildren = transform(Lists.<PsiReference>newArrayList(references), new Reference2ContainedFileFunction());
+
+        return filter(directChildren, Predicates.notNull());
     }
 
     private Collection<IProperty> findOverridingProperties(String key, NlsFileImpl currentFile, Set<PsiFile> excludes) {

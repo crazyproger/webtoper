@@ -190,7 +190,18 @@ public class WebtoperUtil {
     public static WebtoperFacet findFacetForVirtualFile(@NotNull VirtualFile file, Project project) {
         Module module = ProjectFileIndex.SERVICE.getInstance(project).getModuleForFile(file);
         if (module == null) return null;
+        // facet root can be attached to directory that belongs to another module or not in modules at all
+        // but first of all searching within file module facets
         Collection<WebtoperFacet> facets = getFacets(module);
+        WebtoperFacet facet = findFacetInCollection(facets, file);
+        if (facet != null) return facet;
+
+        List<WebtoperFacet> allFacets = getAllFacets(project);
+        allFacets.removeAll(facets);
+        return findFacetInCollection(allFacets, file);
+    }
+
+    private static WebtoperFacet findFacetInCollection(Collection<WebtoperFacet> facets, VirtualFile file) {
         for (WebtoperFacet facet : facets) {
             VirtualFile facetRoot = facet.getConfiguration().getFacetRoot();
             assert facetRoot != null;
