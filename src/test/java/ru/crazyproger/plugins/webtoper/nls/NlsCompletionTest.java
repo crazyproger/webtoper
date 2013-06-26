@@ -27,10 +27,10 @@ public class NlsCompletionTest extends NlsTestCase {
 
     public void testNlsXml() throws Throwable {
         final String testName = getTestName(true);
-        myFixture.configureByFiles(testName + ".xml",
+        myFixture.configureByFiles(WebtoperFacet.CONFIG_ROOT_NAME + "/" + testName + ".xml",
                 WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Document.properties",
                 WebtoperFacet.NLS_ROOT_NAME + "/" + testName + "/Document2.properties");
-        myFixture.testCompletionVariants(testName + ".xml", testName + ".Document", testName + ".Document2");
+        myFixture.testCompletionVariants(WebtoperFacet.CONFIG_ROOT_NAME + "/" + testName + ".xml", testName + ".Document", testName + ".Document2");
     }
 
     /**

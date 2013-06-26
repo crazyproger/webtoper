@@ -17,8 +17,8 @@
 package ru.crazyproger.plugins.webtoper.component.dom;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.xml.DomFileDescription;
@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.Config;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 public class ConfigFileDescription extends DomFileDescription<Config> {
     private static final String ROOT_TAG_NAME = "config";
@@ -36,13 +37,16 @@ public class ConfigFileDescription extends DomFileDescription<Config> {
 
     @Override
     public boolean isMyFile(@NotNull XmlFile file, @Nullable Module module) {
-        Module forPsiElement = ModuleUtilCore.findModuleForPsiElement(file);
-        if (forPsiElement == null) {
-            return false;
-        }
-        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(forPsiElement);
-        boolean isInWeb = scope.contains(file.getVirtualFile());
+        VirtualFile virtualFile = file.getVirtualFile();
+        if (virtualFile == null) return false;
+
+        WebtoperFacet facet = WebtoperUtil.findFacetForVirtualFile(virtualFile, file.getProject());
+        if (facet == null || !facet.isValid()) return false;
+
+        VirtualFile configRoot = facet.getConfigRoot();
+        if (configRoot == null) return false;
+        VfsUtil.isAncestor(configRoot, virtualFile, false);
         XmlTag rootTag = file.getRootTag();
-        return isInWeb && rootTag != null && ROOT_TAG_NAME.equals(rootTag.getName());
+        return rootTag != null && ROOT_TAG_NAME.equals(rootTag.getName());
     }
 }

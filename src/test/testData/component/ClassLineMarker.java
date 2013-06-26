@@ -1,6 +1,6 @@
-public class ClassLineMarker {
-}
+// all classes must be public!
+public class ClassLineMarker {}
 
-class SingleUsage{}
+public class SingleUsage{}
 
-class MultipleUsage{}
+public class MultipleUsage{}

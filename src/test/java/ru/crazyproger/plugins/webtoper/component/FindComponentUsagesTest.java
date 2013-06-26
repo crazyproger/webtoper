@@ -19,6 +19,7 @@ package ru.crazyproger.plugins.webtoper.component;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import ru.crazyproger.plugins.webtoper.WebtoperLightFixtureTestCase;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 
 public class FindComponentUsagesTest extends WebtoperLightFixtureTestCase {
@@ -29,7 +30,7 @@ public class FindComponentUsagesTest extends WebtoperLightFixtureTestCase {
     }
 
     public void testFindComponentUsagesFullQName() throws Exception {
-        myFixture.configureByFile(getTestName(false) + ".xml");
+        myFixture.configureByFile(WebtoperFacet.CONFIG_ROOT_NAME + "/" + getTestName(false) + ".xml");
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         assertEquals(2, ReferencesSearch.search(elementAtCaret).findAll().size());
     }

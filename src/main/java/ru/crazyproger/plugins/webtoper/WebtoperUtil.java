@@ -16,6 +16,7 @@
 
 package ru.crazyproger.plugins.webtoper;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.intellij.facet.FacetManager;
@@ -24,6 +25,7 @@ import com.intellij.javaee.web.WebRoot;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -43,6 +45,7 @@ import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -87,9 +90,22 @@ public class WebtoperUtil {
     }
 
     public static Collection<WebtoperFacet> getFacets(Module module) {
+        return getFacets(module, false);
+    }
+
+    public static Collection<WebtoperFacet> getFacets(Module module, boolean withDependencies) {
+        HashSet<WebtoperFacet> facets = new HashSet<WebtoperFacet>();
+        if (withDependencies) {
+            List<Module> dependentModules = ModuleUtilCore.getAllDependentModules(module);
+            for (Module dependentModule : dependentModules) {
+                FacetManager facetManager = FacetManager.getInstance(dependentModule);
+                facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
+            }
+        }
         FacetManager facetManager = FacetManager.getInstance(module);
-        Collection<WebtoperFacet> facetsByType = facetManager.getFacetsByType(WebtoperFacet.ID);
-        return Collections2.filter(facetsByType, new ValidFacetPredicate());
+        facets.addAll(facetManager.getFacetsByType(WebtoperFacet.ID));
+
+        return Collections2.filter(facets, new ValidFacetPredicate());
     }
 
     /**
@@ -145,29 +161,50 @@ public class WebtoperUtil {
     }
 
     @NotNull
-    public static GlobalSearchScope getWebRootsScope(Module module) {
-        Project project = module.getProject();
+    public static GlobalSearchScope getWebRootsScope(@NotNull Project project) {
         final List<WebtoperFacet> facets = getAllFacets(project);
         final List<WebRoot> webRoots = getWebRoots(facets);
         if (webRoots.isEmpty()) {
             return GlobalSearchScope.EMPTY_SCOPE;
         }
-        GlobalSearchScope scope = null;
-        for (WebRoot webRoot : webRoots) {
-            VirtualFile file = webRoot.getFile();
+        Collection<VirtualFile> files = Collections2.transform(webRoots, new Function<WebRoot, VirtualFile>() {
+            @Override
+            public VirtualFile apply(@Nullable WebRoot webRoot) {
+                if (webRoot == null) return null;
+                return webRoot.getFile();
+            }
+        });
+
+        GlobalSearchScope scope = mergeVirtualFilesIntoSearchScope(project, files);
+        assert scope != null;
+        return scope;
+    }
+
+    private static GlobalSearchScope mergeVirtualFilesIntoSearchScope(Project project, Collection<VirtualFile> files) {
+        GlobalSearchScope scope = GlobalSearchScope.EMPTY_SCOPE;
+        for (VirtualFile file : files) {
             if (file != null) {
                 GlobalSearchScope searchScope = GlobalSearchScopes.directoryScope(project, file, true);
                 scope = (scope == null) ? searchScope : scope.union(searchScope);
             }
 
         }
-        assert scope != null;
         return scope;
     }
 
     @NotNull
-    public static GlobalSearchScope getXmlConfigsScope(Module module) {
-        GlobalSearchScope rootsScope = WebtoperUtil.getWebRootsScope(module);
+    public static GlobalSearchScope getXmlConfigsScope(Collection<WebtoperFacet> facets) {
+        if (facets.isEmpty()) return GlobalSearchScope.EMPTY_SCOPE;
+
+        Collection<VirtualFile> configRoots = Collections2.transform(facets, new Function<WebtoperFacet, VirtualFile>() {
+            @Override
+            public VirtualFile apply(@Nullable WebtoperFacet webtoperFacet) {
+                if (webtoperFacet == null) return null;
+                return webtoperFacet.getConfigRoot();
+            }
+        });
+        Project project = facets.iterator().next().getModule().getProject();
+        GlobalSearchScope rootsScope = mergeVirtualFilesIntoSearchScope(project, configRoots);
         return GlobalSearchScope.getScopeRestrictedByFileTypes(rootsScope, XmlFileType.INSTANCE);
     }
 

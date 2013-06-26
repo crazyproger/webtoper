@@ -1,12 +1,12 @@
 package ru.crazyproger.plugins.webtoper.component;
 
 import com.intellij.ide.util.PsiElementListCellRenderer;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlTag;
@@ -14,7 +14,6 @@ import com.intellij.util.NullableFunction;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.Nullable;
-import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.DomIconable;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.IdentifiedById;
 
@@ -26,9 +25,10 @@ import static ru.crazyproger.plugins.webtoper.WebtoperBundle.message;
 
 public abstract class AbstractXmlReferencedLineMarkerProvider<T> {
 
-    protected Collection<T> getNavigablePsiElements(PsiElement element, Module module) {
+    protected Collection<T> getNavigablePsiElements(PsiElement element) {
         Collection<T> elements = new ArrayList<T>();
-        PsiReference[] references = ReferencesSearch.search(element, WebtoperUtil.getXmlConfigsScope(module), false).toArray(new PsiReference[0]);
+        SearchScope searchScope = getUseScope(element);
+        PsiReference[] references = ReferencesSearch.search(element, searchScope, true).toArray(new PsiReference[0]);
         DomManager domManager = DomManager.getDomManager(element.getProject());
         for (PsiReference reference : references) {
             T referenceElement = getReferenceElement(reference, domManager);
@@ -38,6 +38,15 @@ public abstract class AbstractXmlReferencedLineMarkerProvider<T> {
         }
         return elements;
     }
+
+    /**
+     * Actually it can be done by UseScopeEnlarger(and removing this method), but I didn't use it for performance -
+     * {@link com.intellij.psi.search.searches.ReferencesSearch#search(com.intellij.psi.PsiElement)}
+     * will find faster if this scope will be smaller.
+     *
+     * @return scope in which this element can be accessed.
+     */
+    protected abstract SearchScope getUseScope(PsiElement element);
 
     protected abstract T getReferenceElement(PsiReference reference, DomManager manager);
 

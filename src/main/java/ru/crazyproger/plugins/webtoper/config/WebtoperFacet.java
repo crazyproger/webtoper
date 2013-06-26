@@ -30,6 +30,7 @@ public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public static final FacetTypeId<WebtoperFacet> ID = new FacetTypeId<WebtoperFacet>("webtoper");
     public static final String NLS_ROOT_NAME = "strings";
+    public static final String CONFIG_ROOT_NAME = "config";
 
     public WebtoperFacet(@NotNull Module module, @NotNull String name, @NotNull WebtoperFacetConfiguration configuration, Facet underlyingFacet) {
         super(getFacetType(), module, name, configuration, underlyingFacet);
@@ -57,10 +58,19 @@ public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
 
     public VirtualFile getNlsRoot() {
         checkValid();
+        return getChildVirtualFile(NLS_ROOT_NAME);
+    }
+
+    public VirtualFile getConfigRoot() {
+        checkValid();
+        return getChildVirtualFile(CONFIG_ROOT_NAME);
+    }
+
+    private VirtualFile getChildVirtualFile(String relPath) {
         VirtualFile facetRoot = getConfiguration().getFacetRoot();
         // NPE checked in upper checkValid() call
         //noinspection ConstantConditions
-        return facetRoot.findFileByRelativePath(NLS_ROOT_NAME);
+        return facetRoot.findFileByRelativePath(relPath);
     }
 
     /**
@@ -72,6 +82,19 @@ public class WebtoperFacet extends Facet<WebtoperFacetConfiguration> {
         WebtoperFacet parentFacet = getParentFacet();
         if (parentFacet != null && parentFacet.isValid()) {
             return scope.union(parentFacet.getNlsScope());
+        }
+        return scope;
+    }
+
+    /**
+     * @return scope with all config roots that can be accessed from this layer
+     */
+    public GlobalSearchScope getConfigScope() {
+        checkValid();
+        GlobalSearchScope scope = GlobalSearchScopes.directoryScope(getModule().getProject(), getConfigRoot(), true);
+        WebtoperFacet parentFacet = getParentFacet();
+        if (parentFacet != null && parentFacet.isValid()) {
+            return scope.union(parentFacet.getConfigScope());
         }
         return scope;
     }

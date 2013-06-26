@@ -17,6 +17,7 @@
 package ru.crazyproger.plugins.webtoper.nls;
 
 import ru.crazyproger.plugins.webtoper.BeforeAfterTreeTestCase;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 
 public class RenameTest extends BeforeAfterTreeTestCase {
@@ -30,7 +31,7 @@ public class RenameTest extends BeforeAfterTreeTestCase {
     }
 
     private void doTest(String newName) throws Exception {
-        myFixture.configureFromExistingVirtualFile(myFixture.findFileInTempDir("nlsXml.xml"));
+        myFixture.configureFromExistingVirtualFile(myFixture.findFileInTempDir(WebtoperFacet.CONFIG_ROOT_NAME + "/nlsXml.xml"));
         myFixture.renameElementAtCaret(newName);
         checkAfter();
     }

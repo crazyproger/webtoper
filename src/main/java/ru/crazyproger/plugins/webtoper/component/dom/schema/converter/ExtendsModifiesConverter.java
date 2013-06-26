@@ -54,7 +54,7 @@ public class ExtendsModifiesConverter extends ResolvingConverter<PrimaryElement>
     @NotNull
     @Override
     public Collection<? extends PrimaryElement> getVariants(ConvertContext context) {
-        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(context.getModule());
+        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(context.getModule().getProject());
         List<DomFileElement<Config>> fileElements = DomService.getInstance().getFileElements(Config.class, context.getProject(), scope);
         final List<PrimaryElement> result = new ArrayList<PrimaryElement>();
         final PrimaryElement currentPrimaryElement = context.getInvocationElement().getParentOfType(PrimaryElement.class, false);

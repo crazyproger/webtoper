@@ -58,7 +58,7 @@ public class UnresolvedReferenceFixTest extends BeforeAfterTreeTestCase {
     }
 
     public void testFromXml() throws Exception {
-        doTest("newFolder.second.created", "conf.xml");
+        doTest("newFolder.second.created", WebtoperFacet.CONFIG_ROOT_NAME + "/conf.xml");
     }
 
     private void doNlsFileTest(String nlsName) throws IOException {

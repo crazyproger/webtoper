@@ -2,7 +2,8 @@
 <config>
     <scope>
         <component>
-            <nlsbundle><caret>nlsRoot.file</nlsbundle>
+            <nlsbundle><caret>nlsRoot.file
+            </nlsbundle>
         </component>
     </scope>
 </config>

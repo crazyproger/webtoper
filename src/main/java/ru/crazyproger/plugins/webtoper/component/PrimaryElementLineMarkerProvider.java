@@ -4,14 +4,10 @@ import com.google.common.collect.Iterables;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlElement;
@@ -24,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 import ru.crazyproger.plugins.webtoper.config.Icons;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import javax.swing.Icon;
 import java.util.Collection;
@@ -61,19 +58,13 @@ public class PrimaryElementLineMarkerProvider extends AbstractXmlReferencedLineM
     }
 
     private boolean isInConfigScope(PsiElement first) {
-        ProjectFileIndex fileIndex = ProjectRootManager.getInstance(first.getProject()).getFileIndex();
-        PsiFile containingFile = first.getContainingFile();
-        if (containingFile == null) return false;
-        VirtualFile virtualFile = containingFile.getVirtualFile();
-        if (virtualFile == null) return false;
-        GlobalSearchScope scope = WebtoperUtil.getWebRootsScope(fileIndex.getModuleForFile(virtualFile));
-        return scope.contains(virtualFile);
+        WebtoperFacet facet = WebtoperUtil.findFacetForElement(first);
+        return facet != null && facet.isValid();
     }
 
     private void collectOverriddenModified(PsiElement psiElement, PrimaryElement domElement, Collection<LineMarkerInfo> result) {
         if (!domElement.isValid()) return;
-        Module module = domElement.getModule();
-        Collection<GenericAttributeValue> elements = getNavigablePsiElements(psiElement, module);
+        Collection<GenericAttributeValue> elements = getNavigablePsiElements(psiElement);
         if (elements.isEmpty()) return;
 
         // separate modifies and extends
@@ -112,6 +103,14 @@ public class PrimaryElementLineMarkerProvider extends AbstractXmlReferencedLineM
             result.add(modifiesBuilder.createLineMarkerInfo(psiElement));
         }
 
+    }
+
+    @Override
+    protected SearchScope getUseScope(PsiElement element) {
+        WebtoperFacet facet = WebtoperUtil.findFacetForElement(element);
+        if (facet == null) return GlobalSearchScope.EMPTY_SCOPE;
+
+        return facet.getConfigScope();
     }
 
     @Override

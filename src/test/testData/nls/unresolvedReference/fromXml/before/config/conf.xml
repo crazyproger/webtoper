@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config version="1.0">
+    <scope>
+        <component>
+            <nlsbundle>
+                <error descr="Cannot resolve symbol 'newFolder.second.created'">newFolder.sec<caret>ond.created
+                </error>
+            </nlsbundle>
+        </component>
+    </scope>
+</config>

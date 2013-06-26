@@ -30,6 +30,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
@@ -37,8 +39,10 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.crazyproger.plugins.webtoper.WebtoperUtil;
 import ru.crazyproger.plugins.webtoper.component.dom.schema.pseudo.PrimaryElement;
 import ru.crazyproger.plugins.webtoper.config.Icons;
+import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
 import javax.swing.Icon;
 import java.util.Collection;
@@ -66,16 +70,10 @@ public class ClassLineMarkerProvider extends AbstractXmlReferencedLineMarkerProv
     }
 
     private void collectClassLineMarkers(PsiClass element, Collection<LineMarkerInfo> result) {
-        ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
-        PsiFile containingFile = element.getContainingFile();
         PsiIdentifier identifier = PsiTreeUtil.getChildOfType(element, PsiIdentifier.class);
         if (identifier == null) return;
-        if (containingFile == null) return;
-        VirtualFile virtualFile = containingFile.getVirtualFile();
-        if (virtualFile == null) return;
-        Module module = fileIndex.getModuleForFile(virtualFile);
-        if (module == null) return;
-        Collection<PsiElement> elements = getNavigablePsiElements(element, module);
+
+        Collection<PsiElement> elements = getNavigablePsiElements(element);
         if (elements.isEmpty()) return;
         Icon icon;
         MyPsiElementCellRenderer renderer = new MyPsiElementCellRenderer(DomManager.getDomManager(element.getProject()));
@@ -91,6 +89,22 @@ public class ClassLineMarkerProvider extends AbstractXmlReferencedLineMarkerProv
         builder.setNamer(new XmlFileByElementNamer());
         builder.setCellRenderer(renderer);
         result.add(builder.createLineMarkerInfo(identifier));
+    }
+
+    /**
+     * Class can be used in all config scopes of all facets in this module and dependent modules
+     */
+    @Override
+    protected SearchScope getUseScope(PsiElement element) {
+        ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
+        PsiFile containingFile = element.getContainingFile();
+        if (containingFile == null) return GlobalSearchScope.EMPTY_SCOPE;
+        VirtualFile virtualFile = containingFile.getVirtualFile();
+        if (virtualFile == null) return GlobalSearchScope.EMPTY_SCOPE;
+        Module module = fileIndex.getModuleForFile(virtualFile);
+        if (module == null) return GlobalSearchScope.EMPTY_SCOPE;
+        Collection<WebtoperFacet> facets = WebtoperUtil.getFacets(module, true);
+        return WebtoperUtil.getXmlConfigsScope(facets);
     }
 
     @Override
