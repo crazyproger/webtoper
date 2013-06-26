@@ -76,6 +76,8 @@ on how to target different products -->
     <extensions defaultExtensionNs="com.intellij">
         <facetType implementation="ru.crazyproger.plugins.webtoper.config.WebtoperFacetType"/>
 
+        <framework.detector implementation="ru.crazyproger.plugins.webtoper.config.WebtopFrameworkDetector"/>
+
         <!--component-->
         <psi.referenceContributor language="XML" order="first"
                                   implementation="ru.crazyproger.plugins.webtoper.component.JspReferenceContributor"/>
