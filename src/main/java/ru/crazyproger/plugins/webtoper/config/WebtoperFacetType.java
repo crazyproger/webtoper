@@ -17,11 +17,14 @@
 package ru.crazyproger.plugins.webtoper.config;
 
 import com.intellij.facet.Facet;
+import com.intellij.facet.FacetManager;
 import com.intellij.facet.FacetType;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.util.Condition;
+import com.intellij.util.text.UniqueNameGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +41,22 @@ public class WebtoperFacetType extends FacetType<WebtoperFacet, WebtoperFacetCon
     }
 
     @Override
-    public WebtoperFacet createFacet(@NotNull Module module, String name, @NotNull WebtoperFacetConfiguration configuration, @Nullable Facet underlyingFacet) {
+    public WebtoperFacet createFacet(@NotNull final Module module, String name, @NotNull WebtoperFacetConfiguration configuration, @Nullable Facet underlyingFacet) {
         // DO NOT COMMIT MODULE-ROOT MODELS HERE!
         // modules are not initialized yet, so some data may be lost
-        return new WebtoperFacet(module, name, configuration, underlyingFacet);
+        String suggestedName = configuration.getSuggestedName();
+        String finalName;
+        if (suggestedName != null) {
+            finalName = UniqueNameGenerator.generateUniqueName(suggestedName, new Condition<String>() {
+                @Override
+                public boolean value(String s) {
+                    return FacetManager.getInstance(module).findFacet(WebtoperFacet.ID, s) == null;
+                }
+            });
+        } else {
+            finalName = name;
+        }
+        return new WebtoperFacet(module, finalName, configuration, underlyingFacet);
     }
 
     @Override

@@ -42,6 +42,9 @@ public class WebtoperFacetConfiguration implements FacetConfiguration, Persisten
     private VirtualFile facetRoot;
     private FacetPointer<WebtoperFacet> parentFacetPointer;
 
+    // used to create facet from detector with suitable name(layer name)
+    private String suggestedName;
+
     private State myState = new State();
 
     @Nullable
@@ -82,8 +85,10 @@ public class WebtoperFacetConfiguration implements FacetConfiguration, Persisten
     public void setFacetRoot(VirtualFile facetRoot) {
         this.facetRoot = facetRoot;
         myState.root = null;
-        if (facetRoot != null) {
-            PathMacroManager macroManager = PathMacroManager.getInstance(getFacet().getModule());
+        // can be null when configuration created in detector
+        WebtoperFacet facet = getFacet();
+        if (facetRoot != null && facet != null) {
+            PathMacroManager macroManager = PathMacroManager.getInstance(facet.getModule());
             myState.root = macroManager.collapsePath(facetRoot.getUrl());
         }
     }
@@ -108,6 +113,14 @@ public class WebtoperFacetConfiguration implements FacetConfiguration, Persisten
         }
     }
 
+    public String getSuggestedName() {
+        return suggestedName;
+    }
+
+    public void setSuggestedName(String suggestedName) {
+        this.suggestedName = suggestedName;
+    }
+
     @Nullable
     @Override
     public State getState() {
@@ -117,6 +130,15 @@ public class WebtoperFacetConfiguration implements FacetConfiguration, Persisten
             WebtoperFacet parentFacet = parentFacetPointer.getFacet();
             if (parentFacet != null) {
                 myState.parentFacetId = FacetPointersManager.constructId(parentFacet);
+            }
+        }
+
+        if (myState.root == null && facetRoot != null) {
+            if (facet != null) {
+                PathMacroManager macroManager = PathMacroManager.getInstance(facet.getModule());
+                myState.root = macroManager.collapsePath(facetRoot.getUrl());
+            } else {
+                myState.root = facetRoot.getUrl();
             }
         }
         return new State(myState);
