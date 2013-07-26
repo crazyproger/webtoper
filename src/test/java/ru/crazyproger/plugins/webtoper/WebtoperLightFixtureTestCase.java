@@ -25,26 +25,11 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import ru.crazyproger.plugins.webtoper.config.WebtoperFacet;
 
-import java.io.File;
-
-public abstract class WebtoperLightFixtureTestCase extends LightCodeInsightFixtureTestCase {
-
-    public static final String TEST_DATA_PATH = "/src/test/testData";
+public abstract class WebtoperLightFixtureTestCase extends AbstractLightFixtureTestCase {
 
     protected VirtualFile moduleRoot;
-    protected String testName;
-
-    protected String getTestDataPath() {
-        String projectRoot = getRootPath();
-        return projectRoot + TEST_DATA_PATH;
-    }
-
-    public static String getRootPath() {
-        return new File("").getAbsolutePath();
-    }
 
     @Override
     protected void setUp() throws Exception {
@@ -64,7 +49,6 @@ public abstract class WebtoperLightFixtureTestCase extends LightCodeInsightFixtu
                 facetModel.commit();
             }
         });
-        testName = getTestName(true);
     }
 
     @Override
