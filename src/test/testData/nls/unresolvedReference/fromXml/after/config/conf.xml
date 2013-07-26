@@ -2,7 +2,9 @@
 <config version="1.0">
     <scope>
         <component>
-            <nlsbundle>newFolder.second.created</nlsbundle>
+            <nlsbundle>
+                newFolder.second.created
+            </nlsbundle>
         </component>
     </scope>
 </config>

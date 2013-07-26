@@ -3,8 +3,7 @@
     <scope>
         <component>
             <nlsbundle>
-                <error descr="Cannot resolve symbol 'newFolder.second.created'">newFolder.sec<caret>ond.created
-                </error>
+                <error descr="Cannot resolve symbol 'newFolder.second.created'">newFolder.sec<caret>ond.created</error>
             </nlsbundle>
         </component>
     </scope>

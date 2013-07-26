@@ -94,7 +94,7 @@ public abstract class AbstractNlsReference<T extends PsiElement> extends PsiRefe
         WebtoperFacet facet = WebtoperUtil.findFacetForElement(getElement());
         if (facet == null || !facet.isValid()) return LocalQuickFix.EMPTY_ARRAY;
 
-        CreateNlsQuickFix createNlsQuickFix = new CreateNlsQuickFix(getElementText(), facet);
+        CreateNlsQuickFix createNlsQuickFix = new CreateNlsQuickFix(StringUtils.trim(getElementText()), facet);
         return new LocalQuickFix[]{createNlsQuickFix};
     }
 }
